@@ -1,8 +1,5 @@
 import 'package:AirTours/services/cloud/cloud_flight.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-
 import '../../services/cloud/firestore_flight.dart';
 
 class OneWaySearch extends StatefulWidget {
@@ -27,12 +24,6 @@ class OneWaySearch extends StatefulWidget {
 
 class _OneWaySearchState extends State<OneWaySearch> {
   late final FlightFirestore _flightsService;
-
-  String _formatTime(Timestamp timestamp) {
-    var date = timestamp.toDate();
-    var format = DateFormat('h:mm a');
-    return format.format(date);
-  }
 
   @override
   void initState() {
@@ -70,6 +61,9 @@ class _OneWaySearchState extends State<OneWaySearch> {
                     itemCount: allFlights.length,
                     itemBuilder: (context, index) {
                       final flight = allFlights.elementAt(index);
+                      double flightText = widget.flightClass == 'business'
+                          ? flight.busPrice
+                          : flight.guestPrice;
                       return Card(
                         elevation: 4.0,
                         shape: RoundedRectangleBorder(
@@ -85,8 +79,8 @@ class _OneWaySearchState extends State<OneWaySearch> {
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    '\$${flight.busPrice}',
-                                    style: TextStyle(
+                                    '\$$flightText',
+                                    style: const TextStyle(
                                       fontSize: 24.0,
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -95,7 +89,8 @@ class _OneWaySearchState extends State<OneWaySearch> {
                                     crossAxisAlignment: CrossAxisAlignment.end,
                                     children: [
                                       Text(
-                                        _formatTime(flight.depTime),
+                                        _flightsService
+                                            .formatTime(flight.depTime),
                                         style: TextStyle(
                                           fontSize: 16.0,
                                           color: Colors.grey[600],
@@ -108,9 +103,10 @@ class _OneWaySearchState extends State<OneWaySearch> {
                                           color: Colors.grey[600],
                                         ),
                                       ),
-                                      SizedBox(height: 4.0),
+                                      const SizedBox(height: 4.0),
                                       Text(
-                                        _formatTime(flight.arrTime),
+                                        _flightsService
+                                            .formatTime(flight.arrTime),
                                         style: TextStyle(
                                           fontSize: 16.0,
                                           color: Colors.grey[600],
@@ -127,30 +123,30 @@ class _OneWaySearchState extends State<OneWaySearch> {
                                   ),
                                 ],
                               ),
-                              SizedBox(height: 16.0),
+                              const SizedBox(height: 16.0),
                               Row(
                                 children: [
                                   Icon(Icons.flight_takeoff,
                                       color: Colors.grey[600]),
-                                  SizedBox(width: 8.0),
+                                  const SizedBox(width: 8.0),
                                   Text(
-                                    '${flight.fromCity}',
-                                    style: TextStyle(
+                                    flight.fromCity,
+                                    style: const TextStyle(
                                       fontSize: 20.0,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
                                 ],
                               ),
-                              SizedBox(height: 8.0),
+                              const SizedBox(height: 8.0),
                               Row(
                                 children: [
                                   Icon(Icons.flight_land,
                                       color: Colors.grey[600]),
-                                  SizedBox(width: 8.0),
+                                  const SizedBox(width: 8.0),
                                   Text(
-                                    '${flight.toCity}',
-                                    style: TextStyle(
+                                    flight.toCity,
+                                    style: const TextStyle(
                                       fontSize: 20.0,
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -164,7 +160,7 @@ class _OneWaySearchState extends State<OneWaySearch> {
                     },
                   );
                 } else {
-                  return const Text('No Available Flights');
+                  return const CircularProgressIndicator();
                 }
 
               default:

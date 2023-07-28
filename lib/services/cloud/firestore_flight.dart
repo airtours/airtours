@@ -1,6 +1,7 @@
 import 'package:AirTours/services/cloud/cloud_flight.dart';
 import 'package:AirTours/constants/flight_constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
 
 class FlightFirestore {
   final flights = FirebaseFirestore.instance.collection('flights');
@@ -85,5 +86,11 @@ class FlightFirestore {
         arrDate: arrDate,
         arrTime: arrTime,
         depTime: depTime);
+  }
+
+  String formatTime(Timestamp timestamp) {
+    var date = timestamp.toDate();
+    var format = DateFormat('h:mm a');
+    return format.format(date);
   }
 }

@@ -4,7 +4,7 @@ import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:AirTours/views/One-Way/Var.dart';
 
-import 'oneWaySearch.dart';
+import 'available_flights_screen.dart';
 
 class oneWay extends StatefulWidget {
   @override
@@ -13,12 +13,13 @@ class oneWay extends StatefulWidget {
 
 class _oneWayState extends State<oneWay> {
   void toNext() {
+    DateTime dateOnly = DateTime(dateTime.year, dateTime.month, dateTime.day);
     Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => OneWaySearch(
             numOfPas: count,
-            date: dateTime,
+            date: dateOnly,
             flightClass: currentPassenger,
             from: fromName!,
             to: toName!,
@@ -145,7 +146,7 @@ class _oneWayState extends State<oneWay> {
                                 onPressed: () async {
                                   DateTime? newDate = await showDatePicker(
                                       context: context,
-                                      initialDate: dateTime,
+                                      initialDate: DateTime.now(),
                                       firstDate: DateTime.now(),
                                       lastDate: DateTime(2024));
                                   if (newDate == null) return;
@@ -171,8 +172,7 @@ class _oneWayState extends State<oneWay> {
                         margin: const EdgeInsets.all(5),
                         decoration: BoxDecoration(
                             boxShadow: const [
-                              BoxShadow(
-                                  blurRadius: 2, offset: Offset(0, 0))
+                              BoxShadow(blurRadius: 2, offset: Offset(0, 0))
                             ],
                             borderRadius: BorderRadius.circular(20),
                             color: Colors.white),
@@ -218,8 +218,7 @@ class _oneWayState extends State<oneWay> {
                         margin: const EdgeInsets.all(5),
                         decoration: BoxDecoration(
                             boxShadow: const [
-                              BoxShadow(
-                                  blurRadius: 2, offset: Offset(0, 0))
+                              BoxShadow(blurRadius: 2, offset: Offset(0, 0))
                             ],
                             borderRadius: BorderRadius.circular(20),
                             color: Colors.white),
