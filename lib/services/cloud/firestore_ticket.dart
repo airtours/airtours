@@ -10,19 +10,20 @@ class TicketFirestore {
   factory TicketFirestore() => _shared;
 
   Future<CloudTicket> createNewTicket(
-      {required documentId,
-      required firstName,
-      required middleName,
-      required checkInStatus,
-      required bagQuantity,
-      required mealType,
-      required lastName,
-      required ticketPrice,
-      required bookingReference,
-      required ticketUserId,
-      required birthDate,
-      required flightReference,
-      required ticketClass}) async {
+      {required String firstName,
+      required String middleName,
+      required bool checkInStatus,
+      required int bagQuantity,
+      required int mealType,
+      required String lastName,
+      required double ticketPrice,
+      required String bookingReference,
+      required String ticketUserId,
+      required DateTime birthDate,
+      required String flightReference,
+      required String ticketClass}) async {
+    Timestamp birthdateStamp = Timestamp.fromDate(birthDate);
+
     final document = await tickets.add({
       ticketClassField: ticketClass,
       ticketPriceField: ticketPrice,
@@ -34,7 +35,8 @@ class TicketFirestore {
       bagQuantityField: bagQuantity,
       mealTypeField: mealType,
       ticketUserIdField: ticketUserId,
-      birthDateField: birthDate
+      birthDateField: birthdateStamp,
+      bookingReferenceField: bookingReference
     });
     final fetchedTicket = await document.get();
     return CloudTicket(
@@ -48,7 +50,7 @@ class TicketFirestore {
         ticketPrice: ticketPrice,
         bookingReference: bookingReference,
         ticketUserId: ticketUserId,
-        birthDate: birthDate,
+        birthDate: birthdateStamp,
         flightReference: flightReference,
         ticketClass: ticketClass);
   }
