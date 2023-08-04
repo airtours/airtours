@@ -1,7 +1,7 @@
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 
-import 'Var.dart';
+import 'package:AirTours/views/Global/global_var.dart';
 
 class RoundTrip extends StatefulWidget {
   const RoundTrip({super.key});
@@ -94,7 +94,8 @@ class _RoundTripState extends State<RoundTrip> {
                         items: flightName,
                         onChanged: (value) => toName = value,
                         dropdownSearchDecoration: InputDecoration(
-                            suffixIcon: const Icon(Icons.flight_takeoff_rounded),
+                            suffixIcon:
+                                const Icon(Icons.flight_takeoff_rounded),
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(8.0),
                                 borderSide: BorderSide.none),
@@ -139,8 +140,8 @@ class _RoundTripState extends State<RoundTrip> {
                                 backgroundColor: Colors.white),
                             child: Text(
                               "${dateTime.day} ${monthNames[dateTime.month - 1]} , ${monthNames[end.month - 1] == monthNames[start.month - 1] ? end.day : end.day} ${monthNames[end.month - 1] == monthNames[start.month - 1] ? "" : monthNames[end.month - 1]}",
-                              style:
-                                  const TextStyle(color: Colors.black, fontSize: 17),
+                              style: const TextStyle(
+                                  color: Colors.black, fontSize: 17),
                             ),
                             onPressed: () async {
                               DateTimeRange? newDate =

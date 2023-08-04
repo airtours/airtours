@@ -1,22 +1,22 @@
 import 'package:AirTours/services/cloud/firestore_booking.dart';
 import 'package:AirTours/services/cloud/firestore_ticket.dart';
-import 'package:AirTours/views/ticket.dart';
+import 'package:AirTours/views/Global/ticket.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'package:AirTours/views/One-Way/Var.dart';
+import 'package:AirTours/views/Global/global_var.dart';
 
-import '../services/cloud/cloud_booking.dart';
+import '../../services/cloud/cloud_booking.dart';
 
 class Enterinfo extends StatefulWidget {
   final String id;
-  final double totalprice;
+  final double flightPrice;
   final String flightClass;
   const Enterinfo(
       {super.key,
       required this.id,
-      required this.totalprice,
+      required this.flightPrice,
       required this.flightClass});
 
   @override
@@ -27,6 +27,19 @@ class _EnterinfoState extends State<Enterinfo> {
   List<Ticket> tickets = [];
   Ticket? temp;
   final formKey = GlobalKey<FormState>();
+  String free = "Free";
+  String selectedMeal = "Default Meal";
+  List<String> mealList = [
+    "Default Meal",
+    "Law calorie meal",
+    "No salt meal",
+    "Asian Vegetarian Meal",
+    "Western Vegetarian Meal",
+    "Low Salt Meal",
+    "Low fat Meal",
+    "Lacto-ovo Vegetarian Meal",
+    "Gluten Free Meal",
+  ];
   String _selectedTitle = "Mr";
   List<String> _titles = [
     "Mr",
@@ -37,7 +50,8 @@ class _EnterinfoState extends State<Enterinfo> {
   TextEditingController mName = TextEditingController();
   TextEditingController lName = TextEditingController();
   TextEditingController ssn = TextEditingController();
-  DateTime dateTime = DateTime(2023, 2, 1);
+  DateTime dateTime =
+      DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
 
   String? valueFirstName;
   String? valueLastName;
@@ -46,7 +60,7 @@ class _EnterinfoState extends State<Enterinfo> {
   DateTime? birthD;
   late final TicketFirestore _ticketService;
   late final BookingFirestore _bookingService;
-  CloudBooking? ok;
+  CloudBooking? booking;
 
   @override
   void initState() {
@@ -57,19 +71,19 @@ class _EnterinfoState extends State<Enterinfo> {
   }
 
   Future<String> createBooking() async {
-    ok = await _bookingService.createNewBooking(
+    booking = await _bookingService.createNewBooking(
         bookingClass: widget.flightClass,
-        bookingPrice: widget.totalprice,
+        bookingPrice: widget.flightPrice,
         departureFlight: widget.id,
         returnFlight: 'none');
-    final bookingRef = ok!.documentId;
+    final bookingRef = booking!.documentId;
     return bookingRef;
   }
 
   void toNext(List<Ticket> alltickets) async {
     final tmp = await createBooking();
+    print(tickets);
     print(tmp);
-    print(alltickets);
 
     alltickets.forEach((ticket) async {
       await _ticketService.createNewTicket(
@@ -91,7 +105,10 @@ class _EnterinfoState extends State<Enterinfo> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: const Text('Passenger Info'),
+        centerTitle: true,
+      ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -166,7 +183,7 @@ class _EnterinfoState extends State<Enterinfo> {
                               ),
                               validator: (value) {
                                 if (value!.isEmpty) {
-                                  return "You did not enter your firs name";
+                                  return "You did not enter your first name";
                                 }
                                 if (!RegExp(r'^[a-zA-Z\s]+$').hasMatch(value)) {
                                   return 'Please enter a valid name';
@@ -326,6 +343,7 @@ class _EnterinfoState extends State<Enterinfo> {
                                               Expanded(
                                                   child: CupertinoDatePicker(
                                                 initialDateTime: dateTime,
+                                                maximumDate: dateTime,
                                                 mode: CupertinoDatePickerMode
                                                     .date,
                                                 onDateTimeChanged: (data) {
@@ -358,7 +376,7 @@ class _EnterinfoState extends State<Enterinfo> {
                               bagQuantity: 1,
                               mealType: 1,
                               lastName: lName.text,
-                              ticketPrice: widget.totalprice,
+                              ticketPrice: widget.flightPrice,
                               birthDate: birthD!,
                               flightReference: widget.id,
                               ticketClass: widget.flightClass,
@@ -378,7 +396,7 @@ class _EnterinfoState extends State<Enterinfo> {
                               bagQuantity: 1,
                               mealType: 1,
                               lastName: lName.text,
-                              ticketPrice: widget.totalprice,
+                              ticketPrice: widget.flightPrice,
                               birthDate: birthD!,
                               flightReference: widget.id,
                               ticketClass: widget.flightClass,

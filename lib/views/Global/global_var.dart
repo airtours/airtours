@@ -1,5 +1,13 @@
 import 'package:flutter/material.dart';
 
+List<String> fNameList = [];
+List<String> lNameList = [];
+List<String> mNameList = [];
+List<int> ssnNumberList = [];
+List<DateTime> d = [];
+
+int? length1;
+
 List<String> monthNames = [
   "jan",
   "Feb",
@@ -15,6 +23,9 @@ List<String> monthNames = [
   "Dec",
 ];
 int count = 1;
+int baggageCount = 1;
+int baggagePrice = 0;
+
 List<String> passengerType = ['guest', 'business'];
 String currentPassenger = passengerType[0];
 DateTimeRange dateRange =

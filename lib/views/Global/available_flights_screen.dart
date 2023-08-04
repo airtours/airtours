@@ -1,7 +1,7 @@
 import 'package:AirTours/services/cloud/cloud_flight.dart';
 import 'package:flutter/material.dart';
 import '../../services/cloud/firestore_flight.dart';
-import '../final_pasenger_info.dart';
+import 'final_pasenger_info.dart';
 
 class OneWaySearch extends StatefulWidget {
   final String from;
@@ -31,7 +31,7 @@ class _OneWaySearchState extends State<OneWaySearch> {
         MaterialPageRoute(
           builder: (context) => Enterinfo(
             id: id,
-            totalprice: totalprice,
+            flightPrice: totalprice,
             flightClass: flightClass,
           ),
         ));

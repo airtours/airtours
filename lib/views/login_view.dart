@@ -1,9 +1,10 @@
-import 'package:AirTours/views/One-Way/homePage.dart';
+import 'package:AirTours/views/Global/select_travel_type.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:flutter/material.dart';
 
-import 'admin.dart';
+import 'Admin/admin.dart';
+import 'Global/bottom_bar.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -64,8 +65,8 @@ class _LoginViewState extends State<LoginView> {
                   password: password,
                 );
                 print(userCredential);
-                Navigator.of(context).pushReplacement(MaterialPageRoute(
-                    builder: (context) => const SelectTravelType()));
+                Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(builder: (_) => const Bottom()));
               } on FirebaseAuthException catch (e) {
                 if (e.code == 'user-not-found') {
                   print('User not found');
