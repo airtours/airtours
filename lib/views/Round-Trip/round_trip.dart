@@ -1,9 +1,6 @@
-import 'package:AirTours/views/One-Way/available_flights_screen.dart';
 import 'package:AirTours/views/Round-Trip/available_departure.dart';
-import 'package:AirTours/views/Round-Trip/available_return.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
-
 import 'package:AirTours/views/Global/global_var.dart';
 
 class RoundTrip extends StatefulWidget {
@@ -41,7 +38,6 @@ class _RoundTripState extends State<RoundTrip> {
   }
 
   void toNext() {
-    DateTime dateOnly = DateTime(dateTime.year, dateTime.month, dateTime.day);
     final start1 = dateRange.start;
     final end1 = dateRange.end;
     print(start1);

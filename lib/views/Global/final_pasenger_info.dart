@@ -31,6 +31,7 @@ class _EnterinfoState extends State<Enterinfo> {
   List<Ticket> tickets = [];
   Ticket? temp1;
   Ticket? temp2;
+  double? totalTicketPrice;
   final formKey = GlobalKey<FormState>();
   String free = "Free";
   String selectedMeal = "Default Meal";
@@ -75,11 +76,11 @@ class _EnterinfoState extends State<Enterinfo> {
     birthD = dateTime;
   }
 
-  Future<String> createBooking() async {
+  Future<String> createBooking(double totalPrice) async {
     if (widget.id2 == 'none') {
       booking = await _bookingService.createNewBooking(
           bookingClass: widget.flightClass,
-          bookingPrice: widget.flightPrice1,
+          bookingPrice: totalPrice,
           departureFlight: widget.id1,
           returnFlight: 'none');
       final bookingRef = booking!.documentId;
@@ -96,7 +97,13 @@ class _EnterinfoState extends State<Enterinfo> {
   }
 
   void toNext(List<Ticket> alltickets) async {
-    final tmp = await createBooking();
+    double totalBookingPrice = 0;
+    for (var x in alltickets) {
+      print(x.ticketPrice);
+      totalBookingPrice = totalBookingPrice + x.ticketPrice;
+    }
+
+    final tmp = await createBooking(totalBookingPrice);
 
     alltickets.forEach((ticket) async {
       await _ticketService.createNewTicket(
@@ -110,14 +117,15 @@ class _EnterinfoState extends State<Enterinfo> {
           bookingReference: tmp,
           ticketUserId: '1',
           birthDate: ticket.birthDate,
-          flightReference: widget.id1,
+          flightReference: ticket.flightReference,
           ticketClass: widget.flightClass);
     });
   }
 
   void icreaseBaggageCount() {
     setState(() {
-      baggagePrice += 200;
+      if (baggageCount == 3) return;
+      baggagePrice += 251;
       baggageCount++;
     });
   }
@@ -128,7 +136,7 @@ class _EnterinfoState extends State<Enterinfo> {
         free = "Free";
         return;
       }
-      baggagePrice -= 200;
+      baggagePrice -= 251;
       baggageCount--;
     });
   }
@@ -475,28 +483,32 @@ class _EnterinfoState extends State<Enterinfo> {
                       if (formKey.currentState!.validate()) {
                         for (adultCount; adultCount < count;) {
                           adultCount++;
+                          totalTicketPrice = widget.flightPrice1 + baggagePrice;
                           temp1 = Ticket(
                               firstName: fName.text,
                               middleName: mName.text,
                               checkInStatus: false,
-                              bagQuantity: 1,
-                              mealType: 1,
+                              bagQuantity: baggageCount,
+                              mealType: selectedMeal,
                               lastName: lName.text,
-                              ticketPrice: widget.flightPrice1,
+                              ticketPrice: totalTicketPrice!,
                               birthDate: birthD!,
                               flightReference: widget.id1,
                               ticketClass: widget.flightClass,
                               ticketUserId: '1');
                           tickets.add(temp1!);
+
                           if (widget.id2 != 'none') {
+                            totalTicketPrice =
+                                widget.flightPrice2 + baggagePrice;
                             temp2 = Ticket(
                                 firstName: fName.text,
                                 middleName: mName.text,
                                 checkInStatus: false,
-                                bagQuantity: 1,
-                                mealType: 1,
+                                bagQuantity: baggageCount,
+                                mealType: selectedMeal,
                                 lastName: lName.text,
-                                ticketPrice: widget.flightPrice2,
+                                ticketPrice: totalTicketPrice!,
                                 birthDate: birthD!,
                                 flightReference: widget.id2,
                                 ticketClass: widget.flightClass,
@@ -507,31 +519,39 @@ class _EnterinfoState extends State<Enterinfo> {
                           mName.clear();
                           lName.clear();
                           ssn.clear();
+                          baggagePrice = 0;
+                          baggageCount = 1;
+                          selectedMeal = mealList[0];
+                          dateTime = constantTime;
+
                           return;
                         }
                         if (adultCount == count) {
+                          totalTicketPrice = widget.flightPrice1 + baggagePrice;
                           temp1 = Ticket(
                               firstName: fName.text,
                               middleName: mName.text,
                               checkInStatus: false,
-                              bagQuantity: 1,
-                              mealType: 1,
+                              bagQuantity: baggageCount,
+                              mealType: selectedMeal,
                               lastName: lName.text,
-                              ticketPrice: widget.flightPrice1,
+                              ticketPrice: totalTicketPrice!,
                               birthDate: birthD!,
                               flightReference: widget.id1,
                               ticketClass: widget.flightClass,
                               ticketUserId: '1');
                           tickets.add(temp1!);
                           if (widget.id2 != 'none') {
+                            totalTicketPrice =
+                                widget.flightPrice2 + baggagePrice;
                             temp2 = Ticket(
                                 firstName: fName.text,
                                 middleName: mName.text,
                                 checkInStatus: false,
-                                bagQuantity: 1,
-                                mealType: 1,
+                                bagQuantity: baggageCount,
+                                mealType: selectedMeal,
                                 lastName: lName.text,
-                                ticketPrice: widget.flightPrice2,
+                                ticketPrice: totalTicketPrice!,
                                 birthDate: birthD!,
                                 flightReference: widget.id2,
                                 ticketClass: widget.flightClass,

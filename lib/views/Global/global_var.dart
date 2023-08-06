@@ -31,6 +31,7 @@ String currentPassenger = passengerType[0];
 DateTimeRange dateRange =
     DateTimeRange(start: DateTime.now(), end: DateTime.now());
 DateTime dateTime = DateTime.now();
+DateTime constantTime = DateTime.now();
 
 String? fromName;
 String? toName;

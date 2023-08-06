@@ -4,7 +4,7 @@ class Ticket {
   final String lastName;
   final bool checkInStatus;
   final int bagQuantity;
-  final int mealType;
+  final String mealType;
   final double ticketPrice;
   final String ticketUserId;
   final DateTime birthDate;

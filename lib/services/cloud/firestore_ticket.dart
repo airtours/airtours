@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:AirTours/services/cloud/cloud_Ticket.dart';
+import 'package:AirTours/services/cloud/cloud_ticket.dart';
 import 'package:AirTours/constants/ticket_constants';
 
 class TicketFirestore {
@@ -14,7 +14,7 @@ class TicketFirestore {
       required String middleName,
       required bool checkInStatus,
       required int bagQuantity,
-      required int mealType,
+      required String mealType,
       required String lastName,
       required double ticketPrice,
       required String bookingReference,

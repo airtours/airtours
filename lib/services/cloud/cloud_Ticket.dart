@@ -8,7 +8,7 @@ class CloudTicket {
   final String lastName;
   final bool checkInStatus;
   final int bagQuantity;
-  final int mealType;
+  final String mealType;
   final double ticketPrice;
   final String bookingReference;
   final String ticketUserId;
@@ -42,7 +42,7 @@ class CloudTicket {
         ticketUserId = snapshot.data()[checkInStatusField] as String,
         ticketPrice = snapshot.data()[ticketPriceField] as double,
         bookingReference = snapshot.data()[bookingReferenceField] as String,
-        mealType = snapshot.data()[mealTypeField] as int,
+        mealType = snapshot.data()[mealTypeField] as String,
         ticketClass = snapshot.data()[ticketClassField] as String,
         bagQuantity = snapshot.data()[bagQuantityField] as int;
 }
