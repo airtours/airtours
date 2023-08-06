@@ -35,7 +35,32 @@ DateTime dateTime = DateTime.now();
 String? fromName;
 String? toName;
 List<String> flightName = [
-  "Riyadh",
-  "Jeddah",
+  'Abha',
+  'Al Baha',
+  'AlUla',
+  'Arar',
+  'Bisha',
+  'Dammam',
+  'Dawadmi',
+  'Gassim',
+  'Gizan',
+  'Gurayat',
+  'Hail',
+  'Hofuf',
+  'Jeddah',
+  'Jouf',
+  'Madinah',
+  'Nejran',
+  'Neom',
+  'Qaisumah',
+  'Rafha',
+  'Riyadh',
+  'Sharurah',
+  'Tabuk',
+  'Taif',
+  'Turaif',
+  'Wadi Al Dawaser',
+  'Wedjh',
+  'Yanbu Al Bahr'
 ];
 final From = TextEditingController();

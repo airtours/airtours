@@ -1,9 +1,8 @@
-import 'package:AirTours/views/Global/select_travel_type.dart';
+import 'package:AirTours/views/Admin/admin.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:flutter/material.dart';
 
-import 'Admin/admin.dart';
 import 'Global/bottom_bar.dart';
 
 class LoginView extends StatefulWidget {

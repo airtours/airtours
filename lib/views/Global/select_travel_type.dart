@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:AirTours/views/One-Way/one_way.dart';
-import 'package:AirTours/views/One-Way/round_trip.dart';
+import 'package:AirTours/views/Round-Trip/round_trip.dart';
 
 class SelectTravelType extends StatefulWidget {
   const SelectTravelType({super.key});

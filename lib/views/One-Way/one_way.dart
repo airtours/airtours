@@ -4,7 +4,7 @@ import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:AirTours/views/Global/global_var.dart';
 
-import '../Global/available_flights_screen.dart';
+import 'available_flights_screen.dart';
 
 class OneWay extends StatefulWidget {
   @override

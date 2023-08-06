@@ -10,13 +10,17 @@ import 'package:AirTours/views/Global/global_var.dart';
 import '../../services/cloud/cloud_booking.dart';
 
 class Enterinfo extends StatefulWidget {
-  final String id;
-  final double flightPrice;
+  final String id1;
+  final String id2;
+  final double flightPrice1;
+  final double flightPrice2;
   final String flightClass;
   const Enterinfo(
       {super.key,
-      required this.id,
-      required this.flightPrice,
+      required this.id1,
+      required this.id2,
+      required this.flightPrice1,
+      required this.flightPrice2,
       required this.flightClass});
 
   @override
@@ -25,7 +29,8 @@ class Enterinfo extends StatefulWidget {
 
 class _EnterinfoState extends State<Enterinfo> {
   List<Ticket> tickets = [];
-  Ticket? temp;
+  Ticket? temp1;
+  Ticket? temp2;
   final formKey = GlobalKey<FormState>();
   String free = "Free";
   String selectedMeal = "Default Meal";
@@ -41,7 +46,7 @@ class _EnterinfoState extends State<Enterinfo> {
     "Gluten Free Meal",
   ];
   String _selectedTitle = "Mr";
-  List<String> _titles = [
+  final List<String> _titles = [
     "Mr",
     "Ms",
   ];
@@ -71,19 +76,27 @@ class _EnterinfoState extends State<Enterinfo> {
   }
 
   Future<String> createBooking() async {
-    booking = await _bookingService.createNewBooking(
-        bookingClass: widget.flightClass,
-        bookingPrice: widget.flightPrice,
-        departureFlight: widget.id,
-        returnFlight: 'none');
-    final bookingRef = booking!.documentId;
-    return bookingRef;
+    if (widget.id2 == 'none') {
+      booking = await _bookingService.createNewBooking(
+          bookingClass: widget.flightClass,
+          bookingPrice: widget.flightPrice1,
+          departureFlight: widget.id1,
+          returnFlight: 'none');
+      final bookingRef = booking!.documentId;
+      return bookingRef;
+    } else {
+      booking = await _bookingService.createNewBooking(
+          bookingClass: widget.flightClass,
+          bookingPrice: widget.flightPrice1,
+          departureFlight: widget.id1,
+          returnFlight: widget.id2);
+      final bookingRef = booking!.documentId;
+      return bookingRef;
+    }
   }
 
   void toNext(List<Ticket> alltickets) async {
     final tmp = await createBooking();
-    print(tickets);
-    print(tmp);
 
     alltickets.forEach((ticket) async {
       await _ticketService.createNewTicket(
@@ -97,8 +110,26 @@ class _EnterinfoState extends State<Enterinfo> {
           bookingReference: tmp,
           ticketUserId: '1',
           birthDate: ticket.birthDate,
-          flightReference: widget.id,
+          flightReference: widget.id1,
           ticketClass: widget.flightClass);
+    });
+  }
+
+  void icreaseBaggageCount() {
+    setState(() {
+      baggagePrice += 200;
+      baggageCount++;
+    });
+  }
+
+  void decreaseBaggageCount() {
+    setState(() {
+      if (baggageCount == 1) {
+        free = "Free";
+        return;
+      }
+      baggagePrice -= 200;
+      baggageCount--;
     });
   }
 
@@ -188,6 +219,7 @@ class _EnterinfoState extends State<Enterinfo> {
                                 if (!RegExp(r'^[a-zA-Z\s]+$').hasMatch(value)) {
                                   return 'Please enter a valid name';
                                 }
+                                return null;
                               },
                             ),
                           )),
@@ -218,6 +250,7 @@ class _EnterinfoState extends State<Enterinfo> {
                           if (!RegExp(r'^[a-zA-Z\s]+$').hasMatch(value)) {
                             return 'Please enter a valid name';
                           }
+                          return null;
                         },
                       ),
                     )),
@@ -245,6 +278,7 @@ class _EnterinfoState extends State<Enterinfo> {
                           if (!RegExp(r'^[a-zA-Z\s]+$').hasMatch(value)) {
                             return 'Please enter a valid name';
                           }
+                          return null;
                           //return null;
                         },
                       ),
@@ -362,6 +396,78 @@ class _EnterinfoState extends State<Enterinfo> {
                     ),
                   ],
                 ),
+                Container(
+                    margin: const EdgeInsets.all(5),
+                    decoration: BoxDecoration(
+                        boxShadow: const [
+                          BoxShadow(blurRadius: 2, offset: Offset(0, 0))
+                        ],
+                        borderRadius: BorderRadius.circular(15),
+                        color: Colors.white),
+                    child: Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: DropdownButtonFormField<String>(
+                        value: selectedMeal,
+                        items: mealList.map((String title) {
+                          return DropdownMenuItem<String>(
+                            value: title,
+                            child: Text(
+                              title,
+                              style: const TextStyle(),
+                            ),
+                          );
+                        }).toList(),
+                        onChanged: (newValue) {
+                          setState(() {
+                            selectedMeal = newValue!;
+                          });
+                        },
+                        decoration: const InputDecoration(
+                          border: InputBorder.none, // sets the border to none
+                          hintText: 'Select an option',
+                        ),
+                      ),
+                    )),
+                Container(
+                    margin: const EdgeInsets.all(5),
+                    width: double.infinity,
+                    //padding: EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                        boxShadow: const [
+                          BoxShadow(blurRadius: 2, offset: Offset(0, 0))
+                        ],
+                        borderRadius: BorderRadius.circular(15),
+                        color: Colors.white),
+                    child: Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text("Baggage"),
+                            Row(
+                              children: [
+                                TextButton(
+                                    onPressed: decreaseBaggageCount,
+                                    child: const Icon(
+                                      Icons.remove,
+                                      color: Colors.black,
+                                      size: 15,
+                                    )),
+                                Text("$baggageCount x 23Kg"),
+                                TextButton(
+                                    onPressed: icreaseBaggageCount,
+                                    child: const Icon(
+                                      Icons.add,
+                                      color: Colors.black,
+                                      size: 15,
+                                    )),
+                              ],
+                            ),
+                            Text(
+                                baggageCount == 1 ? free : "${baggagePrice}SR"),
+                            //Text("${baggageCount == 1 ? free : baggagePrice}"),
+                          ],
+                        ))),
                 const Expanded(child: SizedBox()),
                 GestureDetector(
                   onTap: () {
@@ -369,19 +475,34 @@ class _EnterinfoState extends State<Enterinfo> {
                       if (formKey.currentState!.validate()) {
                         for (adultCount; adultCount < count;) {
                           adultCount++;
-                          temp = Ticket(
+                          temp1 = Ticket(
                               firstName: fName.text,
                               middleName: mName.text,
                               checkInStatus: false,
                               bagQuantity: 1,
                               mealType: 1,
                               lastName: lName.text,
-                              ticketPrice: widget.flightPrice,
+                              ticketPrice: widget.flightPrice1,
                               birthDate: birthD!,
-                              flightReference: widget.id,
+                              flightReference: widget.id1,
                               ticketClass: widget.flightClass,
                               ticketUserId: '1');
-                          tickets.add(temp!);
+                          tickets.add(temp1!);
+                          if (widget.id2 != 'none') {
+                            temp2 = Ticket(
+                                firstName: fName.text,
+                                middleName: mName.text,
+                                checkInStatus: false,
+                                bagQuantity: 1,
+                                mealType: 1,
+                                lastName: lName.text,
+                                ticketPrice: widget.flightPrice2,
+                                birthDate: birthD!,
+                                flightReference: widget.id2,
+                                ticketClass: widget.flightClass,
+                                ticketUserId: '1');
+                            tickets.add(temp2!);
+                          }
                           fName.clear();
                           mName.clear();
                           lName.clear();
@@ -389,19 +510,34 @@ class _EnterinfoState extends State<Enterinfo> {
                           return;
                         }
                         if (adultCount == count) {
-                          temp = Ticket(
+                          temp1 = Ticket(
                               firstName: fName.text,
                               middleName: mName.text,
                               checkInStatus: false,
                               bagQuantity: 1,
                               mealType: 1,
                               lastName: lName.text,
-                              ticketPrice: widget.flightPrice,
+                              ticketPrice: widget.flightPrice1,
                               birthDate: birthD!,
-                              flightReference: widget.id,
+                              flightReference: widget.id1,
                               ticketClass: widget.flightClass,
                               ticketUserId: '1');
-                          tickets.add(temp!);
+                          tickets.add(temp1!);
+                          if (widget.id2 != 'none') {
+                            temp2 = Ticket(
+                                firstName: fName.text,
+                                middleName: mName.text,
+                                checkInStatus: false,
+                                bagQuantity: 1,
+                                mealType: 1,
+                                lastName: lName.text,
+                                ticketPrice: widget.flightPrice2,
+                                birthDate: birthD!,
+                                flightReference: widget.id2,
+                                ticketClass: widget.flightClass,
+                                ticketUserId: '1');
+                            tickets.add(temp2!);
+                          }
                           toNext(tickets);
                         }
                       }
