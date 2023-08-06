@@ -30,8 +30,9 @@ List<String> passengerType = ['guest', 'business'];
 String currentPassenger = passengerType[0];
 DateTimeRange dateRange =
     DateTimeRange(start: DateTime.now(), end: DateTime.now());
-DateTime dateTime = DateTime.now();
-DateTime constantTime = DateTime.now();
+
+DateTime dateTime =
+    DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
 
 String? fromName;
 String? toName;

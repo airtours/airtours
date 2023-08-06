@@ -88,7 +88,7 @@ class _EnterinfoState extends State<Enterinfo> {
     } else {
       booking = await _bookingService.createNewBooking(
           bookingClass: widget.flightClass,
-          bookingPrice: widget.flightPrice1,
+          bookingPrice: totalPrice,
           departureFlight: widget.id1,
           returnFlight: widget.id2);
       final bookingRef = booking!.documentId;
@@ -391,7 +391,6 @@ class _EnterinfoState extends State<Enterinfo> {
                                                 onDateTimeChanged: (data) {
                                                   setState(() {
                                                     dateTime = data;
-                                                    birthD = dateTime;
                                                   });
                                                 },
                                               ))
@@ -492,7 +491,7 @@ class _EnterinfoState extends State<Enterinfo> {
                               mealType: selectedMeal,
                               lastName: lName.text,
                               ticketPrice: totalTicketPrice!,
-                              birthDate: birthD!,
+                              birthDate: dateTime,
                               flightReference: widget.id1,
                               ticketClass: widget.flightClass,
                               ticketUserId: '1');
@@ -509,7 +508,7 @@ class _EnterinfoState extends State<Enterinfo> {
                                 mealType: selectedMeal,
                                 lastName: lName.text,
                                 ticketPrice: totalTicketPrice!,
-                                birthDate: birthD!,
+                                birthDate: dateTime,
                                 flightReference: widget.id2,
                                 ticketClass: widget.flightClass,
                                 ticketUserId: '1');
@@ -522,7 +521,8 @@ class _EnterinfoState extends State<Enterinfo> {
                           baggagePrice = 0;
                           baggageCount = 1;
                           selectedMeal = mealList[0];
-                          dateTime = constantTime;
+                          dateTime = DateTime(DateTime.now().year,
+                              DateTime.now().month, DateTime.now().day);
 
                           return;
                         }
@@ -536,7 +536,7 @@ class _EnterinfoState extends State<Enterinfo> {
                               mealType: selectedMeal,
                               lastName: lName.text,
                               ticketPrice: totalTicketPrice!,
-                              birthDate: birthD!,
+                              birthDate: dateTime,
                               flightReference: widget.id1,
                               ticketClass: widget.flightClass,
                               ticketUserId: '1');
@@ -552,7 +552,7 @@ class _EnterinfoState extends State<Enterinfo> {
                                 mealType: selectedMeal,
                                 lastName: lName.text,
                                 ticketPrice: totalTicketPrice!,
-                                birthDate: birthD!,
+                                birthDate: dateTime,
                                 flightReference: widget.id2,
                                 ticketClass: widget.flightClass,
                                 ticketUserId: '1');
