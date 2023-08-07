@@ -1,0 +1,88 @@
+import 'package:AirTours/views/Global/ticket.dart';
+import 'package:flutter/material.dart';
+
+import 'Credit_card.dart';
+
+class Payment extends StatefulWidget {
+  final String id1;
+  final String id2;
+  final String flightClass;
+  final List<Ticket> tickets;
+  const Payment(
+      {super.key,
+      required this.id1,
+      required this.id2,
+      required this.flightClass,
+      required this.tickets});
+
+  @override
+  State<Payment> createState() => _PaymentState();
+}
+
+class _PaymentState extends State<Payment> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(),
+      body: SafeArea(
+          child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            Text(
+              "How do you want to pay",
+            ),
+            GestureDetector(
+              onTap: () {
+                print("aziz");
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => Criditcard(
+                            id1: widget.id1,
+                            id2: widget.id2,
+                            flightClass: widget.flightClass,
+                            tickets:
+                                widget.tickets))); //Criditcard  CreditCardPage
+              },
+              child: Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.all(20),
+                  margin: EdgeInsets.all(5),
+                  decoration: BoxDecoration(
+                      boxShadow: [
+                        BoxShadow(blurRadius: 2, offset: Offset(0, 0))
+                      ],
+                      borderRadius: BorderRadius.circular(15),
+                      color: Colors.white),
+                  child: Text(
+                    "Credit/Debit card",
+                    style: TextStyle(fontSize: 15),
+                  )),
+            ),
+            GestureDetector(
+              onTap: () {
+                // Navigator.push(context,
+                //     MaterialPageRoute(builder: (context) => Criditcard()));
+              },
+              child: Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.all(20),
+                  margin: EdgeInsets.all(5),
+                  decoration: BoxDecoration(
+                      boxShadow: [
+                        BoxShadow(blurRadius: 2, offset: Offset(0, 0))
+                      ],
+                      borderRadius: BorderRadius.circular(15),
+                      color: Colors.white),
+                  child: Text(
+                    "Wallet",
+                    style: TextStyle(fontSize: 15),
+                  )),
+            )
+          ],
+        ),
+      )),
+    );
+  }
+}

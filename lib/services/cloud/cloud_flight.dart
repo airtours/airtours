@@ -15,6 +15,8 @@ class CloudFlight {
   final int numOfGuest;
   final double guestPrice;
   final double busPrice;
+  final int numOfAvaBusiness;
+  final int numOfAvaGuest;
 
   CloudFlight({
     required this.documentId,
@@ -30,6 +32,8 @@ class CloudFlight {
     required this.arrDate,
     required this.arrTime,
     required this.depTime,
+    required this.numOfAvaBusiness,
+    required this.numOfAvaGuest,
   });
 
   CloudFlight.fromSnapshot(QueryDocumentSnapshot<Map<String, dynamic>> snapshot)
@@ -42,6 +46,8 @@ class CloudFlight {
         busPrice = snapshot.data()[busPriceField] as double,
         numOfBusiness = snapshot.data()[numOfbusField] as int,
         numOfGuest = snapshot.data()[numOfGueField] as int,
+        numOfAvaBusiness = snapshot.data()[numOfAvabusField] as int,
+        numOfAvaGuest = snapshot.data()[numOfAvaGueField] as int,
         depDate = snapshot.data()[depDateField] as Timestamp,
         arrDate = snapshot.data()[depDateField] as Timestamp,
         arrTime = snapshot.data()[arrTimeField] as Timestamp,

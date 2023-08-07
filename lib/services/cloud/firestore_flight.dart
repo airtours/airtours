@@ -70,6 +70,8 @@ class FlightFirestore {
       arrDateField: arrDate,
       arrTimeField: arrTime,
       depTimeField: depTime,
+      numOfAvabusField: numOfBusiness,
+      numOfAvaGueField: numOfGuest,
     });
     final fetchedFlight = await document.get();
     return CloudFlight(
@@ -85,7 +87,9 @@ class FlightFirestore {
         depDate: depDate,
         arrDate: arrDate,
         arrTime: arrTime,
-        depTime: depTime);
+        depTime: depTime,
+        numOfAvaBusiness: numOfBusiness,
+        numOfAvaGuest: numOfBusiness);
   }
 
   String formatTime(Timestamp timestamp) {

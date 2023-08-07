@@ -1,5 +1,6 @@
 import 'package:AirTours/services/cloud/firestore_booking.dart';
 import 'package:AirTours/services/cloud/firestore_ticket.dart';
+import 'package:AirTours/views/Global/paymentPage.dart';
 import 'package:AirTours/views/Global/ticket.dart';
 
 import 'package:flutter/cupertino.dart';
@@ -82,7 +83,8 @@ class _EnterinfoState extends State<Enterinfo> {
           bookingClass: widget.flightClass,
           bookingPrice: totalPrice,
           departureFlight: widget.id1,
-          returnFlight: 'none');
+          returnFlight: 'none',
+          numOfSeats: count);
       final bookingRef = booking!.documentId;
       return bookingRef;
     } else {
@@ -90,36 +92,45 @@ class _EnterinfoState extends State<Enterinfo> {
           bookingClass: widget.flightClass,
           bookingPrice: totalPrice,
           departureFlight: widget.id1,
-          returnFlight: widget.id2);
+          returnFlight: widget.id2,
+          numOfSeats: count);
       final bookingRef = booking!.documentId;
       return bookingRef;
     }
   }
 
   void toNext(List<Ticket> alltickets) async {
-    double totalBookingPrice = 0;
-    for (var x in alltickets) {
-      print(x.ticketPrice);
-      totalBookingPrice = totalBookingPrice + x.ticketPrice;
-    }
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => Payment(
+                id1: widget.id1,
+                id2: widget.id2,
+                flightClass: widget.flightClass,
+                tickets: alltickets)));
+    // double totalBookingPrice = 0;
+    // for (var x in alltickets) {
+    //   print(x.ticketPrice);
+    //   totalBookingPrice = totalBookingPrice + x.ticketPrice;
+    // }
 
-    final tmp = await createBooking(totalBookingPrice);
+    // final tmp = await createBooking(totalBookingPrice);
 
-    alltickets.forEach((ticket) async {
-      await _ticketService.createNewTicket(
-          firstName: ticket.firstName,
-          middleName: ticket.middleName,
-          checkInStatus: ticket.checkInStatus,
-          bagQuantity: ticket.bagQuantity,
-          mealType: ticket.mealType,
-          lastName: ticket.lastName,
-          ticketPrice: ticket.ticketPrice,
-          bookingReference: tmp,
-          ticketUserId: '1',
-          birthDate: ticket.birthDate,
-          flightReference: ticket.flightReference,
-          ticketClass: widget.flightClass);
-    });
+    // alltickets.forEach((ticket) async {
+    //   await _ticketService.createNewTicket(
+    //       firstName: ticket.firstName,
+    //       middleName: ticket.middleName,
+    //       checkInStatus: ticket.checkInStatus,
+    //       bagQuantity: ticket.bagQuantity,
+    //       mealType: ticket.mealType,
+    //       lastName: ticket.lastName,
+    //       ticketPrice: ticket.ticketPrice,
+    //       bookingReference: tmp,
+    //       ticketUserId: '1',
+    //       birthDate: ticket.birthDate,
+    //       flightReference: ticket.flightReference,
+    //       ticketClass: widget.flightClass);
+    // });
   }
 
   void icreaseBaggageCount() {
@@ -247,7 +258,7 @@ class _EnterinfoState extends State<Enterinfo> {
                       child: TextFormField(
                         controller: mName,
                         decoration: const InputDecoration(
-                          labelText: "Midle name",
+                          labelText: "Middle name",
                           //hintText: "Midle name",
                           border: InputBorder.none,
                         ),

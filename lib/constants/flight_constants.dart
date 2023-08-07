@@ -10,3 +10,5 @@ const depDateField = 'departureDate';
 const arrDateField = 'arrivalDate';
 const arrTimeField = 'arrivalTime';
 const depTimeField = 'departureTime';
+const numOfAvabusField = 'numOfAvaBus';
+const numOfAvaGueField = 'numOfAvaGue';
