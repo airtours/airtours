@@ -11,6 +11,15 @@ class BookingFirestore {
   BookingFirestore._sharedInstance();
   factory BookingFirestore() => _shared;
 
+  Stream<Iterable<CloudBooking>> allBookings({required String userId}) {
+    final allBookings = bookings
+        .where(bookingUserIdField, isEqualTo: userId)
+        .snapshots()
+        .map(
+            (event) => event.docs.map((doc) => CloudBooking.fromSnapshot(doc)));
+    return allBookings;
+  }
+
   Future<CloudBooking> createNewBooking(
       {required bookingClass,
       required bookingPrice,
@@ -23,9 +32,12 @@ class BookingFirestore {
       departureFlightField: departureFlight,
       returnFlightField: returnFlight
     });
-    decreaseNumberOfSeats(departureFlight, numOfSeats);
-    final fetchedBooking = await document.get();
+    decreaseNumberOfSeats(departureFlight, numOfSeats, bookingClass);
+    if (returnFlight != 'none') {
+      decreaseNumberOfSeats(returnFlight, numOfSeats, bookingClass);
+    }
 
+    final fetchedBooking = await document.get();
     return CloudBooking(
         documentId: fetchedBooking.id,
         bookingPrice: bookingPrice,
@@ -34,14 +46,25 @@ class BookingFirestore {
         returnFlight: returnFlight);
   }
 
-  Future<void> decreaseNumberOfSeats(String flightId, int numOfSeats) async {
+  Future<void> decreaseNumberOfSeats(
+      String flightId, int numOfSeats, String flightClass) async {
     try {
       final tempFlight = flights.doc(flightId);
       final fetchedFlight = await tempFlight.get();
-      int currentSeats = fetchedFlight.data()![numOfAvaGueField];
-      int newSeats = currentSeats - numOfSeats;
 
-      tempFlight.update({numOfAvaGueField: newSeats});
+      if (flightClass == 'business') {
+        int currentSeats = fetchedFlight.data()![numOfAvabusField];
+        if (currentSeats > 0) {
+          int newSeats = currentSeats - numOfSeats;
+          tempFlight.update({numOfAvabusField: newSeats});
+        }
+      } else {
+        int currentSeats = fetchedFlight.data()![numOfAvaGueField];
+        if (currentSeats > 0) {
+          int newSeats = currentSeats - numOfSeats;
+          tempFlight.update({numOfAvaGueField: newSeats});
+        }
+      }
     } catch (e) {
       print('Error updating numberOfSeats field: $e');
     }

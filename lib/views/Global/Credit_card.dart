@@ -7,12 +7,12 @@ import '../../services/cloud/cloud_booking.dart';
 import '../../services/cloud/firestore_booking.dart';
 import '../../services/cloud/firestore_ticket.dart';
 
-class Criditcard extends StatefulWidget {
+class Creditcard extends StatefulWidget {
   final String id1;
   final String id2;
   final String flightClass;
   final List<Ticket> tickets;
-  const Criditcard(
+  const Creditcard(
       {super.key,
       required this.id1,
       required this.id2,
@@ -20,10 +20,10 @@ class Criditcard extends StatefulWidget {
       required this.tickets});
 
   @override
-  State<Criditcard> createState() => _CriditcardState();
+  State<Creditcard> createState() => _CreditcardState();
 }
 
-class _CriditcardState extends State<Criditcard> {
+class _CreditcardState extends State<Creditcard> {
   final formKey = GlobalKey<FormState>();
   TextEditingController cardNumber = TextEditingController();
   TextEditingController cardName = TextEditingController();
@@ -155,7 +155,7 @@ class _CriditcardState extends State<Criditcard> {
                         ),
                         validator: (value) {
                           if (value!.isEmpty) {
-                            return "You did not enter your firs name";
+                            return "You did not enter your first name";
                           }
                           if (!RegExp(r'^[a-zA-Z\s]+$').hasMatch(value)) {
                             return 'Please enter a valid name';

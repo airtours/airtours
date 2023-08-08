@@ -29,16 +29,15 @@ class _PaymentState extends State<Payment> {
         padding: const EdgeInsets.all(8.0),
         child: Column(
           children: [
-            Text(
+            const Text(
               "How do you want to pay",
             ),
             GestureDetector(
               onTap: () {
-                print("aziz");
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => Criditcard(
+                        builder: (context) => Creditcard(
                             id1: widget.id1,
                             id2: widget.id2,
                             flightClass: widget.flightClass,
@@ -47,15 +46,15 @@ class _PaymentState extends State<Payment> {
               },
               child: Container(
                   width: double.infinity,
-                  padding: EdgeInsets.all(20),
-                  margin: EdgeInsets.all(5),
+                  padding: const EdgeInsets.all(20),
+                  margin: const EdgeInsets.all(5),
                   decoration: BoxDecoration(
-                      boxShadow: [
+                      boxShadow: const [
                         BoxShadow(blurRadius: 2, offset: Offset(0, 0))
                       ],
                       borderRadius: BorderRadius.circular(15),
                       color: Colors.white),
-                  child: Text(
+                  child: const Text(
                     "Credit/Debit card",
                     style: TextStyle(fontSize: 15),
                   )),
@@ -67,15 +66,15 @@ class _PaymentState extends State<Payment> {
               },
               child: Container(
                   width: double.infinity,
-                  padding: EdgeInsets.all(20),
-                  margin: EdgeInsets.all(5),
+                  padding: const EdgeInsets.all(20),
+                  margin: const EdgeInsets.all(5),
                   decoration: BoxDecoration(
-                      boxShadow: [
+                      boxShadow: const [
                         BoxShadow(blurRadius: 2, offset: Offset(0, 0))
                       ],
                       borderRadius: BorderRadius.circular(15),
                       color: Colors.white),
-                  child: Text(
+                  child: const Text(
                     "Wallet",
                     style: TextStyle(fontSize: 15),
                   )),
