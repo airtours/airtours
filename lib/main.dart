@@ -1,28 +1,29 @@
-import 'package:AirTours/views/register_view.dart';
+import 'package:AirTours/views/Admin/admin.dart';
+import 'package:AirTours/views/Global/bottom_bar.dart';
+import 'package:AirTours/views/Welcome_pages/login_view.dart';
+import 'package:AirTours/views/Welcome_pages/register_view.dart';
+import 'package:AirTours/views/Welcome_pages/verification_view.dart';
+import 'package:AirTours/views/Welcome_pages/welcome_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:AirTours/views/login_view.dart';
 
+import 'constants/pages_route.dart';
 import 'firebase_options.dart';
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primaryColor: Colors.blue
-      ),
-      home: const   HomePage(),
-      routes: {
-        '/login/':(context) => const LoginView(),
-        '/register/':(context) => const RegisterView(),
-        '/notes/': (context) => const NotesView(),
-      },
-    ),);
+    home: const HomePage(),
+    routes: {
+      loginRoute: (context) => const LoginView(),
+      registerRoute: (context) => const RegisterView(),
+      bottomRoute: (context) => const Bottom(),
+      verficationRoute: (context) => const VerifyEmailView(),
+      welcomeRoute: (context) => const WelcomeView()
+    },
+  ));
 }
-
-
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -30,108 +31,25 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform),
-        builder:(context, snapshot) {
-         
-          switch (snapshot.connectionState){
-            
-            case ConnectionState.done:
-
+      future: Firebase.initializeApp(
+          options: DefaultFirebaseOptions.currentPlatform),
+      builder: (context, snapshot) {
+        switch (snapshot.connectionState) {
+          case ConnectionState.done:
             final user = FirebaseAuth.instance.currentUser;
-            
-            if(user != null){
-            if(user.emailVerified){
-              return const NotesView();
-            }
-            else{
-              return const LoginView();
-            }
-            }
-            else{
-             return const RegisterView();
-            }
-         
-            
-
-        default:
-        return const  CircularProgressIndicator();
-          
-          }
-
-          
-
-        },
-        
-      );
-  }
-}
-
-
-enum MenuAction { logout }
-
-
-class NotesView extends StatefulWidget {
-  const NotesView({super.key});
-
-  @override
-  State<NotesView> createState() => _NotesViewState();
-}
-
-class _NotesViewState extends State<NotesView> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Main UI'),
-        actions: [
-          PopupMenuButton<MenuAction>(onSelected: (value)async  {
-             switch (value){
-              case MenuAction.logout:
-              final shouldLogout = await showLogOutDialog(context);
-              if(shouldLogout==true){
-               await FirebaseAuth.instance.signOut();
-               // ignore: use_build_context_synchronously
-               Navigator.of(context).pushNamedAndRemoveUntil(
-                '/login/',
-                (_) => false);
-
+            if (user != null) {
+              if (user.emailVerified) {
+                return const Bottom();
+              } else {
+                return const VerifyEmailView();
               }
-              
+            } else {
+              return const WelcomeView();
             }
-          },
-          itemBuilder: (context) {
-            return const [
-               PopupMenuItem(
-              value: MenuAction.logout,
-            child: Text('Log out'),),
-            ];
-          },)
-        ]
-         
-      ),
-      body: const Text('Hello world'),
-
+          default:
+            return const CircularProgressIndicator();
+        }
+      },
     );
   }
-}
-
-
-Future<bool> showLogOutDialog(BuildContext context){
-  return showDialog<bool>(context: context,
-   builder: (context){
-    return AlertDialog(
-      title: const Text('Sign ouuut'),
-      content: const Text('Are you sure'),
-      actions: [
-        TextButton(onPressed: (){
-          Navigator.of(context).pop(false);
-        }, child: const Text('Cancel')),
-
-        TextButton(onPressed: (){
-          Navigator.of(context).pop(true);
-        }, child: const Text('Log out i think')),
-      ],
-    );
-   }
-   ).then((value) => value ?? false); 
 }

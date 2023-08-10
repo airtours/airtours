@@ -77,27 +77,27 @@ class _EnterinfoState extends State<Enterinfo> {
     birthD = dateTime;
   }
 
-  Future<String> createBooking(double totalPrice) async {
-    if (widget.id2 == 'none') {
-      booking = await _bookingService.createNewBooking(
-          bookingClass: widget.flightClass,
-          bookingPrice: totalPrice,
-          departureFlight: widget.id1,
-          returnFlight: 'none',
-          numOfSeats: count);
-      final bookingRef = booking!.documentId;
-      return bookingRef;
-    } else {
-      booking = await _bookingService.createNewBooking(
-          bookingClass: widget.flightClass,
-          bookingPrice: totalPrice,
-          departureFlight: widget.id1,
-          returnFlight: widget.id2,
-          numOfSeats: count);
-      final bookingRef = booking!.documentId;
-      return bookingRef;
-    }
-  }
+  // Future<String> createBooking(double totalPrice) async {
+  //   if (widget.id2 == 'none') {
+  //     booking = await _bookingService.createNewBooking(
+  //         bookingClass: widget.flightClass,
+  //         bookingPrice: totalPrice,
+  //         departureFlight: widget.id1,
+  //         returnFlight: 'none',
+  //         numOfSeats: count);
+  //     final bookingRef = booking!.documentId;
+  //     return bookingRef;
+  //   } else {
+  //     booking = await _bookingService.createNewBooking(
+  //         bookingClass: widget.flightClass,
+  //         bookingPrice: totalPrice,
+  //         departureFlight: widget.id1,
+  //         returnFlight: widget.id2,
+  //         numOfSeats: count);
+  //     final bookingRef = booking!.documentId;
+  //     return bookingRef;
+  //   }
+  // }
 
   void toNext(List<Ticket> alltickets) async {
     Navigator.push(

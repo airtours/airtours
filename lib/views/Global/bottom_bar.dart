@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../Manage_booking/view_bookings.dart';
 import '../One-Way/one_way.dart';
 import '../Round-Trip/round_trip.dart';
 
@@ -15,7 +16,7 @@ class _BottomState extends State<Bottom> {
   final pages = [
     const Center(child: SelectTravelType()),
     const Center(child: History()),
-    const Center(child: Manage()),
+    const Center(child: ViewBookings()),
     const Center(child: Profile()),
   ];
   @override
@@ -61,24 +62,6 @@ class _HistoryState extends State<History> {
     return const MaterialApp(
       home: Scaffold(
         body: Text('This is History Class'),
-      ),
-    );
-  }
-}
-
-class Manage extends StatefulWidget {
-  const Manage({super.key});
-
-  @override
-  State<Manage> createState() => _ManageState();
-}
-
-class _ManageState extends State<Manage> {
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Scaffold(
-        body: Text('This is Manage Class'),
       ),
     );
   }

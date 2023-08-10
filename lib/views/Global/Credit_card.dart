@@ -1,5 +1,6 @@
 import 'package:AirTours/views/Global/global_var.dart';
 import 'package:AirTours/views/Global/ticket.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -41,13 +42,18 @@ class _CreditcardState extends State<Creditcard> {
   }
 
   Future<String> createBooking(double totalPrice) async {
+    FirebaseAuth auth = FirebaseAuth.instance;
+    User? user = auth.currentUser;
+    final bookingUserId = user!.uid;
+    print(bookingUserId);
     if (widget.id2 == 'none') {
       booking = await _bookingService.createNewBooking(
           bookingClass: widget.flightClass,
           bookingPrice: totalPrice,
           departureFlight: widget.id1,
           returnFlight: 'none',
-          numOfSeats: count);
+          numOfSeats: count,
+          bookingUserId: bookingUserId);
       final bookingRef = booking!.documentId;
       return bookingRef;
     } else {
@@ -56,7 +62,8 @@ class _CreditcardState extends State<Creditcard> {
           bookingPrice: totalPrice,
           departureFlight: widget.id1,
           returnFlight: widget.id2,
-          numOfSeats: count);
+          numOfSeats: count,
+          bookingUserId: bookingUserId);
       final bookingRef = booking!.documentId;
       return bookingRef;
     }

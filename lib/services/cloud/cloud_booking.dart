@@ -7,13 +7,15 @@ class CloudBooking {
   final String bookingClass;
   final String departureFlight;
   final String returnFlight;
+  final String bookingUserId;
 
   CloudBooking(
       {required this.documentId,
       required this.bookingPrice,
       required this.bookingClass,
       required this.departureFlight,
-      required this.returnFlight});
+      required this.returnFlight,
+      required this.bookingUserId});
 
   CloudBooking.fromSnapshot(
       QueryDocumentSnapshot<Map<String, dynamic>> snapshot)
@@ -21,5 +23,6 @@ class CloudBooking {
         bookingClass = snapshot.data()[bookingClassField] as String,
         bookingPrice = snapshot.data()[bookingPriceField] as double,
         returnFlight = snapshot.data()[returnFlightField] as String,
+        bookingUserId = snapshot.data()[bookingUserIdField] as String,
         departureFlight = snapshot.data()[departureFlightField] as String;
 }

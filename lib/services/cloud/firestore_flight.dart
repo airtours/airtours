@@ -97,4 +97,94 @@ class FlightFirestore {
     var format = DateFormat('h:mm a');
     return format.format(date);
   }
+
+  Future<List<CloudFlight>> getFlights(String departureId, returnId) async {
+    List<CloudFlight> currFlights = [];
+
+    final tempdepFlight = flights.doc(departureId);
+    final fetchedFlight = await tempdepFlight.get();
+    final depFlight = CloudFlight(
+        documentId: fetchedFlight.id,
+        fromCity: fetchedFlight.data()![fromField],
+        toCity: fetchedFlight.data()![toField],
+        fromAirport: fetchedFlight.data()![fromAirField],
+        toAirport: fetchedFlight.data()![toAirField],
+        numOfBusiness: fetchedFlight.data()![numOfbusField],
+        numOfGuest: fetchedFlight.data()![numOfGueField],
+        guestPrice: fetchedFlight.data()![guePriceField],
+        busPrice: fetchedFlight.data()![busPriceField],
+        depDate: fetchedFlight.data()![depDateField],
+        arrDate: fetchedFlight.data()![arrDateField],
+        arrTime: fetchedFlight.data()![arrTimeField],
+        depTime: fetchedFlight.data()![depTimeField],
+        numOfAvaBusiness: fetchedFlight.data()![numOfAvabusField],
+        numOfAvaGuest: fetchedFlight.data()![numOfAvaGueField]);
+    currFlights.add(depFlight);
+    print('$currFlights  this is departure flight');
+
+    if (returnId != 'none') {
+      final tempFlight = flights.doc(returnId);
+      final fetchedFlight = await tempFlight.get();
+      final retFlight = CloudFlight(
+          documentId: fetchedFlight.id,
+          fromCity: fetchedFlight.data()![fromField],
+          toCity: fetchedFlight.data()![toField],
+          fromAirport: fetchedFlight.data()![fromAirField],
+          toAirport: fetchedFlight.data()![toAirField],
+          numOfBusiness: fetchedFlight.data()![numOfbusField],
+          numOfGuest: fetchedFlight.data()![numOfGueField],
+          guestPrice: fetchedFlight.data()![guePriceField],
+          busPrice: fetchedFlight.data()![busPriceField],
+          depDate: fetchedFlight.data()![depDateField],
+          arrDate: fetchedFlight.data()![arrDateField],
+          arrTime: fetchedFlight.data()![arrTimeField],
+          depTime: fetchedFlight.data()![depTimeField],
+          numOfAvaBusiness: fetchedFlight.data()![numOfAvabusField],
+          numOfAvaGuest: fetchedFlight.data()![numOfAvaGueField]);
+      currFlights.add(retFlight);
+    }
+    return currFlights;
+  }
+
+  Future<bool> isCurrentFlight(String departureId, returnId) async {
+    if (returnId != 'none') {
+      final tempFlight = flights.doc(returnId);
+      final fetchedFlight = await tempFlight.get();
+
+      if (fetchedFlight.exists) {
+        DateTime flightDate = fetchedFlight.data()![depDateField].toDate();
+        DateTime flightTime = fetchedFlight.data()![depTimeField].toDate();
+        DateTime totalTime = DateTime(flightDate.year, flightDate.month,
+            flightDate.day, flightTime.hour, flightTime.minute);
+
+        if (totalTime.isAfter(DateTime.now())) {
+          return true;
+        } else {
+          return false;
+        }
+      } else {
+        return false;
+      }
+    } else if (returnId == 'none') {
+      final tempFlight = flights.doc(departureId);
+      final fetchedFlight = await tempFlight.get();
+
+      if (fetchedFlight.exists) {
+        DateTime flightDate = fetchedFlight.data()![depDateField].toDate();
+        DateTime flightTime = fetchedFlight.data()![depTimeField].toDate();
+        DateTime totalTime = DateTime(flightDate.year, flightDate.month,
+            flightDate.day, flightTime.hour, flightTime.minute);
+        print(totalTime);
+        if (totalTime.isAfter(DateTime.now())) {
+          return true;
+        } else {
+          return false;
+        }
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
+  }
 }

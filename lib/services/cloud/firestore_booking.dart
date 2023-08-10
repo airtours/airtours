@@ -11,9 +11,9 @@ class BookingFirestore {
   BookingFirestore._sharedInstance();
   factory BookingFirestore() => _shared;
 
-  Stream<Iterable<CloudBooking>> allBookings({required String userId}) {
+  Stream<Iterable<CloudBooking>> allBookings({required String bookingUserId}) {
     final allBookings = bookings
-        .where(bookingUserIdField, isEqualTo: userId)
+        .where(bookingUserIdField, isEqualTo: bookingUserId)
         .snapshots()
         .map(
             (event) => event.docs.map((doc) => CloudBooking.fromSnapshot(doc)));
@@ -25,12 +25,14 @@ class BookingFirestore {
       required bookingPrice,
       required departureFlight,
       required returnFlight,
-      required numOfSeats}) async {
+      required numOfSeats,
+      required String bookingUserId}) async {
     final document = await bookings.add({
       bookingClassField: bookingClass,
       bookingPriceField: bookingPrice,
       departureFlightField: departureFlight,
-      returnFlightField: returnFlight
+      returnFlightField: returnFlight,
+      bookingUserIdField: bookingUserId
     });
     decreaseNumberOfSeats(departureFlight, numOfSeats, bookingClass);
     if (returnFlight != 'none') {
@@ -43,7 +45,8 @@ class BookingFirestore {
         bookingPrice: bookingPrice,
         bookingClass: bookingClass,
         departureFlight: departureFlight,
-        returnFlight: returnFlight);
+        returnFlight: returnFlight,
+        bookingUserId: bookingUserId);
   }
 
   Future<void> decreaseNumberOfSeats(
