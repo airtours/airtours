@@ -1,3 +1,6 @@
+import 'package:AirTours/views/Manage_booking/one_way_details.dart';
+import 'package:AirTours/views/Manage_booking/round_trip_details.dart';
+import 'package:AirTours/views/Round-Trip/round_trip.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -45,6 +48,15 @@ class _ViewBookingsState extends State<ViewBookings> {
     return currentBookings;
   }
 
+  void toNext(
+      CloudFlight retFlight, CloudFlight depFlight, CloudBooking booking) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => RoundTripDetails(
+                booking: booking, depFlight: depFlight, retFlight: retFlight)));
+  }
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<Iterable<CloudBooking>>(
@@ -85,8 +97,26 @@ class _ViewBookingsState extends State<ViewBookings> {
 
                             return GestureDetector(
                               onTap: () {
-                                // Handle the onTap event
-                                // ...
+                                if (booking.returnFlight == 'none') {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => OneWayDetails(
+                                          booking: booking,
+                                          depFlight: departureFlight),
+                                    ),
+                                  );
+                                } else {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => RoundTripDetails(
+                                          booking: booking,
+                                          depFlight: departureFlight,
+                                          retFlight: returnFlight!),
+                                    ),
+                                  );
+                                }
                               },
                               child: Card(
                                 elevation: 4.0,
@@ -126,7 +156,7 @@ class _ViewBookingsState extends State<ViewBookings> {
                                               color: Colors.grey[600]),
                                           const SizedBox(width: 8.0),
                                           Text(
-                                            "${departureFlight.fromCity} , ${departureFlight.toCity}",
+                                            "${departureFlight.fromCity} to ${departureFlight.toCity}",
                                             style: const TextStyle(
                                               fontSize: 20.0,
                                               fontWeight: FontWeight.bold,
