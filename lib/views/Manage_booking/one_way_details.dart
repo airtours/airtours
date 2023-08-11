@@ -3,6 +3,8 @@ import 'package:AirTours/services/cloud/cloud_flight.dart';
 import 'package:AirTours/views/Manage_booking/tickets_view.dart';
 import 'package:flutter/material.dart';
 
+import '../../services/cloud/firestore_booking.dart';
+
 class OneWayDetails extends StatefulWidget {
   final CloudBooking booking;
   final CloudFlight depFlight;
@@ -18,6 +20,18 @@ class OneWayDetails extends StatefulWidget {
 }
 
 class _OneWayDetailsState extends State<OneWayDetails> {
+  late final BookingFirestore _bookingService;
+  late final CloudFlight departFlight;
+  late final CloudBooking currentBooking;
+
+  @override
+  void initState() {
+    super.initState();
+    _bookingService = BookingFirestore();
+    departFlight = widget.depFlight;
+    currentBooking = widget.booking;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -122,8 +136,14 @@ class _OneWayDetailsState extends State<OneWayDetails> {
                   ),
                   const SizedBox(height: 12.0),
                   ElevatedButton(
-                    onPressed: () {
-                      // cancel button
+                    onPressed: () async {
+                      bool result = await _bookingService.deleteBooking(
+                          bookingId: currentBooking.documentId,
+                          flightId1: departFlight.documentId,
+                          flightId2: 'none',
+                          flightClass: currentBooking.bookingClass,
+                          numOfPas: currentBooking.numOfSeats);
+                      print(result);
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.red,

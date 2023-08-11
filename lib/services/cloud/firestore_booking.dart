@@ -25,7 +25,7 @@ class BookingFirestore {
     try {
       bool flag = false;
       DateTime now = DateTime.now();
-      final tmpBooking = flights.doc(bookingId);
+      final tmpBooking = bookings.doc(bookingId);
       final tempFlight = flights.doc(flightId1);
       final fetchedFlight = await tempFlight.get();
       DateTime flightDate = fetchedFlight.data()![arrDateField].toDate();
@@ -38,32 +38,13 @@ class BookingFirestore {
 
           if (timeDifference.inHours > 24) {
             await tmpBooking.delete();
-            int currentBusiness = fetchedFlight.data()![numOfAvabusField];
-            int currentGuest = fetchedFlight.data()![numOfAvaGueField];
+            increaseNumberOfSeats(flightId1, numOfPas, flightClass);
 
-            if (flightClass == 'business') {
-              final int newBus = currentBusiness + numOfPas;
-              await tempFlight.update({numOfbusField: newBus});
-            } else {
-              final int newGue = currentGuest + numOfPas;
-              await tempFlight.update({numOfGueField: newGue});
-            }
-            flag = true; // Corrected assignment
+            flag = true;
             //roundtrip
             if (flightId2 != 'none') {
-              final tempFlight2 = flights.doc(flightId2);
-              final fetchedFlight2 = await tempFlight2.get();
-              if (fetchedFlight2.exists) {
-                int current2Business = fetchedFlight2.data()![numOfAvabusField];
-                int current2Guest = fetchedFlight2.data()![numOfAvaGueField];
-                if (flightClass == 'business') {
-                  final int newBus = current2Business + numOfPas;
-                  await tempFlight2.update({numOfbusField: newBus});
-                } else {
-                  final int newGue = current2Guest + numOfPas;
-                  await tempFlight2.update({numOfGueField: newGue});
-                }
-              }
+              increaseNumberOfSeats(flightId2, numOfPas, flightClass);
+              print('ok');
             }
           }
         }
@@ -130,6 +111,30 @@ class BookingFirestore {
         int currentSeats = fetchedFlight.data()![numOfAvaGueField];
         if (currentSeats > 0) {
           int newSeats = currentSeats - numOfSeats;
+          await tempFlight.update({numOfAvaGueField: newSeats});
+        }
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<void> increaseNumberOfSeats(
+      String flightId, int numOfSeats, String flightClass) async {
+    try {
+      final tempFlight = flights.doc(flightId);
+      final fetchedFlight = await tempFlight.get();
+
+      if (flightClass == 'business') {
+        int currentSeats = fetchedFlight.data()![numOfAvabusField];
+        if (currentSeats > 0) {
+          int newSeats = currentSeats + numOfSeats;
+          tempFlight.update({numOfAvabusField: newSeats});
+        }
+      } else {
+        int currentSeats = fetchedFlight.data()![numOfAvaGueField];
+        if (currentSeats > 0) {
+          int newSeats = currentSeats + numOfSeats;
           await tempFlight.update({numOfAvaGueField: newSeats});
         }
       }
