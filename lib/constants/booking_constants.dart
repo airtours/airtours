@@ -3,3 +3,4 @@ const bookingPriceField = 'bookingPrice';
 const departureFlightField = 'departureFlight';
 const returnFlightField = 'returnFlight';
 const bookingUserIdField = 'bookingUserId';
+const numOfSeatsField = 'numOfSeats';

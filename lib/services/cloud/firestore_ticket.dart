@@ -2,12 +2,26 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:AirTours/services/cloud/cloud_ticket.dart';
 import 'package:AirTours/constants/ticket_constants';
 
+import '../../constants/flight_constants.dart';
+
 class TicketFirestore {
   final tickets = FirebaseFirestore.instance.collection('tickets');
-
+  final flights = FirebaseFirestore.instance.collection('flights');
   static final TicketFirestore _shared = TicketFirestore._sharedInstance();
+
   TicketFirestore._sharedInstance();
+
   factory TicketFirestore() => _shared;
+
+  Stream<Iterable<CloudTicket>> allTickets(
+      {required String bookingId, required String flightId}) {
+    final allTickets = tickets
+        .where(bookingReferenceField, isEqualTo: bookingId)
+        .where(flightRefField, isEqualTo: flightId)
+        .snapshots()
+        .map((event) => event.docs.map((doc) => CloudTicket.fromSnapshot(doc)));
+    return allTickets;
+  }
 
   Future<CloudTicket> createNewTicket(
       {required String firstName,
@@ -53,5 +67,30 @@ class TicketFirestore {
         birthDate: birthdateStamp,
         flightReference: flightReference,
         ticketClass: ticketClass);
+  }
+
+  Future<bool> checkInUpdating(String ticketId, String flightId) async {
+    try {
+      DateTime now = DateTime.now();
+      final tempFlight = flights.doc(flightId);
+      final fetchedFlight = await tempFlight.get();
+
+      if (fetchedFlight.exists) {
+        DateTime flightDate = fetchedFlight.data()![depDateField].toDate();
+        DateTime flightTime = fetchedFlight.data()![depTimeField].toDate();
+        DateTime totalTime = DateTime(flightDate.year, flightDate.month,
+            flightDate.day, flightTime.hour, flightTime.minute);
+        Duration timeDifference = totalTime.difference(now);
+        if (timeDifference.inHours < 24) {
+          await tempFlight.update({checkInStatusField: true});
+
+          return true;
+        }
+      }
+
+      return false;
+    } catch (e) {
+      return false;
+    }
   }
 }

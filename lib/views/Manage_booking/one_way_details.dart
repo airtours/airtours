@@ -1,8 +1,9 @@
 import 'package:AirTours/services/cloud/cloud_booking.dart';
 import 'package:AirTours/services/cloud/cloud_flight.dart';
+import 'package:AirTours/views/Manage_booking/tickets_view.dart';
 import 'package:flutter/material.dart';
 
-class OneWayDetails extends StatelessWidget {
+class OneWayDetails extends StatefulWidget {
   final CloudBooking booking;
   final CloudFlight depFlight;
 
@@ -13,6 +14,11 @@ class OneWayDetails extends StatelessWidget {
   });
 
   @override
+  State<OneWayDetails> createState() => _OneWayDetailsState();
+}
+
+class _OneWayDetailsState extends State<OneWayDetails> {
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -21,58 +27,68 @@ class OneWayDetails extends StatelessWidget {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            padding: const EdgeInsets.all(16.0),
-            decoration: BoxDecoration(
-              color: Colors.blue,
-              borderRadius: BorderRadius.circular(8.0),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Destination Flight',
-                  style: TextStyle(
-                    fontSize: 24.0,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => TicketsView(
+                        booking: widget.booking, flight: widget.depFlight),
+                  ));
+            },
+            child: Container(
+              padding: const EdgeInsets.all(16.0),
+              decoration: BoxDecoration(
+                color: Colors.blue,
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Destination Flight',
+                    style: TextStyle(
+                      fontSize: 24.0,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 12.0),
-                Row(
-                  children: [
-                    const Icon(
-                      Icons.flight_takeoff,
-                      color: Colors.white,
-                    ),
-                    const SizedBox(width: 8.0),
-                    Text(
-                      depFlight.fromCity,
-                      style: const TextStyle(
-                        fontSize: 18.0,
+                  const SizedBox(height: 12.0),
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons.flight_takeoff,
                         color: Colors.white,
                       ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 8.0),
-                Row(
-                  children: [
-                    const Icon(
-                      Icons.flight_land,
-                      color: Colors.white,
-                    ),
-                    const SizedBox(width: 8.0),
-                    Text(
-                      depFlight.toCity,
-                      style: const TextStyle(
-                        fontSize: 18.0,
+                      const SizedBox(width: 8.0),
+                      Text(
+                        widget.depFlight.fromCity,
+                        style: const TextStyle(
+                          fontSize: 18.0,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8.0),
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons.flight_land,
                         color: Colors.white,
                       ),
-                    ),
-                  ],
-                ),
-              ],
+                      const SizedBox(width: 8.0),
+                      Text(
+                        widget.depFlight.toCity,
+                        style: const TextStyle(
+                          fontSize: 18.0,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
           const SizedBox(height: 16.0),

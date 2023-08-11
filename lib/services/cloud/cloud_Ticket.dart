@@ -39,7 +39,7 @@ class CloudTicket {
         checkInStatus = snapshot.data()[checkInStatusField] as bool,
         flightReference = snapshot.data()[flightRefField] as String,
         birthDate = snapshot.data()[birthDateField] as Timestamp,
-        ticketUserId = snapshot.data()[checkInStatusField] as String,
+        ticketUserId = snapshot.data()[ticketUserIdField] as String,
         ticketPrice = snapshot.data()[ticketPriceField] as double,
         bookingReference = snapshot.data()[bookingReferenceField] as String,
         mealType = snapshot.data()[mealTypeField] as String,
