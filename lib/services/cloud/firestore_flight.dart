@@ -121,7 +121,6 @@ class FlightFirestore {
         numOfAvaBusiness: fetchedFlight.data()![numOfAvabusField],
         numOfAvaGuest: fetchedFlight.data()![numOfAvaGueField]);
     currFlights.add(depFlight);
-    print('$currFlights  this is departure flight');
 
     if (returnId != 'none') {
       final tempFlight = flights.doc(returnId);

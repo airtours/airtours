@@ -183,8 +183,13 @@ class _RoundTripDetailsState extends State<RoundTripDetails> {
                 children: [
                   const Spacer(),
                   ElevatedButton(
-                    onPressed: () {
-                      //  the Upgrade button
+                    onPressed: () async {
+                      bool result = await _bookingService.upgradeRoundTrip(
+                          bookingId: currentBooking.documentId,
+                          departureFlightId: departFlight.documentId,
+                          returnFlightId: retuFlight.documentId,
+                          numOfPas: currentBooking.numOfSeats);
+                      print(result);
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.green,
@@ -197,7 +202,7 @@ class _RoundTripDetailsState extends State<RoundTripDetails> {
                       ),
                     ),
                     child: const Text(
-                      'Upgrade',
+                      'Upgrade Booking',
                       style: TextStyle(
                         fontSize: 18.0,
                         fontWeight: FontWeight.bold,

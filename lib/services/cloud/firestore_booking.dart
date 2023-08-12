@@ -13,6 +13,49 @@ class BookingFirestore {
   BookingFirestore._sharedInstance();
   factory BookingFirestore() => _shared;
 
+  Future<bool> upgradeRoundTrip({
+    required String bookingId,
+    required String departureFlightId,
+    required String returnFlightId,
+    required int numOfPas,
+  }) async {
+    try {
+      bool flag = false;
+      final depFlight = flights.doc(departureFlightId);
+      final fetchedDep = await depFlight.get();
+      final retFlight = flights.doc(returnFlightId);
+      final fetchedRet = await retFlight.get();
+
+      if (fetchedDep.exists) {
+        if (fetchedRet.exists) {
+          int currentBus1 = fetchedDep.data()![numOfAvabusField];
+          int currentBus2 = fetchedRet.data()![numOfAvabusField];
+          double BusseatPrice1 = fetchedDep.data()![busPriceField];
+          double BusseatPrice2 = fetchedRet.data()![busPriceField];
+          if (currentBus1 >= numOfPas && currentBus2 >= numOfPas) {
+            decreaseNumberOfSeats(departureFlightId, numOfPas, 'business');
+            decreaseNumberOfSeats(returnFlightId, numOfPas, 'business');
+            increaseNumberOfSeats(departureFlightId, numOfPas, 'guest');
+            increaseNumberOfSeats(returnFlightId, numOfPas, 'guest');
+            double totalPrice =
+                (BusseatPrice1 * numOfPas) + (BusseatPrice2 * numOfPas);
+            bookings.doc(bookingId).update({bookingPriceField: totalPrice});
+            upgradeRelatedBookings(bookingId: bookingId);
+
+            flag = true;
+            return flag;
+          } else {
+            return flag; //no seats
+          }
+        }
+      }
+      return flag;
+    } catch (e) {
+      print('Error occurred w seat availability: $e');
+      return false;
+    }
+  }
+
   Future<bool> deleteBooking({
     required String bookingId,
     required String flightId1,
@@ -26,15 +69,17 @@ class BookingFirestore {
       final tmpBooking = bookings.doc(bookingId);
       final tempFlight = flights.doc(flightId1);
       final fetchedFlight = await tempFlight.get();
-      DateTime flightDate = fetchedFlight.data()![arrDateField].toDate();
-      DateTime flightTime = fetchedFlight.data()![arrTimeField].toDate();
+      DateTime flightDate = fetchedFlight.data()![depDateField].toDate();
+      DateTime flightTime = fetchedFlight.data()![depTimeField].toDate();
       DateTime totalTime = DateTime(flightDate.year, flightDate.month,
           flightDate.day, flightTime.hour, flightTime.minute);
+      print(totalTime);
       if (now.isBefore(totalTime)) {
         if (fetchedFlight.exists) {
           Duration timeDifference = totalTime.difference(now);
+          print(timeDifference);
 
-          if (timeDifference.inHours > 24) {
+          if (timeDifference.inHours >= 24) {
             await tmpBooking.delete();
             increaseNumberOfSeats(flightId1, numOfPas, flightClass);
 
@@ -144,7 +189,7 @@ class BookingFirestore {
 
   Future<void> deleteRelatedTickets({required String bookingId}) async {
     try {
-      final QuerySnapshot allTickets = await tickets
+      final allTickets = await tickets
           .where(bookingReferenceField, isEqualTo: bookingId)
           .get();
 
@@ -155,6 +200,24 @@ class BookingFirestore {
       }
     } catch (e) {
       print('Error deleting tickets: $e');
+    }
+  }
+
+  Future<void> upgradeRelatedBookings({required String bookingId}) async {
+    try {
+      final allTickets = await tickets
+          .where(bookingReferenceField, isEqualTo: bookingId)
+          .get();
+
+      final List<QueryDocumentSnapshot> documents = allTickets.docs;
+
+      for (QueryDocumentSnapshot document in documents) {
+        await document.reference.update({
+          ticketClassField: 'business',
+        });
+      }
+    } catch (e) {
+      print('Error updating tickets: $e');
     }
   }
 }
