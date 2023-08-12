@@ -13,16 +13,6 @@ class RoundTrip extends StatefulWidget {
 class _RoundTripState extends State<RoundTrip> {
   final _formKey = GlobalKey<FormState>();
 
-  Future pickDate() async {
-    DateTimeRange? newDate = await showDateRangePicker(
-        context: context, firstDate: DateTime(2023), lastDate: DateTime(2024));
-    if (newDate == null) return;
-
-    setState(() {
-      dateRange = newDate;
-    });
-  }
-
   void icreaseCount() {
     setState(() {
       if (count == 6) return;
@@ -228,7 +218,7 @@ class _RoundTripState extends State<RoundTrip> {
                                   elevation: 0,
                                   backgroundColor: Colors.white),
                               child: Text(
-                                "${dateTime.day} ${monthNames[dateTime.month - 1]} , ${monthNames[end.month - 1] == monthNames[start.month - 1] ? end.day : end.day} ${monthNames[end.month - 1] == monthNames[start.month - 1] ? "" : monthNames[end.month - 1]}",
+                                "${start.day} ${monthNames[dateTime.month - 1]} , ${monthNames[end.month - 1] == monthNames[start.month - 1] ? end.day : end.day} ${monthNames[end.month - 1] == monthNames[start.month - 1] ? "" : monthNames[end.month - 1]}",
                                 style: const TextStyle(
                                     color: Colors.black, fontSize: 17),
                               ),
@@ -242,7 +232,6 @@ class _RoundTripState extends State<RoundTrip> {
                                 if (newDate == null) return;
                                 //print(start);
                                 //print(end);
-                                print("-----------");
                                 setState(() {
                                   dateRange = newDate;
                                   //print(start);

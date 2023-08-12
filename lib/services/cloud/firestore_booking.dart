@@ -1,9 +1,7 @@
 import 'package:AirTours/constants/flight_constants.dart';
-import 'package:AirTours/services/cloud/cloud_ticket.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:AirTours/services/cloud/cloud_booking.dart';
 import 'package:AirTours/constants/booking_constants.dart';
-
 import '../../constants/ticket_constants';
 
 class BookingFirestore {
@@ -41,6 +39,7 @@ class BookingFirestore {
             increaseNumberOfSeats(flightId1, numOfPas, flightClass);
 
             flag = true;
+            await deleteRelatedTickets(bookingId: bookingId);
             //roundtrip
             if (flightId2 != 'none') {
               increaseNumberOfSeats(flightId2, numOfPas, flightClass);
@@ -143,23 +142,19 @@ class BookingFirestore {
     }
   }
 
-  // Future<void> deleteTicketsByBookingId(String bookingId) async {
-  //   try {
-  //     QuerySnapshot querySnapshot = await tickets
-  //         .where(bookingReferenceField, isEqualTo: bookingId)
-  //         .get();
+  Future<void> deleteRelatedTickets({required String bookingId}) async {
+    try {
+      final QuerySnapshot allTickets = await tickets
+          .where(bookingReferenceField, isEqualTo: bookingId)
+          .get();
 
-  //     List<Future<CloudTicket>> deleteFutures = [];
-  //     querySnapshot.docs.forEach((doc) {
-  //       deleteFutures.add(doc.reference.delete());
-  //     });
+      final List<QueryDocumentSnapshot> documents = allTickets.docs;
 
-  //     // Wait for all the delete operations to complete
-  //     await Future.wait(deleteFutures);
-
-  //     print('Tickets with bookingId $bookingId deleted successfully');
-  //   } catch (e) {
-  //     print('Error deleting tickets: $e');
-  //   }
-  // }
+      for (QueryDocumentSnapshot document in documents) {
+        await document.reference.delete();
+      }
+    } catch (e) {
+      print('Error deleting tickets: $e');
+    }
+  }
 }

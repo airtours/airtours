@@ -25,6 +25,13 @@ class OneWaySearch extends StatefulWidget {
 
 class _OneWaySearchState extends State<OneWaySearch> {
   late final FlightFirestore _flightsService;
+
+  @override
+  void initState() {
+    super.initState();
+    _flightsService = FlightFirestore();
+  }
+
   void toNext(String id, double totalprice, String flightClass) {
     Navigator.push(
         context,
@@ -37,12 +44,6 @@ class _OneWaySearchState extends State<OneWaySearch> {
             flightClass: flightClass,
           ),
         ));
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _flightsService = FlightFirestore();
   }
 
   @override

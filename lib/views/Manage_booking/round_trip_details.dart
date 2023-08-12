@@ -214,6 +214,7 @@ class _RoundTripDetailsState extends State<RoundTripDetails> {
                           flightClass: currentBooking.bookingClass,
                           numOfPas: currentBooking.numOfSeats);
                       print(result);
+                      Navigator.pop(context);
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.red,

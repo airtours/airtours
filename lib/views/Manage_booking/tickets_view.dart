@@ -143,7 +143,7 @@ class _TicketsViewState extends State<TicketsView> {
                                   if (ticket.checkInStatus) {
                                     // View boarding pass
                                   } else {
-                                    final isChecked =
+                                    final bool isChecked =
                                         await _ticketsService.checkInUpdating(
                                             ticket.documentId, flightId);
                                     print(isChecked);

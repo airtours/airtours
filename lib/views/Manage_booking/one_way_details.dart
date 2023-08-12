@@ -144,6 +144,7 @@ class _OneWayDetailsState extends State<OneWayDetails> {
                           flightClass: currentBooking.bookingClass,
                           numOfPas: currentBooking.numOfSeats);
                       print(result);
+                      Navigator.pop(context);
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.red,

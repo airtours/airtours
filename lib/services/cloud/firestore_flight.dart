@@ -98,7 +98,8 @@ class FlightFirestore {
     return format.format(date);
   }
 
-  Future<List<CloudFlight>> getFlights(String departureId, returnId) async {
+  Future<List<CloudFlight>> getFlights(
+      String departureId, String returnId) async {
     List<CloudFlight> currFlights = [];
 
     final tempdepFlight = flights.doc(departureId);
@@ -146,14 +147,14 @@ class FlightFirestore {
     return currFlights;
   }
 
-  Future<bool> isCurrentFlight(String departureId, returnId) async {
+  Future<bool> isCurrentFlight(String departureId, String returnId) async {
     if (returnId != 'none') {
       final tempFlight = flights.doc(returnId);
       final fetchedFlight = await tempFlight.get();
 
       if (fetchedFlight.exists) {
-        DateTime flightDate = fetchedFlight.data()![depDateField].toDate();
-        DateTime flightTime = fetchedFlight.data()![depTimeField].toDate();
+        DateTime flightDate = fetchedFlight.data()![arrDateField].toDate();
+        DateTime flightTime = fetchedFlight.data()![arrTimeField].toDate();
         DateTime totalTime = DateTime(flightDate.year, flightDate.month,
             flightDate.day, flightTime.hour, flightTime.minute);
 

@@ -1,5 +1,3 @@
-// ignore_for_file: camel_case_types, use_key_in_widget_constructors
-
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:AirTours/views/Global/global_var.dart';
@@ -7,6 +5,8 @@ import 'package:AirTours/views/Global/global_var.dart';
 import 'available_flights_screen.dart';
 
 class OneWay extends StatefulWidget {
+  const OneWay({super.key});
+
   @override
   State<OneWay> createState() => _OneWayState();
 }
@@ -16,6 +16,7 @@ class _OneWayState extends State<OneWay> {
 
   void toNext() {
     DateTime dateOnly = DateTime(dateTime.year, dateTime.month, dateTime.day);
+    print(dateOnly);
     Navigator.push(
         context,
         MaterialPageRoute(
