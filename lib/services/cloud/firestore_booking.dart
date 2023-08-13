@@ -13,6 +13,61 @@ class BookingFirestore {
   BookingFirestore._sharedInstance();
   factory BookingFirestore() => _shared;
 
+  Future<bool> upgradeOneWay({
+    required String bookingId,
+    required String departureFlightId,
+    required int numOfPas,
+  }) async {
+    try {
+      bool flag = false;
+      final depFlight = flights.doc(departureFlightId);
+      final fetchedDep = await depFlight.get();
+
+      if (fetchedDep.exists) {
+        DateTime flightDate = fetchedDep.data()![depDateField].toDate();
+        DateTime flightTime = fetchedDep.data()![depTimeField].toDate();
+        DateTime totalTime = DateTime(
+          flightDate.year,
+          flightDate.month,
+          flightDate.day,
+          flightTime.hour,
+          flightTime.minute,
+        );
+
+        if (DateTime.now().isBefore(totalTime)) {
+          int currentBus1 = fetchedDep.data()![numOfAvabusField];
+          double busSeatPrice1 = fetchedDep.data()![busPriceField];
+          if (currentBus1 >= numOfPas) {
+            decreaseNumberOfSeats(departureFlightId, numOfPas, 'business');
+
+            increaseNumberOfSeats(departureFlightId, numOfPas, 'guest');
+
+            updateRelatedTickets(
+              flightId: departureFlightId,
+              bookingId: bookingId,
+              ticketPrice: busSeatPrice1,
+            );
+
+            double totalPrice = busSeatPrice1 * numOfPas;
+            bookings.doc(bookingId).update({
+              bookingPriceField: totalPrice,
+              bookingClassField: 'business',
+            });
+
+            flag = true;
+            return flag;
+          } else {
+            return flag; // no seats
+          }
+        }
+      }
+      return flag;
+    } catch (e) {
+      print('Error occurred w seat availability: $e');
+      return false;
+    }
+  }
+
   Future<bool> upgradeRoundTrip({
     required String bookingId,
     required String departureFlightId,
@@ -43,10 +98,20 @@ class BookingFirestore {
               decreaseNumberOfSeats(returnFlightId, numOfPas, 'business');
               increaseNumberOfSeats(departureFlightId, numOfPas, 'guest');
               increaseNumberOfSeats(returnFlightId, numOfPas, 'guest');
+              updateRelatedTickets(
+                  flightId: departureFlightId,
+                  bookingId: bookingId,
+                  ticketPrice: busSeatPrice1);
+              updateRelatedTickets(
+                  flightId: returnFlightId,
+                  bookingId: bookingId,
+                  ticketPrice: busSeatPrice2);
               double totalPrice =
                   (busSeatPrice1 * numOfPas) + (busSeatPrice2 * numOfPas);
-              bookings.doc(bookingId).update({bookingPriceField: totalPrice});
-              upgradeRelatedBookings(bookingId: bookingId);
+              bookings.doc(bookingId).update({
+                bookingPriceField: totalPrice,
+                bookingClassField: 'business'
+              });
 
               flag = true;
               return flag;
@@ -209,17 +274,27 @@ class BookingFirestore {
     }
   }
 
-  Future<void> upgradeRelatedBookings({required String bookingId}) async {
+  Future<void> updateRelatedTickets({
+    required String bookingId,
+    required String flightId,
+    required double ticketPrice,
+  }) async {
     try {
       final allTickets = await tickets
           .where(bookingReferenceField, isEqualTo: bookingId)
+          .where(flightRefField, isEqualTo: flightId)
           .get();
 
       final List<QueryDocumentSnapshot> documents = allTickets.docs;
 
       for (QueryDocumentSnapshot document in documents) {
+        int numOfBaggage = document[bagQuantityField];
+        double updatedTicketPrice =
+            ticketPrice + (numOfBaggage.toDouble() * 251);
+
         await document.reference.update({
           ticketClassField: 'business',
+          ticketPriceField: updatedTicketPrice,
         });
       }
     } catch (e) {

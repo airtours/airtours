@@ -28,8 +28,7 @@ int baggagePrice = 0;
 
 List<String> passengerType = ['guest', 'business'];
 String currentPassenger = passengerType[0];
-DateTimeRange dateRange =
-    DateTimeRange(start: DateTime.now(), end: DateTime.now());
+DateTimeRange dateRange = DateTimeRange(start: dateTime, end: dateTime);
 
 DateTime dateTime =
     DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);

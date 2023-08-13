@@ -74,6 +74,8 @@ class TicketFirestore {
       DateTime now = DateTime.now();
       final tempFlight = flights.doc(flightId);
       final fetchedFlight = await tempFlight.get();
+      final tempTicket = flights.doc(ticketId);
+      final fetchedTicket = await tempTicket.get();
 
       if (fetchedFlight.exists) {
         DateTime flightDate = fetchedFlight.data()![depDateField].toDate();
@@ -82,9 +84,11 @@ class TicketFirestore {
             flightDate.day, flightTime.hour, flightTime.minute);
         Duration timeDifference = totalTime.difference(now);
         if (timeDifference.inHours < 24) {
-          await tempFlight.update({checkInStatusField: true});
+          if (fetchedTicket.exists) {
+            await tempFlight.update({checkInStatusField: true});
 
-          return true;
+            return true;
+          }
         }
       }
 

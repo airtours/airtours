@@ -82,8 +82,8 @@ class _RoundTripSearch2State extends State<RoundTripSearch2> {
                       double flightText = widget.flightClass == 'business'
                           ? flight.busPrice
                           : flight.guestPrice;
-                      DateTime flightDate = widget.flight1.depDate.toDate();
-                      DateTime flightTime = widget.flight1.depTime.toDate();
+                      DateTime flightDate = widget.flight1.arrDate.toDate();
+                      DateTime flightTime = widget.flight1.arrTime.toDate();
                       DateTime totalTime1 = DateTime(
                           flightDate.year,
                           flightDate.month,

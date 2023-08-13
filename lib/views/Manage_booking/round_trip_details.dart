@@ -182,30 +182,34 @@ class _RoundTripDetailsState extends State<RoundTripDetails> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   const Spacer(),
-                  ElevatedButton(
-                    onPressed: () async {
-                      bool result = await _bookingService.upgradeRoundTrip(
+                  Visibility(
+                    visible: currentBooking.bookingClass != 'business',
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        bool result = await _bookingService.upgradeRoundTrip(
                           bookingId: currentBooking.documentId,
                           departureFlightId: departFlight.documentId,
                           returnFlightId: retuFlight.documentId,
-                          numOfPas: currentBooking.numOfSeats);
-                      print(result);
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.green,
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 16.0,
-                        horizontal: 24.0,
+                          numOfPas: currentBooking.numOfSeats,
+                        );
+                        print(result);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green,
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 16.0,
+                          horizontal: 24.0,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
                       ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                    ),
-                    child: const Text(
-                      'Upgrade Booking',
-                      style: TextStyle(
-                        fontSize: 18.0,
-                        fontWeight: FontWeight.bold,
+                      child: const Text(
+                        'Upgrade Booking',
+                        style: TextStyle(
+                          fontSize: 18.0,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   ),

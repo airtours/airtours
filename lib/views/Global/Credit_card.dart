@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../constants/pages_route.dart';
 import '../../services/cloud/cloud_booking.dart';
 import '../../services/cloud/firestore_booking.dart';
 import '../../services/cloud/firestore_ticket.dart';
@@ -45,7 +46,6 @@ class _CreditcardState extends State<Creditcard> {
     FirebaseAuth auth = FirebaseAuth.instance;
     User? user = auth.currentUser;
     final bookingUserId = user!.uid;
-    print(bookingUserId);
     if (widget.id2 == 'none') {
       booking = await _bookingService.createNewBooking(
           bookingClass: widget.flightClass,
@@ -274,6 +274,11 @@ class _CreditcardState extends State<Creditcard> {
                           setState(() {
                             if (formKey.currentState!.validate()) {
                               toNext(widget.tickets);
+                              Navigator.pushNamedAndRemoveUntil(
+                                context,
+                                bottomRoute,
+                                (route) => false,
+                              );
                             }
                           });
                         },
