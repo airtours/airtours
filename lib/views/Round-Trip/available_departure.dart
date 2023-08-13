@@ -27,12 +27,12 @@ class RoundTripSearch1 extends StatefulWidget {
 
 class _RoundTripSearch1State extends State<RoundTripSearch1> {
   late final FlightFirestore _flightsService;
-  void toNext(String id1, double flightPrice1, String flightClass) {
+  void toNext(CloudFlight flight1, double flightPrice1, String flightClass) {
     Navigator.push(
         context,
         MaterialPageRoute(
             builder: (context) => RoundTripSearch2(
-                id1: id1,
+                flight1: flight1,
                 from: widget.to,
                 flightPrice1: flightPrice1,
                 to: widget.from,
@@ -83,8 +83,7 @@ class _RoundTripSearch1State extends State<RoundTripSearch1> {
                           : flight.guestPrice;
                       return GestureDetector(
                         onTap: () {
-                          toNext(flight.documentId, flightText,
-                              widget.flightClass);
+                          toNext(flight, flightText, widget.flightClass);
                         },
                         child: Card(
                           elevation: 4.0,

@@ -28,24 +28,31 @@ class BookingFirestore {
 
       if (fetchedDep.exists) {
         if (fetchedRet.exists) {
-          int currentBus1 = fetchedDep.data()![numOfAvabusField];
-          int currentBus2 = fetchedRet.data()![numOfAvabusField];
-          double BusseatPrice1 = fetchedDep.data()![busPriceField];
-          double BusseatPrice2 = fetchedRet.data()![busPriceField];
-          if (currentBus1 >= numOfPas && currentBus2 >= numOfPas) {
-            decreaseNumberOfSeats(departureFlightId, numOfPas, 'business');
-            decreaseNumberOfSeats(returnFlightId, numOfPas, 'business');
-            increaseNumberOfSeats(departureFlightId, numOfPas, 'guest');
-            increaseNumberOfSeats(returnFlightId, numOfPas, 'guest');
-            double totalPrice =
-                (BusseatPrice1 * numOfPas) + (BusseatPrice2 * numOfPas);
-            bookings.doc(bookingId).update({bookingPriceField: totalPrice});
-            upgradeRelatedBookings(bookingId: bookingId);
+          DateTime flightDate = fetchedDep.data()![depDateField].toDate();
+          DateTime flightTime = fetchedDep.data()![depTimeField].toDate();
+          DateTime totalTime = DateTime(flightDate.year, flightDate.month,
+              flightDate.day, flightTime.hour, flightTime.minute);
 
-            flag = true;
-            return flag;
-          } else {
-            return flag; //no seats
+          if (DateTime.now().isBefore(totalTime)) {
+            int currentBus1 = fetchedDep.data()![numOfAvabusField];
+            int currentBus2 = fetchedRet.data()![numOfAvabusField];
+            double busSeatPrice1 = fetchedDep.data()![busPriceField];
+            double busSeatPrice2 = fetchedRet.data()![busPriceField];
+            if (currentBus1 >= numOfPas && currentBus2 >= numOfPas) {
+              decreaseNumberOfSeats(departureFlightId, numOfPas, 'business');
+              decreaseNumberOfSeats(returnFlightId, numOfPas, 'business');
+              increaseNumberOfSeats(departureFlightId, numOfPas, 'guest');
+              increaseNumberOfSeats(returnFlightId, numOfPas, 'guest');
+              double totalPrice =
+                  (busSeatPrice1 * numOfPas) + (busSeatPrice2 * numOfPas);
+              bookings.doc(bookingId).update({bookingPriceField: totalPrice});
+              upgradeRelatedBookings(bookingId: bookingId);
+
+              flag = true;
+              return flag;
+            } else {
+              return flag; //no seats
+            }
           }
         }
       }
@@ -73,11 +80,10 @@ class BookingFirestore {
       DateTime flightTime = fetchedFlight.data()![depTimeField].toDate();
       DateTime totalTime = DateTime(flightDate.year, flightDate.month,
           flightDate.day, flightTime.hour, flightTime.minute);
-      print(totalTime);
+
       if (now.isBefore(totalTime)) {
         if (fetchedFlight.exists) {
           Duration timeDifference = totalTime.difference(now);
-          print(timeDifference);
 
           if (timeDifference.inHours >= 24) {
             await tmpBooking.delete();
