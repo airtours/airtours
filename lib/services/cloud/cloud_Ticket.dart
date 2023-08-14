@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:AirTours/constants/ticket_constants';
+
+import '../../constants/ticket_constants.dart';
 
 class CloudTicket {
   final String documentId;
