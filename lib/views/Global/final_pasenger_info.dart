@@ -449,6 +449,24 @@ class _EnterinfoState extends State<Enterinfo> {
                           print(pasCount);
                           totalTicketPrice = widget.flightPrice1 + baggagePrice;
                           temp1 = Ticket(
+                            firstName: fName.text,
+                            middleName: mName.text,
+                            checkInStatus: false,
+                            bagQuantity: baggageCount,
+                            mealType: selectedMeal,
+                            lastName: lName.text,
+                            ticketPrice: totalTicketPrice!,
+                            birthDate: dateTime,
+                            flightReference: widget.id1,
+                            ticketClass: widget.flightClass,
+                            ticketUserId: '1',
+                          );
+                          tickets.add(temp1!);
+
+                          if (widget.id2 != 'none') {
+                            totalTicketPrice =
+                                widget.flightPrice2 + baggagePrice;
+                            temp2 = Ticket(
                               firstName: fName.text,
                               middleName: mName.text,
                               checkInStatus: false,
@@ -457,26 +475,10 @@ class _EnterinfoState extends State<Enterinfo> {
                               lastName: lName.text,
                               ticketPrice: totalTicketPrice!,
                               birthDate: dateTime,
-                              flightReference: widget.id1,
+                              flightReference: widget.id2,
                               ticketClass: widget.flightClass,
-                              ticketUserId: '1');
-                          tickets.add(temp1!);
-
-                          if (widget.id2 != 'none') {
-                            totalTicketPrice =
-                                widget.flightPrice2 + baggagePrice;
-                            temp2 = Ticket(
-                                firstName: fName.text,
-                                middleName: mName.text,
-                                checkInStatus: false,
-                                bagQuantity: baggageCount,
-                                mealType: selectedMeal,
-                                lastName: lName.text,
-                                ticketPrice: totalTicketPrice!,
-                                birthDate: dateTime,
-                                flightReference: widget.id2,
-                                ticketClass: widget.flightClass,
-                                ticketUserId: '1');
+                              ticketUserId: '1',
+                            );
                             tickets.add(temp2!);
                           }
                           fName.clear();
@@ -487,8 +489,11 @@ class _EnterinfoState extends State<Enterinfo> {
                           baggagePrice = 0;
                           baggageCount = 1;
                           selectedMeal = mealList[0];
-                          dateTime = DateTime(DateTime.now().year,
-                              DateTime.now().month, DateTime.now().day);
+                          dateTime = DateTime(
+                            DateTime.now().year,
+                            DateTime.now().month,
+                            DateTime.now().day,
+                          );
 
                           return;
                         }
@@ -496,6 +501,24 @@ class _EnterinfoState extends State<Enterinfo> {
                         if (pasCount == count) {
                           totalTicketPrice = widget.flightPrice1 + baggagePrice;
                           temp1 = Ticket(
+                            firstName: fName.text,
+                            middleName: mName.text,
+                            checkInStatus: false,
+                            bagQuantity: baggageCount,
+                            mealType: selectedMeal,
+                            lastName: lName.text,
+                            ticketPrice: totalTicketPrice!,
+                            birthDate: dateTime,
+                            flightReference: widget.id1,
+                            ticketClass: widget.flightClass,
+                            ticketUserId: '1',
+                          );
+                          tickets.add(temp1!);
+
+                          if (widget.id2 != 'none') {
+                            totalTicketPrice =
+                                widget.flightPrice2 + baggagePrice;
+                            temp2 = Ticket(
                               firstName: fName.text,
                               middleName: mName.text,
                               checkInStatus: false,
@@ -504,26 +527,10 @@ class _EnterinfoState extends State<Enterinfo> {
                               lastName: lName.text,
                               ticketPrice: totalTicketPrice!,
                               birthDate: dateTime,
-                              flightReference: widget.id1,
+                              flightReference: widget.id2,
                               ticketClass: widget.flightClass,
-                              ticketUserId: '1');
-                          tickets.add(temp1!);
-
-                          if (widget.id2 != 'none') {
-                            totalTicketPrice =
-                                widget.flightPrice2 + baggagePrice;
-                            temp2 = Ticket(
-                                firstName: fName.text,
-                                middleName: mName.text,
-                                checkInStatus: false,
-                                bagQuantity: baggageCount,
-                                mealType: selectedMeal,
-                                lastName: lName.text,
-                                ticketPrice: totalTicketPrice!,
-                                birthDate: dateTime,
-                                flightReference: widget.id2,
-                                ticketClass: widget.flightClass,
-                                ticketUserId: '1');
+                              ticketUserId: '1',
+                            );
                             tickets.add(temp2!);
                           }
 
@@ -534,6 +541,28 @@ class _EnterinfoState extends State<Enterinfo> {
                         if (pasCount > count) {
                           totalTicketPrice = widget.flightPrice1 + baggagePrice;
                           temp1 = Ticket(
+                            firstName: fName.text,
+                            middleName: mName.text,
+                            checkInStatus: false,
+                            bagQuantity: baggageCount,
+                            mealType: selectedMeal,
+                            lastName: lName.text,
+                            ticketPrice: totalTicketPrice!,
+                            birthDate: dateTime,
+                            flightReference: widget.id1,
+                            ticketClass: widget.flightClass,
+                            ticketUserId: '1',
+                          );
+                          if (widget.id2 == 'none') {
+                            tickets[tickets.length - 1] = temp1!;
+                          } else {
+                            tickets[tickets.length - 2] = temp1!;
+                          }
+
+                          if (widget.id2 != 'none') {
+                            totalTicketPrice =
+                                widget.flightPrice2 + baggagePrice;
+                            temp2 = Ticket(
                               firstName: fName.text,
                               middleName: mName.text,
                               checkInStatus: false,
@@ -542,27 +571,11 @@ class _EnterinfoState extends State<Enterinfo> {
                               lastName: lName.text,
                               ticketPrice: totalTicketPrice!,
                               birthDate: dateTime,
-                              flightReference: widget.id1,
+                              flightReference: widget.id2,
                               ticketClass: widget.flightClass,
-                              ticketUserId: '1');
-                          tickets[pasCount - 2] = temp1!;
-
-                          if (widget.id2 != 'none') {
-                            totalTicketPrice =
-                                widget.flightPrice2 + baggagePrice;
-                            temp2 = Ticket(
-                                firstName: fName.text,
-                                middleName: mName.text,
-                                checkInStatus: false,
-                                bagQuantity: baggageCount,
-                                mealType: selectedMeal,
-                                lastName: lName.text,
-                                ticketPrice: totalTicketPrice!,
-                                birthDate: dateTime,
-                                flightReference: widget.id2,
-                                ticketClass: widget.flightClass,
-                                ticketUserId: '1');
-                            tickets[pasCount - 1] = temp2!;
+                              ticketUserId: '1',
+                            );
+                            tickets[tickets.length - 1] = temp2!;
                           }
                           toNext(tickets);
                         }
@@ -570,22 +583,25 @@ class _EnterinfoState extends State<Enterinfo> {
                     });
                   },
                   child: Container(
-                      margin: const EdgeInsets.all(5),
-                      padding: const EdgeInsets.all(15),
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                          boxShadow: const [
-                            BoxShadow(blurRadius: 2, offset: Offset(0, 0))
-                          ],
-                          borderRadius: BorderRadius.circular(20),
-                          color: Colors.blue),
-                      child: Center(
-                          child: Text(
+                    margin: const EdgeInsets.all(5),
+                    padding: const EdgeInsets.all(15),
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      boxShadow: const [
+                        BoxShadow(blurRadius: 2, offset: Offset(0, 0)),
+                      ],
+                      borderRadius: BorderRadius.circular(20),
+                      color: Colors.blue,
+                    ),
+                    child: Center(
+                      child: Text(
                         pasCount >= count ? "Confirm" : "Next Passenger",
                         style: const TextStyle(
                           color: Colors.white,
                         ),
-                      ))),
+                      ),
+                    ),
+                  ),
                 )
               ],
             ),

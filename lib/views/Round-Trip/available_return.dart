@@ -74,11 +74,14 @@ class _RoundTripSearch2State extends State<RoundTripSearch2> {
               case ConnectionState.waiting:
               case ConnectionState.active:
                 if (snapshot.hasData) {
-                  final allFlights = snapshot.data as Iterable<CloudFlight>;
+                  final Iterable<CloudFlight> allFlights =
+                      snapshot.data as Iterable<CloudFlight>;
                   return ListView.builder(
                     itemCount: allFlights.length,
                     itemBuilder: (context, index) {
-                      final flight = allFlights.elementAt(index);
+                      final Iterable<CloudFlight> sortedFlights =
+                          _flightsService.sortFlightsByDuration(allFlights);
+                      final flight = sortedFlights.elementAt(index);
                       double flightText = widget.flightClass == 'business'
                           ? flight.busPrice
                           : flight.guestPrice;

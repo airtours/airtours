@@ -49,7 +49,7 @@ class CloudFlight {
         numOfAvaBusiness = snapshot.data()[numOfAvabusField] as int,
         numOfAvaGuest = snapshot.data()[numOfAvaGueField] as int,
         depDate = snapshot.data()[depDateField] as Timestamp,
-        arrDate = snapshot.data()[depDateField] as Timestamp,
+        arrDate = snapshot.data()[arrDateField] as Timestamp,
         arrTime = snapshot.data()[arrTimeField] as Timestamp,
         depTime = snapshot.data()[depTimeField] as Timestamp;
 }
