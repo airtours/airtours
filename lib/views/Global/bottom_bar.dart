@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../Manage_booking/view_bookings.dart';
 import '../One-Way/one_way.dart';
 import '../Round-Trip/round_trip.dart';
+import 'display_history.dart';
 
 class Bottom extends StatefulWidget {
   const Bottom({super.key});
@@ -38,30 +39,13 @@ class _BottomState extends State<Bottom> {
             icon: Icon(Icons.home),
             label: 'Home',
           ),
-          NavigationDestination(icon: Icon(Icons.history), label: 'History'),
           NavigationDestination(
-              icon: Icon(Icons.manage_history), label: 'Manage'),
+              icon: Icon(Icons.history_sharp), label: 'History'),
           NavigationDestination(
-              icon: Icon(Icons.verified_user), label: "Profile")
+              icon: Icon(Icons.manage_history_sharp), label: 'Manage'),
+          NavigationDestination(
+              icon: Icon(Icons.person_2_sharp), label: "Profile")
         ],
-      ),
-    );
-  }
-}
-
-class History extends StatefulWidget {
-  const History({super.key});
-
-  @override
-  State<History> createState() => _HistoryState();
-}
-
-class _HistoryState extends State<History> {
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Scaffold(
-        body: Text('This is History Class'),
       ),
     );
   }
@@ -133,10 +117,10 @@ class _SelectTravelTypeState extends State<SelectTravelType> {
                       ],
                     ),
                   ),
-                  Expanded(
+                  const Expanded(
                       child: TabBarView(children: [
                     OneWay(),
-                    const Center(
+                    Center(
                       child: RoundTrip(),
                     )
                   ]))
