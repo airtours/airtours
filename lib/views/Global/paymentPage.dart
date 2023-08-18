@@ -1,7 +1,7 @@
 import 'package:AirTours/views/Global/ticket.dart';
 import 'package:flutter/material.dart';
 
-import 'Credit_card.dart';
+import 'credit_card.dart';
 
 class Payment extends StatefulWidget {
   final String id1;

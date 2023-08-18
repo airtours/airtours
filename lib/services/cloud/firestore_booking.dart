@@ -107,6 +107,7 @@ class BookingFirestore {
                   bookingId: bookingId,
                   ticketPrice: busSeatPrice2);
               double totalPrice = totalPrice1 + totalPrice2;
+              print(totalPrice);
               bookings.doc(bookingId).update({
                 bookingPriceField: totalPrice,
                 bookingClassField: 'business'
