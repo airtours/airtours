@@ -7,13 +7,15 @@ class Payment extends StatefulWidget {
   final String id1;
   final String id2;
   final String flightClass;
+  final String paymentFor;
   final List<Ticket> tickets;
   const Payment(
       {super.key,
       required this.id1,
       required this.id2,
       required this.flightClass,
-      required this.tickets});
+      required this.tickets,
+      required this.paymentFor});
 
   @override
   State<Payment> createState() => _PaymentState();
@@ -38,6 +40,7 @@ class _PaymentState extends State<Payment> {
                     context,
                     MaterialPageRoute(
                         builder: (context) => Creditcard(
+                            paymentFor: widget.paymentFor,
                             id1: widget.id1,
                             id2: widget.id2,
                             flightClass: widget.flightClass,

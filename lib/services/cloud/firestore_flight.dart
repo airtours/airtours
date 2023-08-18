@@ -23,7 +23,7 @@ class FlightFirestore {
       final allFlights = flights
           .where(fromField, isEqualTo: from)
           .where(toField, isEqualTo: to)
-          .where(numOfbusField, isGreaterThanOrEqualTo: numOfPas)
+          .where(numOfAvabusField, isGreaterThanOrEqualTo: numOfPas)
           .where(depDateField, isEqualTo: depDateStamp)
           .snapshots()
           .map((event) =>
@@ -34,7 +34,7 @@ class FlightFirestore {
       final allFlights = flights
           .where(fromField, isEqualTo: from)
           .where(toField, isEqualTo: to)
-          .where(numOfGueField, isGreaterThanOrEqualTo: numOfPas)
+          .where(numOfAvaGueField, isGreaterThanOrEqualTo: numOfPas)
           .where(depDateField, isEqualTo: depDateStamp)
           .snapshots()
           .map((event) =>

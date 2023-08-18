@@ -79,6 +79,7 @@ class _EnterinfoState extends State<Enterinfo> {
         context,
         MaterialPageRoute(
             builder: (context) => Payment(
+                paymentFor: 'booking',
                 id1: widget.id1,
                 id2: widget.id2,
                 flightClass: widget.flightClass,

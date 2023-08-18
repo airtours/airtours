@@ -11,6 +11,7 @@ import '../../services/cloud/firestore_ticket.dart';
 
 class Creditcard extends StatefulWidget {
   final String id1;
+  final String paymentFor;
   final String id2;
   final String flightClass;
   final List<Ticket> tickets;
@@ -19,7 +20,8 @@ class Creditcard extends StatefulWidget {
       required this.id1,
       required this.id2,
       required this.flightClass,
-      required this.tickets});
+      required this.tickets,
+      required this.paymentFor});
 
   @override
   State<Creditcard> createState() => _CreditcardState();
@@ -286,12 +288,9 @@ class _CreditcardState extends State<Creditcard> {
                         onTap: () {
                           setState(() {
                             if (formKey.currentState!.validate()) {
-                              toNext(widget.tickets);
-                              Navigator.pushNamedAndRemoveUntil(
-                                context,
-                                bottomRoute,
-                                (route) => false,
-                              );
+                              if (widget.paymentFor == 'booking') {
+                                toNext(widget.tickets);
+                              } else if (widget.paymentFor == "upgrade") {}
                             }
                           });
                         },
