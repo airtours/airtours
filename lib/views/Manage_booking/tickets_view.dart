@@ -5,8 +5,6 @@ import 'package:AirTours/services/cloud/firestore_ticket.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-
-import '../../services/cloud/firestore_flight.dart';
 import '../Global/global_var.dart';
 import 'boarding_pass.dart';
 
@@ -28,19 +26,6 @@ class _TicketsViewState extends State<TicketsView> {
   late final TicketFirestore _ticketsService;
   late final String bookingId;
   late final String flightId;
-  late final FlightFirestore _flightsService;
-  bool asd = false;
-  List<String> mealList = [
-    "Default Meal",
-    "Law calorie meal",
-    "No salt meal",
-    "Asian Vegetarian Meal",
-    "Western Vegetarian Meal",
-    "Low Salt Meal",
-    "Low fat Meal",
-    "Lacto-ovo Vegetarian Meal",
-    "Gluten Free Meal",
-  ];
 
   @override
   void initState() {
@@ -48,7 +33,6 @@ class _TicketsViewState extends State<TicketsView> {
     _ticketsService = TicketFirestore();
     flightId = widget.flight.documentId;
     bookingId = widget.booking.documentId;
-    _flightsService = FlightFirestore();
   }
 
   String date1(Timestamp date) {
@@ -154,7 +138,6 @@ class _TicketsViewState extends State<TicketsView> {
                                 height: 1.0,
                                 color: Colors.black,
                                 width: double.infinity,
-                                //child: SizedBox.expand(),
                               ),
                               const Row(
                                 mainAxisAlignment:
@@ -187,135 +170,6 @@ class _TicketsViewState extends State<TicketsView> {
                                     ),
                                   ),
                                   Text(date2(ticket.birthDate))
-                                ],
-                              ),
-                              const SizedBox(
-                                height: 20,
-                              ),
-                              const Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    "Boarding time:",
-                                    style: TextStyle(
-                                      fontSize: 18.0,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.black87,
-                                    ),
-                                  ),
-                                  Text(
-                                    "Date:",
-                                    style: TextStyle(
-                                      fontSize: 18.0,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.black87,
-                                    ),
-                                  )
-                                ],
-                              ),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(_flightsService
-                                      .formatTime(widget.flight.depTime)),
-                                  Text(date1(widget.flight.depDate))
-                                ],
-                              ),
-                              const SizedBox(
-                                height: 20,
-                              ),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    widget.flight.fromCity,
-                                    style: const TextStyle(fontSize: 24),
-                                  ),
-                                  const SizedBox(
-                                    width: 5,
-                                  ),
-                                  Container(
-                                    height: 30,
-                                    child:
-                                        Image.asset('images/flight-Icon.png'),
-                                  ),
-                                  const SizedBox(
-                                    width: 5,
-                                  ),
-                                  Text(
-                                    widget.flight.toCity,
-                                    style: const TextStyle(fontSize: 24),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              Container(
-                                height: 1.0,
-                                color: Colors.black,
-                                width: double.infinity,
-                                //child: SizedBox.expand(),
-                              ),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              const Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text("Airport:",
-                                      style: TextStyle(
-                                        fontSize: 18.0,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.black87,
-                                      )),
-                                  Text("Airport:",
-                                      style: TextStyle(
-                                        fontSize: 18.0,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.black87,
-                                      ))
-                                ],
-                              ),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(widget.flight.fromAirport),
-                                  Text(widget.flight.toAirport)
-                                ],
-                              ),
-                              const SizedBox(
-                                height: 20,
-                              ),
-                              const Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text("Flight:",
-                                      style: TextStyle(
-                                        fontSize: 18.0,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.black87,
-                                      )),
-                                  Text("class:",
-                                      style: TextStyle(
-                                        fontSize: 18.0,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.black87,
-                                      ))
-                                ],
-                              ),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(widget.flight.documentId),
-                                  Text(ticket.ticketClass)
                                 ],
                               ),
                               const SizedBox(
@@ -372,18 +226,12 @@ class _TicketsViewState extends State<TicketsView> {
                                   )
                                 ],
                               ),
-                              if (asd == true)
-                                Container(
-                                  width: double.infinity,
-                                  height: 100,
-                                  child: Image.asset('images/BarCode.jpeg'),
-                                ),
                             ],
                           ),
                         ),
                         GestureDetector(
                           onTap: () async {
-                            if (ticket.checkInStatus) {
+                            if (ticket.checkInStatus == false) {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(

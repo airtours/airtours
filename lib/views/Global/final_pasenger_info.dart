@@ -217,7 +217,7 @@ class _EnterinfoState extends State<Enterinfo> {
                         ),
                         validator: (value) {
                           if (value!.isEmpty) {
-                            return "You did not enter your firs name";
+                            return "You did not enter your middle name";
                           }
                           if (!RegExp(r'^[a-zA-Z\s]+$').hasMatch(value)) {
                             return 'Please enter a valid name';
@@ -245,7 +245,7 @@ class _EnterinfoState extends State<Enterinfo> {
                         ),
                         validator: (value) {
                           if (value!.isEmpty) {
-                            return "You did not enter your first name";
+                            return "You did not enter your last name";
                           }
                           if (!RegExp(r'^[a-zA-Z\s]+$').hasMatch(value)) {
                             return 'Please enter a valid name';

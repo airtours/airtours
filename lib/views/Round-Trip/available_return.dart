@@ -50,21 +50,38 @@ class _RoundTripSearch2State extends State<RoundTripSearch2> {
     _flightsService = FlightFirestore();
   }
 
-  String calculateTravelTime(Timestamp departureTime, Timestamp arrivalTime) {
-    DateTime departureDateTime = departureTime.toDate();
-    DateTime arrivalDateTime = arrivalTime.toDate();
+  String calculateTravelTime(
+    Timestamp departuredate,
+    Timestamp arrivaldate,
+    Timestamp departureTime,
+    Timestamp arrivalTime,
+  ) {
+    DateTime departureDateTime = DateTime(
+      departuredate.toDate().year,
+      departuredate.toDate().month,
+      departuredate.toDate().day,
+      departureTime.toDate().hour,
+      departureTime.toDate().minute,
+    );
+
+    DateTime arrivalDateTime = DateTime(
+      arrivaldate.toDate().year,
+      arrivaldate.toDate().month,
+      arrivaldate.toDate().day,
+      arrivalTime.toDate().hour,
+      arrivalTime.toDate().minute,
+    );
 
     Duration travelDuration = arrivalDateTime.difference(departureDateTime);
-
     int totalMinutes = travelDuration.inMinutes;
     int hours = totalMinutes ~/ 60;
     int minutes = totalMinutes % 60;
 
-    // String formattedTravelTime = hours.toString() + 'h';
     if (hours < 0) {
       hours = hours * -1;
     }
-    String formattedTravelTime = hours.toString() + 'h';
+
+    String formattedTravelTime = '${hours}h';
 
     if (minutes != 0) {
       formattedTravelTime += ' ${minutes}m';
@@ -171,7 +188,10 @@ class _RoundTripSearch2State extends State<RoundTripSearch2> {
                                               .formatTime(flight.depTime),
                                         ),
                                         Text(calculateTravelTime(
-                                            flight.depTime, flight.arrTime)),
+                                            flight.depDate,
+                                            flight.arrDate,
+                                            flight.depTime,
+                                            flight.arrTime)),
                                         Text(
                                           _flightsService
                                               .formatTime(flight.arrTime),
@@ -191,8 +211,20 @@ class _RoundTripSearch2State extends State<RoundTripSearch2> {
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children: [
-                                        const Text("Price"),
-                                        Text("$flightText")
+                                        const Text(
+                                          "Price",
+                                          style: TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.green),
+                                        ),
+                                        Text(
+                                          "$flightText SAR",
+                                          style: const TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.green),
+                                        )
                                       ],
                                     )
                                   ],

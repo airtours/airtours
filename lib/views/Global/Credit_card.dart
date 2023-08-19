@@ -8,6 +8,7 @@ import '../../constants/pages_route.dart';
 import '../../services/cloud/cloud_booking.dart';
 import '../../services/cloud/firestore_booking.dart';
 import '../../services/cloud/firestore_ticket.dart';
+import 'bottom_bar.dart';
 
 class Creditcard extends StatefulWidget {
   final String id1;
@@ -105,217 +106,233 @@ class _CreditcardState extends State<Creditcard> {
           padding: const EdgeInsets.all(7.0),
           child: Form(
             key: formKey,
-            child: Column(
-              //mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                    margin: const EdgeInsets.all(5),
-                    decoration: BoxDecoration(
-                        boxShadow: const [
-                          BoxShadow(blurRadius: 2, offset: Offset(0, 0))
-                        ],
-                        borderRadius: BorderRadius.circular(15),
-                        color: Colors.white),
-                    child: Padding(
-                      padding: const EdgeInsets.all(5.0),
-                      child: TextFormField(
-                        keyboardType: TextInputType.number,
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly,
-                          LengthLimitingTextInputFormatter(16),
-                          CardNumber(),
-                        ],
-                        controller: cardNumber,
-                        decoration: const InputDecoration(
-                          labelText: "Card Number",
-                          border: InputBorder.none,
-                        ),
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return "Enter a card number";
-                          }
-                          // if (!RegExp(r'^\d{19}$').hasMatch(value)) {
-                          //   return "Enter a valid card number aziz";
-                          // }
-                          if (value.length != 22) {
-                            return "Enter a valid card number";
-                          }
-                          return null;
-                        },
-                      ),
-                    )),
-                const SizedBox(
-                  height: 5,
-                ),
-                Container(
-                    margin: const EdgeInsets.all(5),
-                    decoration: BoxDecoration(
-                        boxShadow: const [
-                          BoxShadow(blurRadius: 2, offset: Offset(0, 0))
-                        ],
-                        borderRadius: BorderRadius.circular(15),
-                        color: Colors.white),
-                    child: Padding(
-                      padding: const EdgeInsets.all(5.0),
-                      child: TextFormField(
-                        controller: cardName,
-                        decoration: const InputDecoration(
-                          labelText: "Name",
-                          border: InputBorder.none,
-                        ),
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return "You did not enter your first name";
-                          }
-                          if (!RegExp(r'^[a-zA-Z\s]+$').hasMatch(value)) {
-                            return 'Please enter a valid name';
-                          }
-                          return null;
-                        },
-                      ),
-                    )),
-                Row(
-                  children: [
-                    Expanded(
-                      child: Container(
-                          margin: const EdgeInsets.all(5),
-                          decoration: BoxDecoration(
-                              boxShadow: const [
-                                BoxShadow(blurRadius: 2, offset: Offset(0, 0))
-                              ],
-                              borderRadius: BorderRadius.circular(15),
-                              color: Colors.white),
-                          child: Padding(
-                            padding: const EdgeInsets.all(5.0),
-                            child: TextFormField(
-                              keyboardType: TextInputType.number,
-                              inputFormatters: [
-                                FilteringTextInputFormatter.digitsOnly,
-                                LengthLimitingTextInputFormatter(3),
-                              ],
-                              controller: cvv,
-                              decoration: const InputDecoration(
-                                labelText: "CVV",
-                                hintText: "Enter the 3 digit number",
-                                border: InputBorder.none,
-                              ),
-                              validator: (value) {
-                                if (value!.isEmpty) {
-                                  return "Enter enter a CVV";
-                                }
-                                return null;
-                              },
-                            ),
-                          )),
-                    ),
-                    Expanded(
-                      child: Container(
-                          margin: const EdgeInsets.all(5),
-                          decoration: BoxDecoration(
-                              boxShadow: const [
-                                BoxShadow(blurRadius: 2, offset: Offset(0, 0))
-                              ],
-                              borderRadius: BorderRadius.circular(15),
-                              color: Colors.white),
-                          child: Padding(
-                            padding: const EdgeInsets.all(5.0),
-                            child: TextFormField(
-                              keyboardType: TextInputType.number,
-                              inputFormatters: [
-                                FilteringTextInputFormatter.digitsOnly,
-                                LengthLimitingTextInputFormatter(4),
-                                CardExpiry(),
-                              ],
-                              controller: expiryDate,
-                              decoration: const InputDecoration(
-                                labelText: "Expiry date",
-                                hintText: "MM/YY",
-                                border: InputBorder.none,
-                              ),
-                              validator: (value) {
-                                int month = int.parse(value!.substring(0, 2));
-                                int year = int.parse(value.substring(3, 5));
-
-                                if (value.isEmpty) {
-                                  return "Enter a Expiry Date";
-                                }
-                                if (month > 12 && year < 23) {
-                                  return "Enter Expiry Date correctly";
-                                }
-                                if (month > 12) {
-                                  return "Enter month Date correctly";
-                                }
-                                if (year < 23) {
-                                  return "Enter year Date correctly";
-                                }
-                                return null;
-                              },
-                            ),
-                          )),
-                    ),
-                  ],
-                ),
-                Row(
-                  children: [
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            Navigator.pop(context);
-                          });
-                        },
-                        child: Container(
-                            margin: const EdgeInsets.all(5),
-                            padding: const EdgeInsets.all(15),
-                            width: double.infinity,
-                            decoration: BoxDecoration(
-                                boxShadow: const [
-                                  BoxShadow(blurRadius: 2, offset: Offset(0, 0))
-                                ],
-                                borderRadius: BorderRadius.circular(20),
-                                color: Colors.blue),
-                            child: const Center(
-                                child: Text(
-                              "Cancel",
-                              style: TextStyle(
-                                color: Colors.white,
-                              ),
-                            ))),
-                      ),
-                    ),
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            if (formKey.currentState!.validate()) {
-                              if (widget.paymentFor == 'booking') {
-                                toNext(widget.tickets);
-                              } else if (widget.paymentFor == "upgrade") {}
+            child: SingleChildScrollView(
+              child: Column(
+                //mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                      margin: const EdgeInsets.all(5),
+                      decoration: BoxDecoration(
+                          boxShadow: const [
+                            BoxShadow(blurRadius: 2, offset: Offset(0, 0))
+                          ],
+                          borderRadius: BorderRadius.circular(15),
+                          color: Colors.white),
+                      child: Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: TextFormField(
+                          keyboardType: TextInputType.number,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly,
+                            LengthLimitingTextInputFormatter(16),
+                            CardNumber(),
+                          ],
+                          controller: cardNumber,
+                          decoration: const InputDecoration(
+                            labelText: "Card Number",
+                            border: InputBorder.none,
+                          ),
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return "Enter a card number";
                             }
-                          });
-                        },
+                            // if (!RegExp(r'^\d{19}$').hasMatch(value)) {
+                            //   return "Enter a valid card number aziz";
+                            // }
+                            if (value.length != 22) {
+                              return "Enter a valid card number";
+                            }
+                            return null;
+                          },
+                        ),
+                      )),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  Container(
+                      margin: const EdgeInsets.all(5),
+                      decoration: BoxDecoration(
+                          boxShadow: const [
+                            BoxShadow(blurRadius: 2, offset: Offset(0, 0))
+                          ],
+                          borderRadius: BorderRadius.circular(15),
+                          color: Colors.white),
+                      child: Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: TextFormField(
+                          controller: cardName,
+                          decoration: const InputDecoration(
+                            labelText: "Name",
+                            border: InputBorder.none,
+                          ),
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return "You did not enter your first name";
+                            }
+                            if (!RegExp(r'^[a-zA-Z\s]+$').hasMatch(value)) {
+                              return 'Please enter a valid name';
+                            }
+                            return null;
+                          },
+                        ),
+                      )),
+                  Row(
+                    children: [
+                      Expanded(
                         child: Container(
                             margin: const EdgeInsets.all(5),
-                            padding: const EdgeInsets.all(15),
-                            width: double.infinity,
                             decoration: BoxDecoration(
                                 boxShadow: const [
                                   BoxShadow(blurRadius: 2, offset: Offset(0, 0))
                                 ],
-                                borderRadius: BorderRadius.circular(20),
-                                color: Colors.blue),
-                            child: const Center(
-                                child: Text(
-                              "Confirm Payment",
-                              style: TextStyle(
-                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(15),
+                                color: Colors.white),
+                            child: Padding(
+                              padding: const EdgeInsets.all(5.0),
+                              child: TextFormField(
+                                keyboardType: TextInputType.number,
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.digitsOnly,
+                                  LengthLimitingTextInputFormatter(3),
+                                ],
+                                controller: cvv,
+                                decoration: const InputDecoration(
+                                  labelText: "CVV",
+                                  hintText: "Enter the 3 digit number",
+                                  border: InputBorder.none,
+                                ),
+                                validator: (value) {
+                                  if (value!.isEmpty) {
+                                    return "Enter enter a CVV";
+                                  }
+                                  return null;
+                                },
                               ),
-                            ))),
+                            )),
                       ),
-                    )
-                  ],
-                ),
-              ],
+                      Expanded(
+                        child: Container(
+                            margin: const EdgeInsets.all(5),
+                            decoration: BoxDecoration(
+                                boxShadow: const [
+                                  BoxShadow(blurRadius: 2, offset: Offset(0, 0))
+                                ],
+                                borderRadius: BorderRadius.circular(15),
+                                color: Colors.white),
+                            child: Padding(
+                              padding: const EdgeInsets.all(5.0),
+                              child: TextFormField(
+                                keyboardType: TextInputType.number,
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.digitsOnly,
+                                  LengthLimitingTextInputFormatter(4),
+                                  CardExpiry(),
+                                ],
+                                controller: expiryDate,
+                                decoration: const InputDecoration(
+                                  labelText: "Expiry date",
+                                  hintText: "MM/YY",
+                                  border: InputBorder.none,
+                                ),
+                                validator: (value) {
+                                  if (value!.isEmpty) {
+                                    return "Enter an Expiry Date";
+                                  }
+
+                                  List<String> parts = value.split('/');
+                                  if (parts.length != 2) {
+                                    return "Enter a valid Expiry Date";
+                                  }
+
+                                  int? month = int.tryParse(parts[0]);
+                                  int? year = int.tryParse(parts[1]);
+
+                                  if (month == null || year == null) {
+                                    return "Enter a valid Expiry Date";
+                                  }
+
+                                  if (month > 12 && year < 23) {
+                                    return "Enter the Expiry Date correctly";
+                                  }
+                                  if (month > 12) {
+                                    return "Enter the month correctly";
+                                  }
+                                  if (year < 23) {
+                                    return "Enter the year correctly";
+                                  }
+                                  return null;
+                                },
+                              ),
+                            )),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              Navigator.pop(context);
+                            });
+                          },
+                          child: Container(
+                              margin: const EdgeInsets.all(5),
+                              padding: const EdgeInsets.all(15),
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                  boxShadow: const [
+                                    BoxShadow(
+                                        blurRadius: 2, offset: Offset(0, 0))
+                                  ],
+                                  borderRadius: BorderRadius.circular(20),
+                                  color: Colors.blue),
+                              child: const Center(
+                                  child: Text(
+                                "Cancel",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                ),
+                              ))),
+                        ),
+                      ),
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              if (formKey.currentState!.validate()) {
+                                if (widget.paymentFor == 'booking') {
+                                  toNext(widget.tickets);
+                                  Navigator.of(context).pushNamedAndRemoveUntil(
+                                      bottomRoute, (route) => false);
+                                } else if (widget.paymentFor == "upgrade") {}
+                              }
+                            });
+                          },
+                          child: Container(
+                              margin: const EdgeInsets.all(5),
+                              padding: const EdgeInsets.all(15),
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                  boxShadow: const [
+                                    BoxShadow(
+                                        blurRadius: 2, offset: Offset(0, 0))
+                                  ],
+                                  borderRadius: BorderRadius.circular(20),
+                                  color: Colors.blue),
+                              child: const Center(
+                                  child: Text(
+                                "Confirm Payment",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                ),
+                              ))),
+                        ),
+                      )
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         )));

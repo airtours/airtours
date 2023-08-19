@@ -42,66 +42,6 @@ class _RoundTripState extends State<RoundTrip> {
                 retDate: end1)));
   }
 
-  // Row(
-  //                     children: [
-  //                       //   Expanded(child: ElevatedButton(child: Text("${start.year}/${start.month}/${start.day}"),onPressed: ()async{pickDate;},)),
-  //                       // SizedBox(width: 5,),
-
-  //                       Expanded(
-  //                           child: Container(
-  //                         margin: const EdgeInsets.all(5),
-  //                         width: double.infinity,
-  //                         decoration: BoxDecoration(
-  //                             boxShadow: const [
-  //                               BoxShadow(blurRadius: 2, offset: Offset(0, 0))
-  //                             ],
-  //                             borderRadius: BorderRadius.circular(20),
-  //                             color: Colors.white),
-  //                         child: Column(
-  //                           crossAxisAlignment: CrossAxisAlignment.start,
-  //                           children: [
-  //                             const SizedBox(
-  //                               height: 2,
-  //                             ),
-  //                             const Text("   Travel dates"),
-  //                             ElevatedButton(
-  //                               style: ElevatedButton.styleFrom(
-  //                                   padding: const EdgeInsets.only(
-  //                                       left: 8, right: 250, top: 8, bottom: 8),
-  //                                   shape: const RoundedRectangleBorder(
-  //                                       borderRadius: BorderRadius.all(
-  //                                           Radius.circular(20))),
-  //                                   elevation: 0,
-  //                                   backgroundColor: Colors.white),
-  //                               child: Text(
-  //                                 "${dateTime.day} ${monthNames[dateTime.month - 1]} , ${monthNames[end.month - 1] == monthNames[start.month - 1] ? end.day : end.day} ${monthNames[end.month - 1] == monthNames[start.month - 1] ? "" : monthNames[end.month - 1]}",
-  //                                 style: const TextStyle(
-  //                                     color: Colors.black, fontSize: 17),
-  //                               ),
-  //                               onPressed: () async {
-  //                                 DateTimeRange? newDate =
-  //                                     await showDateRangePicker(
-  //                                         context: context,
-  //                                         initialDateRange: dateRange,
-  //                                         firstDate: DateTime.now(),
-  //                                         lastDate: DateTime(2024));
-  //                                 if (newDate == null) return;
-  //                                 print(start);
-  //                                 print(end);
-  //                                 print("-----------");
-  //                                 setState(() {
-  //                                   dateRange = newDate;
-  //                                   print(start);
-  //                                   print(end.day);
-  //                                 });
-  //                               },
-  //                             ),
-  //                           ],
-  //                         ),
-  //                       ))
-  //                     ],
-  //                   ),
-
   @override
   Widget build(BuildContext context) {
     final start = dateRange.start;

@@ -47,19 +47,7 @@ class _HistoryState extends State<History> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: 56.0,
-        backgroundColor: Colors.cyan[300],
-        title: const Padding(
-          padding: EdgeInsets.only(left: 16.0),
-          child: Text(
-            'Booking History',
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
-          ),
-        ),
+        title: const Text('Booking History'),
       ),
       body: StreamBuilder<Iterable<CloudBooking>>(
         stream:

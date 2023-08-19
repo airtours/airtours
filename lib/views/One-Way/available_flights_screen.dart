@@ -47,29 +47,38 @@ class _OneWaySearchState extends State<OneWaySearch> {
         ));
   }
 
-  Widget diffrent(endTime, startTime) {
-    // Duration difference = endTime.difference(startTime);
-    // int hours = difference.inHours;
-    // int minutes = difference.inMinutes.remainder(60);
-    // String formattedTime = '$hours:${minutes.toString().padLeft(2, '0')}';
-    return Text("${endTime - startTime}");
-  }
+  String calculateTravelTime(
+    Timestamp departuredate,
+    Timestamp arrivaldate,
+    Timestamp departureTime,
+    Timestamp arrivalTime,
+  ) {
+    DateTime departureDateTime = DateTime(
+      departuredate.toDate().year,
+      departuredate.toDate().month,
+      departuredate.toDate().day,
+      departureTime.toDate().hour,
+      departureTime.toDate().minute,
+    );
 
-  String calculateTravelTime(Timestamp departureTime, Timestamp arrivalTime) {
-    DateTime departureDateTime = departureTime.toDate();
-    DateTime arrivalDateTime = arrivalTime.toDate();
+    DateTime arrivalDateTime = DateTime(
+      arrivaldate.toDate().year,
+      arrivaldate.toDate().month,
+      arrivaldate.toDate().day,
+      arrivalTime.toDate().hour,
+      arrivalTime.toDate().minute,
+    );
 
     Duration travelDuration = arrivalDateTime.difference(departureDateTime);
-
     int totalMinutes = travelDuration.inMinutes;
     int hours = totalMinutes ~/ 60;
     int minutes = totalMinutes % 60;
 
-    // String formattedTravelTime = hours.toString() + 'h';
     if (hours < 0) {
       hours = hours * -1;
     }
-    String formattedTravelTime = hours.toString() + 'h';
+
+    String formattedTravelTime = '${hours}h';
 
     if (minutes != 0) {
       formattedTravelTime += ' ${minutes}m';
@@ -167,7 +176,10 @@ class _OneWaySearchState extends State<OneWaySearch> {
                                               .formatTime(flight.depTime),
                                         ),
                                         Text(calculateTravelTime(
-                                            flight.depTime, flight.arrTime)),
+                                            flight.depDate,
+                                            flight.arrDate,
+                                            flight.depTime,
+                                            flight.arrTime)),
                                         Text(
                                           _flightsService
                                               .formatTime(flight.arrTime),
@@ -187,8 +199,20 @@ class _OneWaySearchState extends State<OneWaySearch> {
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children: [
-                                        const Text("Price"),
-                                        Text("$flightText")
+                                        const Text(
+                                          "Price",
+                                          style: TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.green),
+                                        ),
+                                        Text(
+                                          "$flightText SAR",
+                                          style: const TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.green),
+                                        )
                                       ],
                                     )
                                   ],

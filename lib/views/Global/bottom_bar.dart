@@ -106,23 +106,26 @@ class _SelectTravelTypeState extends State<SelectTravelType> {
                           borderRadius: BorderRadius.circular(25)),
                       labelColor: Colors.white,
                       unselectedLabelColor: Colors.black,
-                      tabs: const [
-                        Row(
+                      tabs: [
+                        const Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [Tab(text: "One way"), Icon(Icons.flight)],
                         ),
-                        Tab(
-                          text: "Round trip",
-                        )
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            const Tab(text: "RoundTrip"),
+                            Image.asset('images/RoundTrip.jpeg',
+                                width: 33, height: 33),
+                          ],
+                        ),
                       ],
                     ),
                   ),
                   const Expanded(
                       child: TabBarView(children: [
                     OneWay(),
-                    Center(
-                      child: RoundTrip(),
-                    )
+                    RoundTrip(),
                   ]))
                 ],
               ),

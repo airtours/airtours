@@ -31,6 +31,7 @@ class _RoundTripDetailsState extends State<RoundTripDetails> {
   late final CloudFlight retuFlight;
   late final CloudBooking currentBooking;
   late final FlightFirestore _flightsService;
+  late String bookingType;
 
   @override
   void initState() {
@@ -40,6 +41,7 @@ class _RoundTripDetailsState extends State<RoundTripDetails> {
     retuFlight = widget.retFlight;
     currentBooking = widget.booking;
     _flightsService = FlightFirestore();
+    bookingType = currentBooking.bookingClass;
   }
 
   String date1(Timestamp date) {
@@ -93,13 +95,14 @@ class _RoundTripDetailsState extends State<RoundTripDetails> {
                                 "Destination Flight",
                                 style: TextStyle(fontSize: 22),
                               ),
-                              Text(
-                                date1(departFlight.depDate),
-                                style: const TextStyle(
-                                  fontSize: 17,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
+
+                              // Text(
+                              //   date1(departFlight.depDate),
+                              //   style: const TextStyle(
+                              //     fontSize: 17,
+                              //     fontWeight: FontWeight.bold,
+                              //   ),
+                              // ),
                             ],
                           ),
                           Container(
@@ -109,6 +112,29 @@ class _RoundTripDetailsState extends State<RoundTripDetails> {
                             //child: SizedBox.expand(),
                           ),
                           Column(children: [
+                            Row(
+                              // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "${date1(departFlight.depDate)}",
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Text("-"),
+                                Text(
+                                  "${date1(departFlight.arrDate)}",
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(
+                              height: 3,
+                            ),
                             Row(
                               children: [
                                 Text(
@@ -162,7 +188,7 @@ class _RoundTripDetailsState extends State<RoundTripDetails> {
                                     Row(
                                       children: [
                                         Text(
-                                            "Price: ${widget.booking.bookingPrice}")
+                                            "Pasenger: ${widget.booking.numOfSeats}")
                                       ],
                                     )
                                   ],
@@ -203,13 +229,13 @@ class _RoundTripDetailsState extends State<RoundTripDetails> {
                                 "Return Flight",
                                 style: TextStyle(fontSize: 22),
                               ),
-                              Text(
-                                date1(retuFlight.depDate),
-                                style: const TextStyle(
-                                  fontSize: 17,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
+                              //   Text(
+                              //     date1(retuFlight.depDate),
+                              //     style: const TextStyle(
+                              //       fontSize: 17,
+                              //       fontWeight: FontWeight.bold,
+                              //     ),
+                              //   ),
                             ],
                           ),
                           const SizedBox(
@@ -222,6 +248,29 @@ class _RoundTripDetailsState extends State<RoundTripDetails> {
                             //child: SizedBox.expand(),
                           ),
                           Column(children: [
+                            Row(
+                              // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "${date1(retuFlight.depDate)}",
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Text("-"),
+                                Text(
+                                  "${date1(retuFlight.arrDate)}",
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(
+                              height: 3,
+                            ),
                             Row(
                               children: [
                                 Text(
@@ -276,7 +325,7 @@ class _RoundTripDetailsState extends State<RoundTripDetails> {
                                     Row(
                                       children: [
                                         Text(
-                                            "Price: ${widget.booking.bookingPrice}")
+                                            "Passenger: ${widget.booking.numOfSeats}")
                                       ],
                                     )
                                   ],
@@ -296,18 +345,20 @@ class _RoundTripDetailsState extends State<RoundTripDetails> {
                 children: [
                   const Spacer(),
                   Visibility(
-                    visible: currentBooking.bookingClass != 'business',
+                    visible: bookingType != 'business',
                     child: ElevatedButton(
                       onPressed: () async {
-                        setState(() async {
-                          bool result = await _bookingService.upgradeRoundTrip(
-                            bookingId: currentBooking.documentId,
-                            departureFlightId: departFlight.documentId,
-                            returnFlightId: retuFlight.documentId,
-                            numOfPas: currentBooking.numOfSeats,
-                          );
-                          print(result);
-                        });
+                        bool result = await _bookingService.upgradeRoundTrip(
+                          bookingId: currentBooking.documentId,
+                          departureFlightId: departFlight.documentId,
+                          returnFlightId: retuFlight.documentId,
+                          numOfPas: currentBooking.numOfSeats,
+                        );
+                        if (result) {
+                          setState(() {
+                            bookingType = 'business';
+                          });
+                        }
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.green,
