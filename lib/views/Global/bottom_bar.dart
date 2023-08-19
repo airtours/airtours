@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../Manage_booking/view_bookings.dart';
 import '../One-Way/one_way.dart';
 import '../Round-Trip/round_trip.dart';
+import '../profile/ProfileView.dart';
 import 'display_history.dart';
 
 class Bottom extends StatefulWidget {
@@ -18,7 +19,7 @@ class _BottomState extends State<Bottom> {
     const Center(child: SelectTravelType()),
     const Center(child: History()),
     const Center(child: ViewBookings()),
-    const Center(child: Profile()),
+    const Center(child: ProfileView()),
   ];
   @override
   Widget build(BuildContext context) {
@@ -46,24 +47,6 @@ class _BottomState extends State<Bottom> {
           NavigationDestination(
               icon: Icon(Icons.person_2_sharp), label: "Profile")
         ],
-      ),
-    );
-  }
-}
-
-class Profile extends StatefulWidget {
-  const Profile({super.key});
-
-  @override
-  State<Profile> createState() => _ProfileState();
-}
-
-class _ProfileState extends State<Profile> {
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Scaffold(
-        body: Text('This is Profile Class'),
       ),
     );
   }
@@ -106,26 +89,23 @@ class _SelectTravelTypeState extends State<SelectTravelType> {
                           borderRadius: BorderRadius.circular(25)),
                       labelColor: Colors.white,
                       unselectedLabelColor: Colors.black,
-                      tabs: [
-                        const Row(
+                      tabs: const [
+                        Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [Tab(text: "One way"), Icon(Icons.flight)],
                         ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            const Tab(text: "RoundTrip"),
-                            Image.asset('images/RoundTrip.jpeg',
-                                width: 33, height: 33),
-                          ],
-                        ),
+                        Tab(
+                          text: "Round trip",
+                        )
                       ],
                     ),
                   ),
                   const Expanded(
                       child: TabBarView(children: [
                     OneWay(),
-                    RoundTrip(),
+                    Center(
+                      child: RoundTrip(),
+                    )
                   ]))
                 ],
               ),

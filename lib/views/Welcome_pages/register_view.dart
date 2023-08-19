@@ -1,6 +1,9 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+
 import '../../constants/pages_route.dart';
+import '../../services/cloud/firebase_cloud_storage.dart';
+import '../../services_auth/auth_exceptions.dart';
+import '../../services_auth/auth_service.dart';
 import '../../utilities/button.dart';
 import '../../utilities/show_error.dart';
 
@@ -12,6 +15,7 @@ class RegisterView extends StatefulWidget {
 }
 
 class _RegisterViewState extends State<RegisterView> {
+  final FirebaseCloudStorage c = FirebaseCloudStorage();
   late final TextEditingController _email;
   late final TextEditingController _password;
   late final TextEditingController _password2;
@@ -121,24 +125,30 @@ class _RegisterViewState extends State<RegisterView> {
                     showErrorDialog(context, "Password doesn't match!");
                   } else {
                     try {
-                      await FirebaseAuth.instance
-                          .createUserWithEmailAndPassword(
-                              email: email, password: pass);
-                      final user = FirebaseAuth.instance.currentUser;
-                      await user?.sendEmailVerification();
+                      await AuthService.firebase()
+                          .createUser(email: email, password: pass);
+                      //DB
+                      final String userid =
+                          AuthService.firebase().currentUser!.id;
+                      final String currentEmail =
+                          AuthService.firebase().currentUser!.email;
+                      c.createNewUser(
+                          ownerUserId: userid,
+                          email: currentEmail,
+                          phoneNum: '',
+                          balance: 0);
+                      //DB end
+                      AuthService.firebase().sendEmailVerification();
                       Navigator.of(context).pushNamed(verficationRoute);
-                    } on FirebaseAuthException catch (e) {
-                      if (e.code == 'email-already-in-use') {
-                        await showErrorDialog(context, 'email-already-in-use');
-                      } else if (e.code == 'invalid-email') {
-                        await showErrorDialog(context, 'invalid-email');
-                      } else if (e.code == 'weak-password') {
-                        await showErrorDialog(context, 'weak-password');
-                      } else {
-                        await showErrorDialog(context, e.code);
-                      }
-                    } catch (e) {
-                      await showErrorDialog(context, e.toString());
+                    } on WeakPasswordAuthException {
+                      await showErrorDialog(context, 'Weak Password');
+                    } on EmailAlreadyInUseAuthException {
+                      await showErrorDialog(context, 'Email already in use');
+                    } on InvalidEmailAuthException {
+                      await showErrorDialog(
+                          context, 'this is an invalid email');
+                    } on GenericAuthException {
+                      await showErrorDialog(context, 'failed to register');
                     }
                   }
                 }),
@@ -154,12 +164,6 @@ class _RegisterViewState extends State<RegisterView> {
                     child: const Text('Login Here'))
               ],
             )
-            // MyButton(
-            //   title: 'Already Registered? Login Here!',
-            //   onPressed: () {
-            //     Navigator.of(context).pushNamedAndRemoveUntil(loginRoute, (route) => false);
-            //   },
-            // )
           ],
         ),
       ),

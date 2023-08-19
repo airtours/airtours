@@ -1,5 +1,6 @@
 import 'package:AirTours/services/cloud/cloud_booking.dart';
 import 'package:AirTours/services/cloud/cloud_flight.dart';
+import 'package:AirTours/views/Global/paymentPage.dart';
 import 'package:AirTours/views/Manage_booking/tickets_view.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +9,7 @@ import 'package:intl/intl.dart';
 import '../../services/cloud/firestore_booking.dart';
 import '../../services/cloud/firestore_flight.dart';
 import '../Global/global_var.dart';
+import '../Global/ticket.dart';
 
 class OneWayDetails extends StatefulWidget {
   final CloudBooking booking;
@@ -28,6 +30,8 @@ class _OneWayDetailsState extends State<OneWayDetails> {
   late final CloudFlight departFlight;
   late final CloudBooking currentBooking;
   late final FlightFirestore _flightsService;
+  late String bookingType;
+  List<Ticket> tickets = [];
 
   @override
   void initState() {
@@ -36,6 +40,7 @@ class _OneWayDetailsState extends State<OneWayDetails> {
     departFlight = widget.depFlight;
     currentBooking = widget.booking;
     _flightsService = FlightFirestore();
+    bookingType = currentBooking.bookingClass;
   }
 
   String date1(Timestamp date) {
@@ -85,13 +90,13 @@ class _OneWayDetailsState extends State<OneWayDetails> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(
+                              const Text(
                                 "Destination Flight",
                                 style: TextStyle(fontSize: 22),
                               ),
                               Text(
                                 date1(departFlight.depDate),
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontSize: 17,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -109,21 +114,21 @@ class _OneWayDetailsState extends State<OneWayDetails> {
                               children: [
                                 Text(
                                   widget.depFlight.fromCity,
-                                  style: TextStyle(fontSize: 19),
+                                  style: const TextStyle(fontSize: 19),
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   width: 5,
                                 ),
                                 Container(
                                   height: 20,
                                   child: Image.asset('images/flight-Icon.png'),
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   width: 5,
                                 ),
                                 Text(
                                   widget.depFlight.toCity,
-                                  style: TextStyle(fontSize: 19),
+                                  style: const TextStyle(fontSize: 19),
                                 ),
                               ],
                             ),
@@ -138,10 +143,10 @@ class _OneWayDetailsState extends State<OneWayDetails> {
                                           _flightsService
                                               .formatTime(departFlight.depTime),
                                         ),
-                                        SizedBox(
+                                        const SizedBox(
                                           width: 10,
                                         ),
-                                        SizedBox(
+                                        const SizedBox(
                                           width: 20,
                                           child: Text("-"),
                                         ),
@@ -179,15 +184,33 @@ class _OneWayDetailsState extends State<OneWayDetails> {
                 children: [
                   const Spacer(),
                   Visibility(
-                    visible: currentBooking.bookingClass != 'business',
+                    visible: bookingType != 'business',
                     child: ElevatedButton(
                       onPressed: () async {
-                        bool result = await _bookingService.upgradeOneWay(
-                          bookingId: currentBooking.documentId,
-                          departureFlightId: departFlight.documentId,
-                          numOfPas: currentBooking.numOfSeats,
+                        bool? nextPage = await Navigator.push(
+                          context,
+                          MaterialPageRoute<bool>(
+                              builder: (context) => Payment(
+                                  paymentFor: 'upgrade',
+                                  id1: 'none',
+                                  id2: 'none',
+                                  flightClass: 'none',
+                                  tickets: tickets)),
                         );
-                        print(result);
+                        if (nextPage == true) {
+                          bool result = await _bookingService.upgradeOneWay(
+                            bookingId: currentBooking.documentId,
+                            departureFlightId: departFlight.documentId,
+                            numOfPas: currentBooking.numOfSeats,
+                          );
+                          if (result) {
+                            setState(() {
+                              bookingType = 'business';
+                            });
+                          }
+                        } else {
+                          print('not sucessfull');
+                        }
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.green,

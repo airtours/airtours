@@ -1,5 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:AirTours/constants/pages_route.dart';
+import 'package:AirTours/views/Admin/add_admin.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -546,6 +548,11 @@ class _CreateFlightState extends State<CreateFlight> {
                                 }
                               },
                               child: const Text('Add')),
+                          TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pushNamed(addAdminRoute);
+                              },
+                              child: const Text('add new admin'))
                         ],
                       ),
                     ),

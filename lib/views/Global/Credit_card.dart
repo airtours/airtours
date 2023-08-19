@@ -8,7 +8,6 @@ import '../../constants/pages_route.dart';
 import '../../services/cloud/cloud_booking.dart';
 import '../../services/cloud/firestore_booking.dart';
 import '../../services/cloud/firestore_ticket.dart';
-import 'bottom_bar.dart';
 
 class Creditcard extends StatefulWidget {
   final String id1;
@@ -305,7 +304,9 @@ class _CreditcardState extends State<Creditcard> {
                                   toNext(widget.tickets);
                                   Navigator.of(context).pushNamedAndRemoveUntil(
                                       bottomRoute, (route) => false);
-                                } else if (widget.paymentFor == "upgrade") {}
+                                } else if (widget.paymentFor == "upgrade") {
+                                  Navigator.pop(context);
+                                }
                               }
                             });
                           },
