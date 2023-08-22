@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:AirTours/services/cloud/cloud_booking.dart';
 import 'package:AirTours/services/cloud/cloud_flight.dart';
 import 'package:AirTours/views/Manage_booking/tickets_view.dart';
@@ -7,7 +9,11 @@ import 'package:intl/intl.dart';
 
 import '../../services/cloud/firestore_booking.dart';
 import '../../services/cloud/firestore_flight.dart';
+import '../../utilities/show_error.dart';
+import '../../utilities/show_feedback.dart';
 import '../Global/global_var.dart';
+import '../Global/paymentPage.dart';
+import '../Global/ticket.dart';
 
 class RoundTripDetails extends StatefulWidget {
   final CloudBooking booking;
@@ -32,6 +38,7 @@ class _RoundTripDetailsState extends State<RoundTripDetails> {
   late final CloudBooking currentBooking;
   late final FlightFirestore _flightsService;
   late String bookingType;
+  List<Ticket> tickets = [];
 
   @override
   void initState() {
@@ -280,7 +287,7 @@ class _RoundTripDetailsState extends State<RoundTripDetails> {
                                 const SizedBox(
                                   width: 5,
                                 ),
-                                Container(
+                                SizedBox(
                                   height: 20,
                                   child: Image.asset('images/flight-Icon.png'),
                                 ),
@@ -348,16 +355,35 @@ class _RoundTripDetailsState extends State<RoundTripDetails> {
                     visible: bookingType != 'business',
                     child: ElevatedButton(
                       onPressed: () async {
-                        bool result = await _bookingService.upgradeRoundTrip(
-                          bookingId: currentBooking.documentId,
-                          departureFlightId: departFlight.documentId,
-                          returnFlightId: retuFlight.documentId,
-                          numOfPas: currentBooking.numOfSeats,
+                        bool? nextPage = await Navigator.push(
+                          context,
+                          MaterialPageRoute<bool>(
+                              builder: (context) => Payment(
+                                  paymentFor: 'upgrade',
+                                  id1: 'none',
+                                  id2: 'none',
+                                  flightClass: 'none',
+                                  tickets: tickets)),
                         );
-                        if (result) {
-                          setState(() {
-                            bookingType = 'business';
-                          });
+                        if (nextPage == true) {
+                          bool result = await _bookingService.upgradeRoundTrip(
+                            bookingId: currentBooking.documentId,
+                            departureFlightId: departFlight.documentId,
+                            returnFlightId: retuFlight.documentId,
+                            numOfPas: currentBooking.numOfSeats,
+                          );
+                          if (result) {
+                            setState(() {
+                              bookingType = 'business';
+                            });
+
+                            showFeedback(
+                                context, 'Booking successfully upgraded.');
+                          } else {
+                            showFeedback(context, 'Failed to upgrade booking.');
+                          }
+                        } else {
+                          showErrorDialog(context, 'Payment Failed');
                         }
                       },
                       style: ElevatedButton.styleFrom(
@@ -388,8 +414,14 @@ class _RoundTripDetailsState extends State<RoundTripDetails> {
                           flightId2: retuFlight.documentId,
                           flightClass: currentBooking.bookingClass,
                           numOfPas: currentBooking.numOfSeats);
-                      print(result);
-                      Navigator.pop(context);
+
+                      if (result) {
+                        showFeedback(context, 'Booking successfully deleted.');
+                        Navigator.pop(context);
+                      } else {
+                        showErrorDialog(context,
+                            "Cannot Cancel Booking, Cancellation Deadline Passed");
+                      }
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.red,

@@ -1,5 +1,6 @@
 import 'package:AirTours/services/cloud/cloud_booking.dart';
 import 'package:AirTours/services/cloud/cloud_flight.dart';
+import 'package:AirTours/utilities/show_error.dart';
 import 'package:AirTours/views/Global/credit_card.dart';
 import 'package:AirTours/views/Global/paymentPage.dart';
 import 'package:AirTours/views/Manage_booking/tickets_view.dart';
@@ -189,9 +190,9 @@ class _OneWayDetailsState extends State<OneWayDetails> {
                     visible: bookingType != 'business',
                     child: ElevatedButton(
                       onPressed: () async {
-                        bool? nextPage = await Navigator.push(
+                        bool nextPage = await Navigator.push(
                           context,
-                          MaterialPageRoute<bool>(
+                          MaterialPageRoute(
                               builder: (context) => Payment(
                                   paymentFor: 'upgrade',
                                   id1: 'none',
@@ -210,10 +211,13 @@ class _OneWayDetailsState extends State<OneWayDetails> {
                               bookingType = 'business';
                             });
 
-                            showFeedback(context, 'Payment Successful');
+                            showFeedback(
+                                context, 'Booking successfully upgraded.');
+                          } else {
+                            showFeedback(context, 'Failed to upgrade booking.');
                           }
                         } else {
-                          print('not sucessfull');
+                          showErrorDialog(context, 'Payment Failed');
                         }
                       },
                       style: ElevatedButton.styleFrom(
@@ -244,8 +248,14 @@ class _OneWayDetailsState extends State<OneWayDetails> {
                           flightId2: 'none',
                           flightClass: currentBooking.bookingClass,
                           numOfPas: currentBooking.numOfSeats);
-                      print(result);
-                      Navigator.pop(context);
+
+                      if (result == true) {
+                        showFeedback(context, 'Booking successfully deleted.');
+                        Navigator.pop(context);
+                      } else {
+                        showErrorDialog(context,
+                            "Cannot Cancel Booking, Cancellation Deadline Passed");
+                      }
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.red,
