@@ -1,12 +1,14 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:AirTours/constants/pages_route.dart';
+import 'package:AirTours/utilities/show_feedback.dart';
 import 'package:AirTours/views/Admin/add_admin.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../../services/cloud/cloud_flight.dart';
 import '../../services/cloud/firestore_flight.dart';
+import '../../utilities/show_error.dart';
 
 class CreateFlight extends StatefulWidget {
   const CreateFlight({super.key});
@@ -522,25 +524,11 @@ class _CreateFlightState extends State<CreateFlight> {
                                           depTime: dateTimeDep);
 
                                       clearAllFields();
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                        const SnackBar(
-                                          backgroundColor: Colors.blue,
-                                          content: Text(
-                                              'Flight has been added ',
-                                              style: TextStyle(fontSize: 30)),
-                                        ),
-                                      );
+                                      await showFeedback(
+                                          context, 'Flight Added');
                                     } else {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                        const SnackBar(
-                                          backgroundColor: Colors.red,
-                                          content: Text(
-                                              'The arrival  must be after the departure ',
-                                              style: TextStyle(fontSize: 30)),
-                                        ),
-                                      );
+                                      await showErrorDialog(context,
+                                          'The arrival  must be after the departure ');
                                     }
                                   } catch (e) {
                                     print(e);

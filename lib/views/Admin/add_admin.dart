@@ -1,3 +1,4 @@
+import 'package:AirTours/utilities/show_feedback.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -24,6 +25,7 @@ class _AddAdminState extends State<AddAdmin> {
     _email = TextEditingController();
     _password = TextEditingController();
     _phoneNum = TextEditingController();
+    super.initState();
   }
 
   @override
@@ -52,6 +54,8 @@ class _AddAdminState extends State<AddAdmin> {
                       email: _email.text, phoneNum: _phoneNum.text);
 
                   //DB end
+
+                  await showFeedback(context, 'Admin Added');
                 } on WeakPasswordAuthException {
                   await showErrorDialog(context, 'Weak Password');
                 } on EmailAlreadyInUseAuthException {

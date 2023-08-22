@@ -1,3 +1,4 @@
+import 'package:AirTours/services_auth/auth_service.dart';
 import 'package:AirTours/views/Admin/add_admin.dart';
 import 'package:AirTours/views/Admin/admin.dart';
 import 'package:AirTours/views/Global/bottom_bar.dart';
@@ -6,7 +7,7 @@ import 'package:AirTours/views/Welcome_pages/login_view.dart';
 import 'package:AirTours/views/Welcome_pages/register_view.dart';
 import 'package:AirTours/views/Welcome_pages/verification_view.dart';
 import 'package:AirTours/views/Welcome_pages/welcome_page.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+// import 'package:AirTours/views/Global/charge_balance.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'constants/pages_route.dart';
@@ -40,15 +41,18 @@ class HomePage extends StatelessWidget {
       builder: (context, snapshot) {
         switch (snapshot.connectionState) {
           case ConnectionState.done:
-            final user = FirebaseAuth.instance.currentUser;
+            final user = AuthService.firebase().currentUser;
             if (user != null) {
-              if (user.emailVerified) {
-                return const CreateFlight();
+              if (user.isEmailVerified) {
+                AuthService.firebase().logOut();
+                return const Bottom();
               } else {
+                AuthService.firebase().logOut();
                 return const VerifyEmailView();
               }
             } else {
               return const WelcomeView();
+              // return const ChargeBalance();
             }
           default:
             return const CircularProgressIndicator();

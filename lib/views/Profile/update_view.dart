@@ -1,6 +1,5 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:AirTours/utilities/show_feedback.dart';
 import 'package:flutter/material.dart';
-
 import '../../services/cloud/firebase_cloud_storage.dart';
 import '../../services_auth/auth_service.dart';
 
@@ -18,32 +17,42 @@ class _UpdateViewState extends State<UpdateView> {
   @override
   void initState() {
     _email = TextEditingController();
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[300],
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          TextField(
-            controller: _email,
-          ),
-          TextButton(
-              onPressed: () {
-                //DB
-                final String currentUser =
-                    AuthService.firebase().currentUser!.id;
-                c.updateUser(
-                    ownerUserId: currentUser,
-                    email: _email.text,
-                    phoneNum: "0580647715"
-                    //DB end
-                    );
-              },
-              child: const Text('update!'))
-        ],
+      appBar: AppBar(
+        title: const Text('Update Email'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            TextField(
+              controller: _email,
+              decoration: const InputDecoration(
+                labelText: 'New Email',
+              ),
+            ),
+            const SizedBox(height: 16.0),
+            TextButton(
+                onPressed: () async {
+                  //DB
+                  final String currentUser =
+                      AuthService.firebase().currentUser!.id;
+                  c.updateUser(
+                      ownerUserId: currentUser,
+                      email: _email.text,
+                      phoneNum: "0580647715"
+                      //DB end
+                      );
+                  await showFeedback(context, 'Information Updated');
+                },
+                child: const Text('update!'))
+          ],
+        ),
       ),
     );
   }

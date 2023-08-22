@@ -1,11 +1,12 @@
+import 'package:AirTours/services_auth/auth_service.dart';
 import 'package:AirTours/views/Manage_booking/one_way_details.dart';
 import 'package:AirTours/views/Manage_booking/round_trip_details.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../../services/cloud/cloud_booking.dart';
 import '../../services/cloud/cloud_flight.dart';
+
 import '../../services/cloud/firestore_booking.dart';
 import '../../services/cloud/firestore_flight.dart';
 import '../Global/global_var.dart';
@@ -20,8 +21,9 @@ class ViewBookings extends StatefulWidget {
 class _ViewBookingsState extends State<ViewBookings> {
   late final BookingFirestore _bookingService;
   late final FlightFirestore _flightsService;
-  FirebaseAuth auth = FirebaseAuth.instance;
   late final List<CloudFlight> allFlights;
+  final userId = AuthService.firebase().currentUser!.id;
+
   CloudFlight? returnFlight;
   CloudFlight? departureFlight;
   @override
@@ -77,8 +79,7 @@ class _ViewBookingsState extends State<ViewBookings> {
         title: const Text('Current Bookings'),
       ),
       body: StreamBuilder<Iterable<CloudBooking>>(
-        stream:
-            _bookingService.allBookings(bookingUserId: auth.currentUser!.uid),
+        stream: _bookingService.allBookings(bookingUserId: userId),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting ||
               snapshot.connectionState == ConnectionState.active) {

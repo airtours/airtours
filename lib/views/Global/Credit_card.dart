@@ -1,6 +1,6 @@
+import 'package:AirTours/services_auth/auth_service.dart';
 import 'package:AirTours/views/Global/global_var.dart';
 import 'package:AirTours/views/Global/ticket.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -45,9 +45,7 @@ class _CreditcardState extends State<Creditcard> {
   }
 
   Future<String> createBooking(double totalPrice) async {
-    FirebaseAuth auth = FirebaseAuth.instance;
-    User? user = auth.currentUser;
-    final bookingUserId = user!.uid;
+    final bookingUserId = AuthService.firebase().currentUser!.id;
     if (widget.id2 == 'none') {
       booking = await _bookingService.createNewBooking(
           bookingClass: widget.flightClass,

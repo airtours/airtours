@@ -1,11 +1,13 @@
-class CloudStorageException implements Exception {
-  const CloudStorageException();
+class CloudStorageExceptions implements Exception {
+  const CloudStorageExceptions();
 }
 
-class CouldNotCreateNoteException extends CloudStorageException {}
+class CouldNotCreateUserException extends CloudStorageExceptions {}
 
-class CouldNotGetAllNotesException extends CloudStorageException {}
+class CouldNotCreateAdminException extends CloudStorageExceptions {}
 
-class CouldNotUpdateNoteException extends CloudStorageException {}
+class CouldNotUpdateInformationException extends CloudStorageExceptions {}
 
-class CouldNotDeleteNoteException extends CloudStorageException {}
+class CouldNotDeleteUserException extends CloudStorageExceptions {}
+
+//other firestore exceptions for booking and flight and ticket
