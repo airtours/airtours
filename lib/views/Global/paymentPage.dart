@@ -35,8 +35,8 @@ class _PaymentState extends State<Payment> {
               "How do you want to pay",
             ),
             GestureDetector(
-              onTap: () {
-                Navigator.push(
+              onTap: () async {
+                bool result = await Navigator.push(
                     context,
                     MaterialPageRoute(
                         builder: (context) => Creditcard(
@@ -44,8 +44,11 @@ class _PaymentState extends State<Payment> {
                             id1: widget.id1,
                             id2: widget.id2,
                             flightClass: widget.flightClass,
-                            tickets:
-                                widget.tickets))); //Criditcard  CreditCardPage
+                            tickets: widget.tickets))); //Creditcard
+
+                if (widget.paymentFor == 'upgrade') {
+                  Navigator.pop(context, result);
+                }
               },
               child: Container(
                   width: double.infinity,

@@ -1,5 +1,6 @@
 import 'package:AirTours/services/cloud/cloud_booking.dart';
 import 'package:AirTours/services/cloud/cloud_flight.dart';
+import 'package:AirTours/views/Global/credit_card.dart';
 import 'package:AirTours/views/Global/paymentPage.dart';
 import 'package:AirTours/views/Manage_booking/tickets_view.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -8,6 +9,7 @@ import 'package:intl/intl.dart';
 
 import '../../services/cloud/firestore_booking.dart';
 import '../../services/cloud/firestore_flight.dart';
+import '../../utilities/show_feedback.dart';
 import '../Global/global_var.dart';
 import '../Global/ticket.dart';
 
@@ -207,6 +209,8 @@ class _OneWayDetailsState extends State<OneWayDetails> {
                             setState(() {
                               bookingType = 'business';
                             });
+
+                            showFeedback(context, 'Payment Successful');
                           }
                         } else {
                           print('not sucessfull');

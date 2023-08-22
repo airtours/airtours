@@ -36,6 +36,7 @@ class _CreditcardState extends State<Creditcard> {
   late final TicketFirestore _ticketService;
   late final BookingFirestore _bookingService;
   CloudBooking? booking;
+  bool isSucess = false;
 
   @override
   void initState() {
@@ -303,7 +304,8 @@ class _CreditcardState extends State<Creditcard> {
                                   Navigator.of(context).pushNamedAndRemoveUntil(
                                       bottomRoute, (route) => false);
                                 } else if (widget.paymentFor == "upgrade") {
-                                  Navigator.pop(context);
+                                  isSucess = true;
+                                  Navigator.pop(context, isSucess);
                                 }
                               }
                             });

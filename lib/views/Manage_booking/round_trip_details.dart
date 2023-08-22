@@ -88,10 +88,10 @@ class _RoundTripDetailsState extends State<RoundTripDetails> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Row(
+                          const Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              const Text(
+                              Text(
                                 "Destination Flight",
                                 style: TextStyle(fontSize: 22),
                               ),
@@ -122,7 +122,7 @@ class _RoundTripDetailsState extends State<RoundTripDetails> {
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                                Text("-"),
+                                const Text("-"),
                                 Text(
                                   "${date1(departFlight.arrDate)}",
                                   style: const TextStyle(
@@ -132,7 +132,7 @@ class _RoundTripDetailsState extends State<RoundTripDetails> {
                                 ),
                               ],
                             ),
-                            SizedBox(
+                            const SizedBox(
                               height: 3,
                             ),
                             Row(
@@ -222,10 +222,10 @@ class _RoundTripDetailsState extends State<RoundTripDetails> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Row(
+                          const Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              const Text(
+                              Text(
                                 "Return Flight",
                                 style: TextStyle(fontSize: 22),
                               ),
@@ -258,7 +258,7 @@ class _RoundTripDetailsState extends State<RoundTripDetails> {
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                                Text("-"),
+                                const Text("-"),
                                 Text(
                                   "${date1(retuFlight.arrDate)}",
                                   style: const TextStyle(
@@ -268,7 +268,7 @@ class _RoundTripDetailsState extends State<RoundTripDetails> {
                                 ),
                               ],
                             ),
-                            SizedBox(
+                            const SizedBox(
                               height: 3,
                             ),
                             Row(
