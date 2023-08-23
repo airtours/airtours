@@ -97,12 +97,15 @@ class _CreditcardState extends State<Creditcard> {
           flightReference: ticket.flightReference,
           ticketClass: widget.flightClass);
     });
+    showFeedback(context, 'Booking sucessfully created.');
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(),
+        appBar: AppBar(
+          title: Text('Here price'),
+        ),
         body: SafeArea(
             child: Padding(
           padding: const EdgeInsets.all(7.0),
@@ -304,8 +307,6 @@ class _CreditcardState extends State<Creditcard> {
                             setState(() {
                               if (formKey.currentState!.validate()) {
                                 if (widget.paymentFor == 'booking') {
-                                  showFeedback(
-                                      context, 'Booking sucessfully created.');
                                   toNext(widget.tickets);
 
                                   Navigator.of(context).pushNamedAndRemoveUntil(

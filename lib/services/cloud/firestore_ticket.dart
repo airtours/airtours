@@ -72,26 +72,26 @@ class TicketFirestore {
   Future<bool> checkInUpdating(String ticketId, String flightId) async {
     try {
       DateTime now = DateTime.now();
+      print('$ticketId , $flightId');
       final tempFlight = flights.doc(flightId);
       final fetchedFlight = await tempFlight.get();
-      final tempTicket = flights.doc(ticketId);
-      final fetchedTicket = await tempTicket.get();
+      final tempTicket = tickets.doc(ticketId);
 
       if (fetchedFlight.exists) {
+        print('ok');
         DateTime flightDate = fetchedFlight.data()![depDateField].toDate();
         DateTime flightTime = fetchedFlight.data()![depTimeField].toDate();
         DateTime totalTime = DateTime(flightDate.year, flightDate.month,
             flightDate.day, flightTime.hour, flightTime.minute);
+        print(totalTime);
         Duration timeDifference = totalTime.difference(now);
-        if (timeDifference.inHours < 24) {
-          if (fetchedTicket.exists) {
-            await tempFlight.update({checkInStatusField: true});
+        print(timeDifference);
+        if (timeDifference.inHours <= 24) {
+          await tempTicket.update({checkInStatusField: true});
 
-            return true;
-          }
+          return true;
         }
       }
-
       return false;
     } catch (e) {
       return false;

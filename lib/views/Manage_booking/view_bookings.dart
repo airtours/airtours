@@ -153,11 +153,35 @@ class _ViewBookingsState extends State<ViewBookings> {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        const Text(
-                                          "Referance:",
-                                          style: TextStyle(fontSize: 24),
+                                        const Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(
+                                              "Referance:",
+                                              style: TextStyle(fontSize: 24),
+                                            ),
+                                            Text(
+                                              "Booking Time",
+                                              style: TextStyle(fontSize: 24),
+                                            ),
+                                          ],
                                         ),
-                                        Text(booking.documentId),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(booking.documentId),
+                                            Row(
+                                              children: [
+                                                Text(
+                                                    date1(booking.bookingTime)),
+                                                Text(
+                                                    ' , ${_flightsService.formatTime(booking.bookingTime)}'),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
                                         const SizedBox(
                                           child: Divider(
                                             color: Colors.black,

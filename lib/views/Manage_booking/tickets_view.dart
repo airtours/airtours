@@ -2,6 +2,7 @@ import 'package:AirTours/services/cloud/cloud_booking.dart';
 import 'package:AirTours/services/cloud/cloud_flight.dart';
 import 'package:AirTours/services/cloud/cloud_ticket.dart';
 import 'package:AirTours/services/cloud/firestore_ticket.dart';
+import 'package:AirTours/utilities/show_error.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -232,6 +233,24 @@ class _TicketsViewState extends State<TicketsView> {
                         GestureDetector(
                           onTap: () async {
                             if (ticket.checkInStatus == false) {
+                              final bool isChecked = await _ticketsService
+                                  .checkInUpdating(ticket.documentId, flightId);
+                              print(isChecked);
+                              if (isChecked == true) {
+                                // ignore: use_build_context_synchronously
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => BoardingPass(
+                                          booking: widget.booking,
+                                          flight: widget.flight,
+                                          ticket: ticket),
+                                    ));
+                              } else {
+                                showErrorDialog(context,
+                                    "You can't check-in now. Check-in for your flight would be available within 24 hours of departure. ");
+                              }
+                            } else {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
@@ -240,10 +259,6 @@ class _TicketsViewState extends State<TicketsView> {
                                         flight: widget.flight,
                                         ticket: ticket),
                                   ));
-                            } else {
-                              final bool isChecked = await _ticketsService
-                                  .checkInUpdating(ticket.documentId, flightId);
-                              print(isChecked);
                             }
                           },
                           child: Container(
