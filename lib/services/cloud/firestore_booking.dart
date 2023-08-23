@@ -34,7 +34,7 @@ class BookingFirestore {
           flightTime.hour,
           flightTime.minute,
         );
-        print('$totalTime th??');
+
         if (DateTime.now().isBefore(totalTime)) {
           int currentBus1 = fetchedDep.data()![numOfAvabusField];
           double busSeatPrice1 = fetchedDep.data()![busPriceField];
@@ -179,19 +179,23 @@ class BookingFirestore {
   }
 
   Future<CloudBooking> createNewBooking(
-      {required bookingClass,
-      required bookingPrice,
-      required departureFlight,
-      required returnFlight,
-      required numOfSeats,
+      {required String bookingClass,
+      required double bookingPrice,
+      required String departureFlight,
+      required String returnFlight,
+      required int numOfSeats,
+      required DateTime bookingTime,
       required String bookingUserId}) async {
+    Timestamp bookingTimestamp = Timestamp.fromDate(bookingTime);
+
     final document = await bookings.add({
       bookingClassField: bookingClass,
       bookingPriceField: bookingPrice,
       departureFlightField: departureFlight,
       returnFlightField: returnFlight,
       bookingUserIdField: bookingUserId,
-      numOfSeatsField: numOfSeats
+      numOfSeatsField: numOfSeats,
+      bookingTimeField: bookingTimestamp
     });
     decreaseNumberOfSeats(departureFlight, numOfSeats, bookingClass);
     if (returnFlight != 'none') {
@@ -206,7 +210,8 @@ class BookingFirestore {
         departureFlight: departureFlight,
         returnFlight: returnFlight,
         bookingUserId: bookingUserId,
-        numOfSeats: numOfSeats);
+        numOfSeats: numOfSeats,
+        bookingTime: bookingTimestamp);
   }
 
   Future<void> decreaseNumberOfSeats(

@@ -57,6 +57,10 @@ class FlightFirestore {
     required arrTime,
     required depTime,
   }) async {
+    Timestamp depDateStamp = Timestamp.fromDate(depDate);
+    Timestamp arrDateStamp = Timestamp.fromDate(arrDate);
+    Timestamp depTimeStamp = Timestamp.fromDate(depTime);
+    Timestamp arrTimeStamp = Timestamp.fromDate(arrTime);
     final document = await flights.add({
       fromField: fromCity,
       toField: toCity,
@@ -66,10 +70,10 @@ class FlightFirestore {
       numOfGueField: numOfGuest,
       guePriceField: guestPrice,
       busPriceField: busPrice,
-      depDateField: depDate,
-      arrDateField: arrDate,
-      arrTimeField: arrTime,
-      depTimeField: depTime,
+      depDateField: depDateStamp,
+      arrDateField: arrDateStamp,
+      arrTimeField: arrTimeStamp,
+      depTimeField: depTimeStamp,
       numOfAvabusField: numOfBusiness,
       numOfAvaGueField: numOfGuest,
     });
@@ -170,11 +174,11 @@ class FlightFirestore {
       final fetchedFlight = await tempFlight.get();
 
       if (fetchedFlight.exists) {
-        DateTime flightDate = fetchedFlight.data()![depDateField].toDate();
-        DateTime flightTime = fetchedFlight.data()![depTimeField].toDate();
+        DateTime flightDate = fetchedFlight.data()![arrDateField].toDate();
+        DateTime flightTime = fetchedFlight.data()![arrTimeField].toDate();
         DateTime totalTime = DateTime(flightDate.year, flightDate.month,
             flightDate.day, flightTime.hour, flightTime.minute);
-        print(totalTime);
+
         if (totalTime.isAfter(DateTime.now())) {
           return true;
         } else {
@@ -246,5 +250,33 @@ class FlightFirestore {
     }
 
     return sortedFlights;
+  }
+
+  Future<bool> didFly({required departureFlightId}) async {
+    try {
+      bool flag = false;
+      final depFlight = flights.doc(departureFlightId);
+      final fetchedDep = await depFlight.get();
+
+      if (fetchedDep.exists) {
+        DateTime flightDate = fetchedDep.data()![depDateField].toDate();
+        DateTime flightTime = fetchedDep.data()![depTimeField].toDate();
+        DateTime totalTime = DateTime(
+          flightDate.year,
+          flightDate.month,
+          flightDate.day,
+          flightTime.hour,
+          flightTime.minute,
+        );
+
+        if (DateTime.now().isBefore(totalTime)) {
+          flag = true;
+        }
+        return flag;
+      }
+    } catch (e) {
+      print(e);
+    }
+    return false;
   }
 }

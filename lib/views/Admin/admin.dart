@@ -3,7 +3,6 @@
 import 'package:AirTours/constants/pages_route.dart';
 import 'package:AirTours/utilities/show_feedback.dart';
 import 'package:AirTours/views/Admin/add_admin.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../../services/cloud/cloud_flight.dart';
@@ -75,10 +74,6 @@ class _CreateFlightState extends State<CreateFlight> {
     required arrTime,
     required depTime,
   }) async {
-    Timestamp depDateStamp = Timestamp.fromDate(depDate);
-    Timestamp arrDateStamp = Timestamp.fromDate(arrDate);
-    Timestamp depTimeStamp = Timestamp.fromDate(depTime);
-    Timestamp arrTimeStamp = Timestamp.fromDate(arrTime);
     int intNumOfBus = int.parse(numOfBusiness);
     int intNumOfGuest = int.parse(numOfGuest);
     double guePrice = double.parse(guestPrice);
@@ -93,10 +88,10 @@ class _CreateFlightState extends State<CreateFlight> {
       numOfGuest: intNumOfGuest,
       guestPrice: guePrice,
       busPrice: businessPrice,
-      depDate: depDateStamp,
-      arrDate: arrDateStamp,
-      arrTime: arrTimeStamp,
-      depTime: depTimeStamp,
+      depDate: depDate,
+      arrDate: arrDate,
+      arrTime: arrTime,
+      depTime: depTime,
     );
 
     _flight = newFlight;

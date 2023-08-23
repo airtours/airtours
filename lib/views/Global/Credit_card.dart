@@ -48,6 +48,7 @@ class _CreditcardState extends State<Creditcard> {
 
   Future<String> createBooking(double totalPrice) async {
     final bookingUserId = AuthService.firebase().currentUser!.id;
+    DateTime timeNow = DateTime.now();
     if (widget.id2 == 'none') {
       booking = await _bookingService.createNewBooking(
           bookingClass: widget.flightClass,
@@ -55,7 +56,8 @@ class _CreditcardState extends State<Creditcard> {
           departureFlight: widget.id1,
           returnFlight: 'none',
           numOfSeats: count,
-          bookingUserId: bookingUserId);
+          bookingUserId: bookingUserId,
+          bookingTime: timeNow);
       final bookingRef = booking!.documentId;
       return bookingRef;
     } else {
@@ -65,7 +67,8 @@ class _CreditcardState extends State<Creditcard> {
           departureFlight: widget.id1,
           returnFlight: widget.id2,
           numOfSeats: count,
-          bookingUserId: bookingUserId);
+          bookingUserId: bookingUserId,
+          bookingTime: timeNow);
       final bookingRef = booking!.documentId;
       return bookingRef;
     }
@@ -301,9 +304,10 @@ class _CreditcardState extends State<Creditcard> {
                             setState(() {
                               if (formKey.currentState!.validate()) {
                                 if (widget.paymentFor == 'booking') {
-                                  toNext(widget.tickets);
                                   showFeedback(
                                       context, 'Booking sucessfully created.');
+                                  toNext(widget.tickets);
+
                                   Navigator.of(context).pushNamedAndRemoveUntil(
                                       bottomRoute, (route) => false);
                                 } else if (widget.paymentFor == "upgrade") {

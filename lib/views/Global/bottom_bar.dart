@@ -5,6 +5,7 @@ import '../One-Way/one_way.dart';
 import '../Round-Trip/round_trip.dart';
 import '../profile/ProfileView.dart';
 import 'display_history.dart';
+import 'package:google_nav_bar/google_nav_bar.dart';
 
 class Bottom extends StatefulWidget {
   const Bottom({super.key});
@@ -21,33 +22,51 @@ class _BottomState extends State<Bottom> {
     const Center(child: ViewBookings()),
     const Center(child: ProfileView()),
   ];
+  Widget pageNumber(int page) {
+    final pages = [
+      const Center(child: SelectTravelType()),
+      const Center(child: History()),
+      const Center(child: ViewBookings()),
+      const Center(child: ProfileView()),
+    ];
+    return pages[page];
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: pages[indexx],
-      bottomNavigationBar: NavigationBar(
-        height: 60,
-        backgroundColor: Colors.blue,
-        indicatorColor: Colors.white,
-        selectedIndex: indexx,
-        onDestinationSelected: (value) {
-          setState(() {
-            indexx = value;
-          });
-        },
-        destinations: const [
-          NavigationDestination(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          NavigationDestination(
-              icon: Icon(Icons.history_sharp), label: 'History'),
-          NavigationDestination(
-              icon: Icon(Icons.manage_history_sharp), label: 'Manage'),
-          NavigationDestination(
-              icon: Icon(Icons.person_2_sharp), label: "Profile")
-        ],
-      ),
+      bottomNavigationBar: GNav(
+          gap: 8,
+          backgroundColor: Colors.blue,
+          color: Colors.black,
+          activeColor: Colors.white,
+          //tabBackgroundColor: Colors.white,
+          onTabChange: (value) {
+            setState(() {
+              indexx = value;
+            });
+          },
+          tabs: [
+            GButton(
+              onPressed: () => const SelectTravelType(),
+              icon: Icons.home,
+              text: "Home",
+            ),
+            const GButton(
+              icon: Icons.history_sharp,
+              text: "History",
+            ),
+            const GButton(
+              icon: Icons.manage_history_sharp,
+              text: "Manage",
+            ),
+            GButton(
+              onPressed: () => const ProfileView(),
+              icon: Icons.person_2_sharp,
+              text: "Profile",
+            )
+          ]),
     );
   }
 }
@@ -89,24 +108,25 @@ class _SelectTravelTypeState extends State<SelectTravelType> {
                           borderRadius: BorderRadius.circular(25)),
                       labelColor: Colors.white,
                       unselectedLabelColor: Colors.black,
-                      tabs: const [
-                        Row(
+                      tabs: [
+                        const Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [Tab(text: "One way"), Icon(Icons.flight)],
                         ),
-                        Tab(
-                          text: "Round trip",
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            const Tab(
+                              text: "Round trip",
+                            ),
+                            Image.asset('images/RoundTrip.jpeg'),
+                          ],
                         )
                       ],
                     ),
                   ),
                   const Expanded(
-                      child: TabBarView(children: [
-                    OneWay(),
-                    Center(
-                      child: RoundTrip(),
-                    )
-                  ]))
+                      child: TabBarView(children: [OneWay(), RoundTrip()]))
                 ],
               ),
             ),

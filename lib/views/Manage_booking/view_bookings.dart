@@ -66,7 +66,7 @@ class _ViewBookingsState extends State<ViewBookings> {
     String formattedDate = formatter.format(departureDate);
     List<String> parts = formattedDate.split(' ');
     int month = int.parse(parts[0]);
-    String monthName = monthNames[month];
+    String monthName = monthNames[month - 1];
     String day = parts[1];
     String year = parts[2];
     return '$monthName $day $year';
@@ -153,27 +153,6 @@ class _ViewBookingsState extends State<ViewBookings> {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Text(
-                                              date1(departureFlight.depDate),
-                                              style: const TextStyle(
-                                                fontSize: 17,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                            if (booking.returnFlight != 'none')
-                                              Text(
-                                                date1(returnFlight!.depDate),
-                                                style: const TextStyle(
-                                                  fontSize: 17,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                          ],
-                                        ),
                                         const Text(
                                           "Referance:",
                                           style: TextStyle(fontSize: 24),
@@ -199,7 +178,7 @@ class _ViewBookingsState extends State<ViewBookings> {
                                                   const SizedBox(
                                                     width: 5,
                                                   ),
-                                                  Container(
+                                                  SizedBox(
                                                     height: 20,
                                                     child: Image.asset(
                                                         'images/flight-Icon.png'),
@@ -248,7 +227,7 @@ class _ViewBookingsState extends State<ViewBookings> {
                                                     const SizedBox(
                                                       width: 5,
                                                     ),
-                                                    Container(
+                                                    SizedBox(
                                                       height: 20,
                                                       child: Image.asset(
                                                           'images/flight-Icon.png'),
@@ -287,6 +266,49 @@ class _ViewBookingsState extends State<ViewBookings> {
                                                   ],
                                                 )
                                               ]),
+                                          ],
+                                        ),
+                                        const SizedBox(
+                                          child: Divider(
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Row(
+                                              children: [
+                                                const Text("Price: ",
+                                                    style: TextStyle(
+                                                      fontSize: 18.0,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: Colors.black87,
+                                                    )),
+                                                Text(
+                                                  "${booking.bookingPrice}",
+                                                  style: const TextStyle(
+                                                      fontSize: 15),
+                                                )
+                                              ],
+                                            ),
+                                            Row(
+                                              children: [
+                                                const Text("class: ",
+                                                    style: TextStyle(
+                                                      fontSize: 18.0,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: Colors.black87,
+                                                    )),
+                                                Text(
+                                                  booking.bookingClass,
+                                                  style: const TextStyle(
+                                                      fontSize: 15),
+                                                )
+                                              ],
+                                            ),
                                           ],
                                         )
                                       ],

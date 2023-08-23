@@ -37,7 +37,7 @@ class _BoardingPassState extends State<BoardingPass> {
     String formattedDate = formatter.format(departureDate);
     List<String> parts = formattedDate.split(' ');
     int month = int.parse(parts[0]);
-    String monthName = monthNames[month];
+    String monthName = monthNames[month - 1];
     String day = parts[1];
     String year = parts[2];
     return '$monthName $day $year';
@@ -55,17 +55,40 @@ class _BoardingPassState extends State<BoardingPass> {
     return '$day/$monthName/$year';
   }
 
+  // String boardingTime(Timestamp departureTime) {
+  //   DateTime departureDateTime = departureTime.toDate();
+  //   DateTime boardingDateTime =
+  //       departureDateTime.subtract(Duration(minutes: 30));
+
+  //   String formattedBoardingTime =
+  //       boardingDateTime.hour.toString().padLeft(2, '0') +
+  //           ':' +
+  //           boardingDateTime.minute.toString().padLeft(2, '0') +
+  //           ' ' +
+  //           (boardingDateTime.hour >= 12 ? 'PM' : 'AM');
+
+  //   return formattedBoardingTime;
+  // }
   String boardingTime(Timestamp departureTime) {
     DateTime departureDateTime = departureTime.toDate();
     DateTime boardingDateTime =
         departureDateTime.subtract(Duration(minutes: 30));
 
-    String formattedBoardingTime =
-        boardingDateTime.hour.toString().padLeft(2, '0') +
-            ':' +
-            boardingDateTime.minute.toString().padLeft(2, '0') +
-            ' ' +
-            (boardingDateTime.hour >= 12 ? 'PM' : 'AM');
+    int hour = boardingDateTime.hour % 12;
+    if (hour == 0) {
+      hour = 12;
+    }
+
+    String formattedHour = hour.toString();
+    if (formattedHour.length == 1) {
+      formattedHour = ' ' + formattedHour;
+    }
+
+    String formattedBoardingTime = formattedHour +
+        ':' +
+        boardingDateTime.minute.toString().padLeft(2, '0') +
+        ' ' +
+        (boardingDateTime.hour >= 12 ? 'PM' : 'AM');
 
     return formattedBoardingTime;
   }
@@ -198,10 +221,9 @@ class _BoardingPassState extends State<BoardingPass> {
                               ),
                               Row(
                                 children: [
-                                  Text("${date1(widget.flight.depDate)}  "),
+                                  Text("${date1(widget.flight.depDate)}"),
                                   Text(
-                                    _flightsService
-                                        .formatTime(widget.flight.depTime),
+                                    ",${_flightsService.formatTime(widget.flight.depTime)}",
                                     style: TextStyle(
                                       fontSize: 14.0,
                                       fontWeight: FontWeight.bold,
@@ -286,7 +308,7 @@ class _BoardingPassState extends State<BoardingPass> {
                                     fontWeight: FontWeight.bold,
                                     color: Colors.black87,
                                   )),
-                              Text("class:",
+                              Text("Class:",
                                   style: TextStyle(
                                     fontSize: 18.0,
                                     fontWeight: FontWeight.bold,

@@ -41,7 +41,7 @@ class _TicketsViewState extends State<TicketsView> {
     String formattedDate = formatter.format(departureDate);
     List<String> parts = formattedDate.split(' ');
     int month = int.parse(parts[0]);
-    String monthName = monthNames[month];
+    String monthName = monthNames[month - 1];
     String day = parts[1];
     String year = parts[2];
     return '$monthName $day $year';
@@ -63,7 +63,7 @@ class _TicketsViewState extends State<TicketsView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.blue[900],
+        backgroundColor: Colors.blue,
         centerTitle: true,
         title: const Text(
           'List of Tickets',
