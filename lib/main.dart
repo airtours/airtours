@@ -2,12 +2,14 @@ import 'package:AirTours/services_auth/auth_service.dart';
 import 'package:AirTours/views/Admin/add_admin.dart';
 import 'package:AirTours/views/Admin/admin.dart';
 import 'package:AirTours/views/Global/bottom_bar.dart';
+import 'package:AirTours/views/Profile/ProfileView.dart';
+import 'package:AirTours/views/Profile/add_balance.dart';
+import 'package:AirTours/views/Profile/balance_credit_card.dart';
 import 'package:AirTours/views/Profile/update_view.dart';
 import 'package:AirTours/views/Welcome_pages/login_view.dart';
 import 'package:AirTours/views/Welcome_pages/register_view.dart';
 import 'package:AirTours/views/Welcome_pages/verification_view.dart';
 import 'package:AirTours/views/Welcome_pages/welcome_page.dart';
-// import 'package:AirTours/views/Global/charge_balance.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'constants/pages_route.dart';
@@ -25,7 +27,9 @@ Future<void> main() async {
       welcomeRoute: (context) => const WelcomeView(),
       createFlightRoute: (context) => const CreateFlight(),
       addAdminRoute: (context) => const AddAdmin(),
-      updateRoute: (context) => const UpdateView()
+      updateRoute: (context) => const UpdateView(),
+      addBalanceRoute: (context) => const AddBalance(),
+      profileRoute: (context) => const ProfileView()
     },
   ));
 }
@@ -50,7 +54,6 @@ class HomePage extends StatelessWidget {
               }
             } else {
               return const WelcomeView();
-              // return const ChargeBalance();
             }
           default:
             return const CircularProgressIndicator();

@@ -6,3 +6,5 @@ const bottomRoute = '/bottomView/';
 const createFlightRoute = '/createFlightView/';
 const addAdminRoute = '/addadmin/';
 const updateRoute = '/updateView/';
+const addBalanceRoute = '/addbalanceView/';
+const profileRoute = '/profileView/';

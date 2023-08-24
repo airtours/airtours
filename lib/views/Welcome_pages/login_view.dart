@@ -36,7 +36,7 @@ class _LoginViewState extends State<LoginView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[300],
+      backgroundColor: Colors.white,
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 30),
@@ -46,7 +46,7 @@ class _LoginViewState extends State<LoginView> {
             children: [
               Container(
                 height: 200,
-                child: Image.asset('img/tours3.png'),
+                child: Image.asset('images/image1.jpeg'),
               ),
               const Text(
                 'AirTours',

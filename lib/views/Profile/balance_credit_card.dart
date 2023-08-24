@@ -1,111 +1,48 @@
+import 'package:AirTours/constants/pages_route.dart';
 import 'package:AirTours/services_auth/auth_service.dart';
-import 'package:AirTours/utilities/show_feedback.dart';
-import 'package:AirTours/views/Global/global_var.dart';
-import 'package:AirTours/views/Global/ticket.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../../constants/pages_route.dart';
-import '../../services/cloud/cloud_booking.dart';
-import '../../services/cloud/firestore_booking.dart';
-import '../../services/cloud/firestore_ticket.dart';
+import '../../services/cloud/cloud_storage_exceptions.dart';
+import '../../utilities/show_feedback.dart';
 
-class Creditcard extends StatefulWidget {
-  final String id1;
-  final String paymentFor;
-  final String id2;
-  final String flightClass;
-  final List<Ticket> tickets;
-  const Creditcard(
-      {super.key,
-      required this.id1,
-      required this.id2,
-      required this.flightClass,
-      required this.tickets,
-      required this.paymentFor});
+class ChargeBalance extends StatefulWidget {
+  final String balance;
+
+  const ChargeBalance({super.key, required this.balance});
 
   @override
-  State<Creditcard> createState() => _CreditcardState();
+  State<ChargeBalance> createState() => _ChargeBalanceState();
 }
 
-class _CreditcardState extends State<Creditcard> {
+class _ChargeBalanceState extends State<ChargeBalance> {
   final formKey = GlobalKey<FormState>();
   TextEditingController cardNumber = TextEditingController();
   TextEditingController cardName = TextEditingController();
   TextEditingController cvv = TextEditingController();
   TextEditingController expiryDate = TextEditingController();
-  late final TicketFirestore _ticketService;
-  late final BookingFirestore _bookingService;
-  CloudBooking? booking;
-  bool isSucess = false;
+  final user = FirebaseFirestore.instance.collection('user');
 
-  @override
-  void initState() {
-    super.initState();
-    _bookingService = BookingFirestore();
-    _ticketService = TicketFirestore();
-  }
-
-  Future<String> createBooking(double totalPrice) async {
-    final bookingUserId = AuthService.firebase().currentUser!.id;
-    DateTime timeNow = DateTime.now();
-    if (widget.id2 == 'none') {
-      booking = await _bookingService.createNewBooking(
-          bookingClass: widget.flightClass,
-          bookingPrice: totalPrice,
-          departureFlight: widget.id1,
-          returnFlight: 'none',
-          numOfSeats: count,
-          bookingUserId: bookingUserId,
-          bookingTime: timeNow);
-      final bookingRef = booking!.documentId;
-      return bookingRef;
-    } else {
-      booking = await _bookingService.createNewBooking(
-          bookingClass: widget.flightClass,
-          bookingPrice: totalPrice,
-          departureFlight: widget.id1,
-          returnFlight: widget.id2,
-          numOfSeats: count,
-          bookingUserId: bookingUserId,
-          bookingTime: timeNow);
-      final bookingRef = booking!.documentId;
-      return bookingRef;
+  //DB
+  Future<void> toNext() async {
+    try {
+      String userId = AuthService.firebase().currentUser!.id;
+      final docRef = user.doc(userId);
+      final docSnap = await docRef.get();
+      final currentBalance = docSnap.data()!["balance"];
+      final toDouble = double.parse(widget.balance);
+      final newBalance = toDouble + currentBalance;
+      await docRef.update({"balance": newBalance});
+    } catch (_) {
+      throw CouldNotUpdateInformationException();
     }
-  }
-
-  void toNext(List<Ticket> alltickets) async {
-    double totalBookingPrice = 0;
-    for (var x in alltickets) {
-      totalBookingPrice = totalBookingPrice + x.ticketPrice;
-    }
-
-    final tmp = await createBooking(totalBookingPrice);
-
-    alltickets.forEach((ticket) async {
-      await _ticketService.createNewTicket(
-          firstName: ticket.firstName,
-          middleName: ticket.middleName,
-          checkInStatus: ticket.checkInStatus,
-          bagQuantity: ticket.bagQuantity,
-          mealType: ticket.mealType,
-          lastName: ticket.lastName,
-          ticketPrice: ticket.ticketPrice,
-          bookingReference: tmp,
-          ticketUserId: '1',
-          birthDate: ticket.birthDate,
-          flightReference: ticket.flightReference,
-          ticketClass: widget.flightClass);
-    });
-    await showFeedback(context, 'Booking sucessfully created.');
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text('Here price'),
-        ),
+        appBar: AppBar(),
         body: SafeArea(
             child: Padding(
           padding: const EdgeInsets.all(7.0),
@@ -303,20 +240,16 @@ class _CreditcardState extends State<Creditcard> {
                       ),
                       Expanded(
                         child: GestureDetector(
-                          onTap: () {
+                          onTap: () async {
                             setState(() {
                               if (formKey.currentState!.validate()) {
-                                if (widget.paymentFor == 'booking') {
-                                  toNext(widget.tickets);
-
-                                  Navigator.of(context).pushNamedAndRemoveUntil(
-                                      bottomRoute, (route) => false);
-                                } else if (widget.paymentFor == "upgrade") {
-                                  isSucess = true;
-                                  Navigator.pop(context, isSucess);
-                                }
+                                toNext();
                               }
                             });
+                            await showFeedback(
+                                context, 'balance successefully added');
+                            Navigator.of(context).pushNamedAndRemoveUntil(
+                                bottomRoute, (route) => false);
                           },
                           child: Container(
                               margin: const EdgeInsets.all(5),

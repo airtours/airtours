@@ -1,5 +1,9 @@
 import 'package:AirTours/constants/pages_route.dart';
 import 'package:AirTours/services/cloud/firebase_cloud_storage.dart';
+import 'package:AirTours/services_auth/auth_service.dart';
+import 'package:AirTours/utilities/button.dart';
+import 'package:AirTours/utilities/show_feedback.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class ProfileView extends StatefulWidget {
@@ -12,9 +16,13 @@ class ProfileView extends StatefulWidget {
 class _ProfileViewState extends State<ProfileView> {
   final FirebaseCloudStorage c = FirebaseCloudStorage();
 
-  @override
-  void initState() {
-    super.initState();
+  Future<String> showBalance() async {
+    final user = FirebaseFirestore.instance.collection('user');
+    String userId = AuthService.firebase().currentUser!.id;
+    final docRef = user.doc(userId);
+    final docSnap = await docRef.get();
+    final currentBalance = docSnap.data()!['balance'];
+    return currentBalance.toString();
   }
 
   @override
@@ -25,13 +33,45 @@ class _ProfileViewState extends State<ProfileView> {
       ),
       body: SafeArea(
         child: Column(
-          //mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // const Text(
-            //   'User Balance',
-            //   style: TextStyle(fontSize: 24.0),
-            // ),
-            //const SizedBox(height: 32.0),
+            FutureBuilder<String>(
+              future: showBalance(),
+              builder: (context, snapshot) {
+                return Text(snapshot.data ?? '',
+                    style: const TextStyle(fontSize: 24.0));
+              },
+            ),
+            Padding(
+              padding: const EdgeInsets.all(5.0),
+              child: SizedBox(
+                height: 60,
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).pushNamed(addBalanceRoute);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                  ),
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Add Balance',
+                        style: TextStyle(fontSize: 16.0, color: Colors.black),
+                      ),
+                      Text(
+                        '>',
+                        style: TextStyle(fontSize: 14.0, color: Colors.black),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
             Padding(
               padding: const EdgeInsets.all(5.0),
               child: SizedBox(
@@ -63,7 +103,6 @@ class _ProfileViewState extends State<ProfileView> {
                 ),
               ),
             ),
-            //const SizedBox(height: 16.0),
             Padding(
               padding: const EdgeInsets.all(5.0),
               child: SizedBox(
@@ -71,7 +110,7 @@ class _ProfileViewState extends State<ProfileView> {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {
-                    // Handle change password here
+                    //handle change password
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.white,
@@ -103,7 +142,7 @@ class _ProfileViewState extends State<ProfileView> {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {
-                    // Handle account deletion here
+                    // Handle deletion
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.red,
@@ -117,6 +156,33 @@ class _ProfileViewState extends State<ProfileView> {
                     child: Text(
                       'Delete Account',
                       style: TextStyle(fontSize: 18.0),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(5.0),
+              child: SizedBox(
+                height: 60,
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    AuthService.firebase().logOut();
+                    Navigator.of(context).pushNamed(loginRoute);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                  ),
+                  child: const Padding(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+                    child: Text(
+                      'Logout',
+                      style: TextStyle(fontSize: 18.0, color: Colors.red),
                     ),
                   ),
                 ),
