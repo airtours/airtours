@@ -3,10 +3,12 @@
 import 'package:AirTours/constants/pages_route.dart';
 import 'package:AirTours/utilities/show_feedback.dart';
 import 'package:AirTours/views/Admin/add_admin.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../../services/cloud/cloud_flight.dart';
 import '../../services/cloud/firestore_flight.dart';
+import '../../services_auth/auth_service.dart';
 import '../../utilities/show_error.dart';
 
 class CreateFlight extends StatefulWidget {
@@ -74,6 +76,10 @@ class _CreateFlightState extends State<CreateFlight> {
     required arrTime,
     required depTime,
   }) async {
+    Timestamp depDateStamp = Timestamp.fromDate(depDate);
+    Timestamp arrDateStamp = Timestamp.fromDate(arrDate);
+    Timestamp depTimeStamp = Timestamp.fromDate(depTime);
+    Timestamp arrTimeStamp = Timestamp.fromDate(arrTime);
     int intNumOfBus = int.parse(numOfBusiness);
     int intNumOfGuest = int.parse(numOfGuest);
     double guePrice = double.parse(guestPrice);
@@ -88,10 +94,10 @@ class _CreateFlightState extends State<CreateFlight> {
       numOfGuest: intNumOfGuest,
       guestPrice: guePrice,
       busPrice: businessPrice,
-      depDate: depDate,
-      arrDate: arrDate,
-      arrTime: arrTime,
-      depTime: depTime,
+      depDate: depDateStamp,
+      arrDate: arrDateStamp,
+      arrTime: arrTimeStamp,
+      depTime: depTimeStamp,
     );
 
     _flight = newFlight;
@@ -535,7 +541,27 @@ class _CreateFlightState extends State<CreateFlight> {
                               onPressed: () {
                                 Navigator.of(context).pushNamed(addAdminRoute);
                               },
-                              child: const Text('add new admin'))
+                              child: const Text('Add Admin')),
+                          ElevatedButton(
+                            onPressed: () {
+                              AuthService.firebase().logOut();
+                              Navigator.of(context).pushNamed(loginRoute);
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.red,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8.0),
+                              ),
+                            ),
+                            child: const Padding(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 16.0, vertical: 12.0),
+                              child: Text(
+                                'Sign Out',
+                                style: TextStyle(fontSize: 18.0),
+                              ),
+                            ),
+                          ),
                         ],
                       ),
                     ),

@@ -57,10 +57,6 @@ class FlightFirestore {
     required arrTime,
     required depTime,
   }) async {
-    Timestamp depDateStamp = Timestamp.fromDate(depDate);
-    Timestamp arrDateStamp = Timestamp.fromDate(arrDate);
-    Timestamp depTimeStamp = Timestamp.fromDate(depTime);
-    Timestamp arrTimeStamp = Timestamp.fromDate(arrTime);
     final document = await flights.add({
       fromField: fromCity,
       toField: toCity,
@@ -70,10 +66,10 @@ class FlightFirestore {
       numOfGueField: numOfGuest,
       guePriceField: guestPrice,
       busPriceField: busPrice,
-      depDateField: depDateStamp,
-      arrDateField: arrDateStamp,
-      arrTimeField: arrTimeStamp,
-      depTimeField: depTimeStamp,
+      depDateField: depDate,
+      arrDateField: arrDate,
+      arrTimeField: arrTime,
+      depTimeField: depTime,
       numOfAvabusField: numOfBusiness,
       numOfAvaGueField: numOfGuest,
     });
