@@ -1,10 +1,15 @@
+import 'package:AirTours/main.dart';
 import 'package:AirTours/services_auth/auth_service.dart';
+import 'package:AirTours/utilities/show_balance.dart';
+import 'package:AirTours/utilities/show_error.dart';
 import 'package:AirTours/utilities/show_feedback.dart';
 import 'package:AirTours/views/Global/global_var.dart';
 import 'package:AirTours/views/Global/ticket.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../constants/booking_constants.dart';
 import '../../constants/pages_route.dart';
 import '../../services/cloud/cloud_booking.dart';
 import '../../services/cloud/firestore_booking.dart';
@@ -97,14 +102,104 @@ class _CreditcardState extends State<Creditcard> {
           flightReference: ticket.flightReference,
           ticketClass: widget.flightClass);
     });
-    await showFeedback(context, 'Booking sucessfully created.');
+    showFeedback(context, 'Booking sucessfully created.');
+  }
+
+  double showTotBookingsPrice() {
+    double totalBookingPrice = 0;
+    for (var x in widget.tickets) {
+      totalBookingPrice = totalBookingPrice + x.ticketPrice;
+    }
+    return totalBookingPrice;
+  }
+
+  Future<void> isBiggerOrSmaller() async {
+    final user = FirebaseFirestore.instance.collection('user');
+    //booking price
+    String priceInString = await showTotBookingsPrice();
+    double priceInDobule = double.parse(priceInString);
+    //balance
+    String balanceInString = await showUserBalance();
+    double balanceInDouble = double.parse(balanceInString);
+    final bookings = FirebaseFirestore.instance.collection('bookings');
+    String userId = AuthService.firebase().currentUser!.id;
+    final bookingQuery =
+        await bookings.where(bookingUserIdField, isEqualTo: userId).get();
+    final documents = bookingQuery.docs;
+    final document = documents.first;
+    final docRef = document.reference;
+    final docR = user.doc(userId); //user doc
+    if (priceInDobule <= balanceInDouble) {
+      if (priceInDobule == 0.0) {
+        await showErrorDialog(
+            context, "Can't Discount More, Your Booking Price is already 0");
+      } else {
+        final newBalance = balanceInDouble - priceInDobule;
+        await docR.update({'balance': newBalance});
+        await docRef.update({bookingPriceField: 0.0});
+      }
+    } else {
+      if (balanceInDouble == 0.0) {
+        await showErrorDialog(context, 'No Balance Available!');
+      } else {
+        final newPrice = priceInDobule - balanceInDouble;
+        await docR.update({'balance': 0.0});
+        await docRef.update({bookingPriceField: newPrice});
+      }
+    }
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('Here price'),
+          actions: [
+            Expanded(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  FutureBuilder<String>(
+                      future: showTotBookingsPrice(),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const CircularProgressIndicator();
+                        } else if (snapshot.hasError) {
+                          return Text('Error: ${snapshot.error}');
+                        } else if (snapshot.hasData) {
+                          return Text(
+                            "Booking Price: ${snapshot.data!}",
+                            style: const TextStyle(fontSize: 16),
+                          );
+                        } else {
+                          return const Text('no data available');
+                        }
+                      }),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  FutureBuilder(
+                    future: showUserBalance(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const CircularProgressIndicator();
+                      } else if (snapshot.hasError) {
+                        return Text('Error: ${snapshot.error}');
+                      } else if (snapshot.hasData) {
+                        return Text(
+                          "Your Balance: ${snapshot.data!}",
+                          style: const TextStyle(fontSize: 16),
+                        );
+                      } else {
+                        return const Text('no data available');
+                      }
+                    },
+                  )
+                ],
+              ),
+            ),
+          ],
         ),
         body: SafeArea(
             child: Padding(
@@ -339,6 +434,28 @@ class _CreditcardState extends State<Creditcard> {
                         ),
                       )
                     ],
+                  ),
+                  GestureDetector(
+                    onTap: () async {
+                      await isBiggerOrSmaller();
+                    },
+                    child: Container(
+                        margin: const EdgeInsets.all(5),
+                        padding: const EdgeInsets.all(15),
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                            boxShadow: const [
+                              BoxShadow(blurRadius: 2, offset: Offset(0, 0))
+                            ],
+                            borderRadius: BorderRadius.circular(20),
+                            color: Colors.blue),
+                        child: const Center(
+                            child: Text(
+                          "Discount Using Balance",
+                          style: TextStyle(
+                            color: Colors.white,
+                          ),
+                        ))),
                   ),
                 ],
               ),

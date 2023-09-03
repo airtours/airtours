@@ -1,11 +1,10 @@
-import 'package:AirTours/utilities/show_feedback.dart';
-import 'package:flutter/foundation.dart';
+import 'package:AirTours/constants/pages_route.dart';
 import 'package:flutter/material.dart';
-
 import '../../services/cloud/firebase_cloud_storage.dart';
 import '../../services_auth/auth_exceptions.dart';
 import '../../services_auth/auth_service.dart';
 import '../../utilities/show_error.dart';
+import '../../utilities/show_feedback.dart';
 
 class AddAdmin extends StatefulWidget {
   const AddAdmin({super.key});
@@ -31,20 +30,38 @@ class _AddAdminState extends State<AddAdmin> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[300],
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          TextField(
-            controller: _email,
-          ),
-          TextField(
-            controller: _password,
-          ),
-          TextField(
-            controller: _phoneNum,
-          ),
-          TextButton(
+      appBar: AppBar(
+        title: const Text('add admin'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            TextField(
+              controller: _email,
+              keyboardType: TextInputType.emailAddress,
+              decoration: const InputDecoration(
+                labelText: 'Email',
+              ),
+            ),
+            const SizedBox(height: 16.0),
+            TextField(
+              controller: _password,
+              obscureText: true,
+              decoration: const InputDecoration(
+                labelText: 'Password',
+              ),
+            ),
+            const SizedBox(height: 16.0),
+            TextField(
+              controller: _phoneNum,
+              keyboardType: TextInputType.phone,
+              decoration: const InputDecoration(
+                labelText: 'Phone Number',
+              ),
+            ),
+            const SizedBox(height: 16.0),
+            ElevatedButton(
               onPressed: () async {
                 try {
                   await AuthService.firebase()
@@ -52,22 +69,24 @@ class _AddAdminState extends State<AddAdmin> {
                   //DB
                   c.createNewAdmin(
                       email: _email.text, phoneNum: _phoneNum.text);
-
                   //DB end
-
                   await showFeedback(context, 'Admin Added');
+                  await Navigator.of(context)
+                      .pushNamedAndRemoveUntil(loginRoute, (route) => false);
                 } on WeakPasswordAuthException {
                   await showErrorDialog(context, 'Weak Password');
                 } on EmailAlreadyInUseAuthException {
-                  await showErrorDialog(context, 'Email already in use ');
+                  await showErrorDialog(context, 'Email Already In Use ');
                 } on InvalidEmailAuthException {
-                  await showErrorDialog(context, 'this is an invalid email');
+                  await showErrorDialog(context, 'This Is An Invalid Email');
                 } on GenericAuthException {
-                  await showErrorDialog(context, 'failed to add');
+                  await showErrorDialog(context, 'Failed To Add');
                 }
               },
-              child: Text('add admin'))
-        ],
+              child: const Text('Add Admin'),
+            ),
+          ],
+        ),
       ),
     );
   }

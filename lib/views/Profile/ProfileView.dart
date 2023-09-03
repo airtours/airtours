@@ -1,9 +1,7 @@
 import 'package:AirTours/constants/pages_route.dart';
 import 'package:AirTours/services/cloud/firebase_cloud_storage.dart';
 import 'package:AirTours/services_auth/auth_service.dart';
-import 'package:AirTours/utilities/button.dart';
-import 'package:AirTours/utilities/show_feedback.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:AirTours/utilities/show_balance.dart';
 import 'package:flutter/material.dart';
 
 class ProfileView extends StatefulWidget {
@@ -16,15 +14,6 @@ class ProfileView extends StatefulWidget {
 class _ProfileViewState extends State<ProfileView> {
   final FirebaseCloudStorage c = FirebaseCloudStorage();
 
-  Future<String> showBalance() async {
-    final user = FirebaseFirestore.instance.collection('user');
-    String userId = AuthService.firebase().currentUser!.id;
-    final docRef = user.doc(userId);
-    final docSnap = await docRef.get();
-    final currentBalance = docSnap.data()!['balance'];
-    return currentBalance.toString();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,9 +22,10 @@ class _ProfileViewState extends State<ProfileView> {
       ),
       body: SafeArea(
         child: Column(
+          //mainAxisAlignment: MainAxisAlignment.center,
           children: [
             FutureBuilder<String>(
-              future: showBalance(),
+              future: showUserBalance(),
               builder: (context, snapshot) {
                 return Text(snapshot.data ?? '',
                     style: const TextStyle(fontSize: 24.0));
@@ -78,8 +68,10 @@ class _ProfileViewState extends State<ProfileView> {
                 height: 60,
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).pushNamed(updateRoute);
+                  onPressed: () async {
+                    await AuthService.firebase().logOut();
+                    await Navigator.of(context).pushNamedAndRemoveUntil(
+                        loginForEmailChangesRoute, (route) => false);
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.white,
@@ -109,8 +101,10 @@ class _ProfileViewState extends State<ProfileView> {
                 height: 60,
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: () {
-                    //handle change password
+                  onPressed: () async {
+                    await AuthService.firebase().logOut();
+                    await Navigator.of(context).pushNamedAndRemoveUntil(
+                        loginForPasswordChangesRoute, (route) => false);
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.white,
@@ -134,6 +128,7 @@ class _ProfileViewState extends State<ProfileView> {
                 ),
               ),
             ),
+            //const SizedBox(height: 16.0),
             const SizedBox(height: 16.0),
             Padding(
               padding: const EdgeInsets.all(5.0),
@@ -156,33 +151,6 @@ class _ProfileViewState extends State<ProfileView> {
                     child: Text(
                       'Delete Account',
                       style: TextStyle(fontSize: 18.0),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(5.0),
-              child: SizedBox(
-                height: 60,
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () {
-                    AuthService.firebase().logOut();
-                    Navigator.of(context).pushNamed(loginRoute);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                  ),
-                  child: const Padding(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
-                    child: Text(
-                      'Logout',
-                      style: TextStyle(fontSize: 18.0, color: Colors.red),
                     ),
                   ),
                 ),

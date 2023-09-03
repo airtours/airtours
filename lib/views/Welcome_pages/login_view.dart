@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 
 import '../../constants/pages_route.dart';
@@ -36,7 +38,7 @@ class _LoginViewState extends State<LoginView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.grey[300],
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 30),
@@ -46,7 +48,7 @@ class _LoginViewState extends State<LoginView> {
             children: [
               Container(
                 height: 200,
-                child: Image.asset('images/image1.jpeg'),
+                child: Image.asset('img/tours3.png'),
               ),
               const Text(
                 'AirTours',
@@ -103,23 +105,25 @@ class _LoginViewState extends State<LoginView> {
                       await AuthService.firebase()
                           .logIn(email: email, password: pass);
                       final user = AuthService.firebase().currentUser;
-                      final is_User = await c.isUser(ownerUserId: user!.id);
-                      if (is_User) {
-                        if (user?.isEmailVerified ?? false) {
-                          Navigator.of(context).pushNamedAndRemoveUntil(
+                      final isUserr = await c.isUser(ownerUserId: user!.id);
+                      if (isUserr) {
+                        if (user.isEmailVerified) {
+                          await Navigator.of(context).pushNamedAndRemoveUntil(
                               bottomRoute, (route) => false);
                         } else {
-                          Navigator.of(context).pushNamedAndRemoveUntil(
+                          await Navigator.of(context).pushNamedAndRemoveUntil(
                               verficationRoute, (route) => false);
                         }
                       } else {
-                        Navigator.of(context).pushNamedAndRemoveUntil(
-                            createFlightRoute, (route) => false);
+                        await Navigator.of(context).pushNamedAndRemoveUntil(
+                            //needs to verify the admin
+                            createFlightRoute,
+                            (route) => false);
                       }
                     } on UserNotFoundAuthException {
-                      await showErrorDialog(context, 'User not found');
+                      await showErrorDialog(context, 'User Not Found');
                     } on WrongPasswordAuthException {
-                      await showErrorDialog(context, 'Wrong credentials');
+                      await showErrorDialog(context, 'Wrong Credentials');
                     } on GenericAuthException {
                       await showErrorDialog(context, 'Authentication Error');
                     }

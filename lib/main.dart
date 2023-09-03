@@ -4,8 +4,10 @@ import 'package:AirTours/views/Admin/admin.dart';
 import 'package:AirTours/views/Global/bottom_bar.dart';
 import 'package:AirTours/views/Profile/ProfileView.dart';
 import 'package:AirTours/views/Profile/add_balance.dart';
-import 'package:AirTours/views/Profile/balance_credit_card.dart';
-import 'package:AirTours/views/Profile/update_view.dart';
+import 'package:AirTours/views/Profile/login_for_email_verf.dart';
+import 'package:AirTours/views/Profile/login_for_password_verf.dart';
+import 'package:AirTours/views/Profile/update_email.dart';
+import 'package:AirTours/views/Profile/update_password.dart';
 import 'package:AirTours/views/Welcome_pages/login_view.dart';
 import 'package:AirTours/views/Welcome_pages/register_view.dart';
 import 'package:AirTours/views/Welcome_pages/verification_view.dart';
@@ -27,9 +29,12 @@ Future<void> main() async {
       welcomeRoute: (context) => const WelcomeView(),
       createFlightRoute: (context) => const CreateFlight(),
       addAdminRoute: (context) => const AddAdmin(),
-      updateRoute: (context) => const UpdateView(),
+      updateEmailRoute: (context) => const UpdateEmailView(),
+      updatePasswordRoute: (context) => const UpdatePasswordView(),
       addBalanceRoute: (context) => const AddBalance(),
-      profileRoute: (context) => const ProfileView()
+      profileRoute: (context) => const ProfileView(),
+      loginForEmailChangesRoute: (context) => const LoginForEmailChanges(),
+      loginForPasswordChangesRoute: (context) => const LoginForPasswordChanges()
     },
   ));
 }

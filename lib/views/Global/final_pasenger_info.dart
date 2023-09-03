@@ -447,7 +447,7 @@ class _EnterinfoState extends State<Enterinfo> {
                         for (pasCount; pasCount < count;) {
                           pasCount++;
                           visualPasCount++;
-                          print(pasCount);
+
                           totalTicketPrice = widget.flightPrice1 + baggagePrice;
                           temp1 = Ticket(
                             firstName: fName.text,
