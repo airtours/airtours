@@ -139,7 +139,7 @@ class _LoginViewState extends State<LoginView> {
                         Navigator.of(context).pushNamedAndRemoveUntil(
                             '/register/', (route) => false);
                       },
-                      child: const Text("Register now"))
+                      child: const Text("Register Now"))
                 ],
               )
             ],

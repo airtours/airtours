@@ -248,7 +248,7 @@ class _ChargeBalanceState extends State<ChargeBalance> {
                             });
                             await showFeedback(
                                 context, 'balance successefully added');
-                            Navigator.of(context).pushNamedAndRemoveUntil(
+                            await Navigator.of(context).pushNamedAndRemoveUntil(
                                 bottomRoute, (route) => false);
                           },
                           child: Container(

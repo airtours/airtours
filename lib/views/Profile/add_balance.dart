@@ -1,3 +1,4 @@
+import 'package:AirTours/utilities/show_error.dart';
 import 'package:AirTours/views/Profile/balance_credit_card.dart';
 import 'package:flutter/material.dart';
 import '../../services/cloud/firebase_cloud_storage.dart';
@@ -19,11 +20,16 @@ class _AddBalanceState extends State<AddBalance> {
     super.initState();
   }
 
+  bool isNumber(String amount) {
+    final numbersAllowed = RegExp(r'^[0-9]+(\.[0-9]+)?$');
+    return numbersAllowed.hasMatch(amount);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('adding balance'),
+        title: const Text('Adding Balance'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -32,20 +38,32 @@ class _AddBalanceState extends State<AddBalance> {
             TextField(
               controller: _amount,
               decoration: const InputDecoration(
-                labelText: 'amount required',
+                labelText: 'Amount Required',
               ),
             ),
             const SizedBox(height: 16.0),
             TextButton(
-                onPressed: () {
+                onPressed: () async {
                   final balance = _amount.text;
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ChargeBalance(balance: balance),
-                      ));
+                  if (balance.isEmpty) {
+                    await showErrorDialog(context, 'Write The Amount');
+                  } else if (isNumber(balance)) {
+                    final amountInDouble = double.parse(balance);
+                    if (amountInDouble > 0) {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                ChargeBalance(balance: balance),
+                          ));
+                    } else {
+                      await showErrorDialog(context, 'Write Valid Amount');
+                    }
+                  } else if (!isNumber(balance)) {
+                    await showErrorDialog(context, 'Write Valid Amount');
+                  }
                 },
-                child: const Text('add the amount'))
+                child: const Text('Add The Amount'))
           ],
         ),
       ),

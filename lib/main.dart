@@ -4,6 +4,7 @@ import 'package:AirTours/views/Admin/admin.dart';
 import 'package:AirTours/views/Global/bottom_bar.dart';
 import 'package:AirTours/views/Profile/ProfileView.dart';
 import 'package:AirTours/views/Profile/add_balance.dart';
+import 'package:AirTours/views/Profile/login_for_delete_verf.dart';
 import 'package:AirTours/views/Profile/login_for_email_verf.dart';
 import 'package:AirTours/views/Profile/login_for_password_verf.dart';
 import 'package:AirTours/views/Profile/update_email.dart';
@@ -12,10 +13,8 @@ import 'package:AirTours/views/Welcome_pages/login_view.dart';
 import 'package:AirTours/views/Welcome_pages/register_view.dart';
 import 'package:AirTours/views/Welcome_pages/verification_view.dart';
 import 'package:AirTours/views/Welcome_pages/welcome_page.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'constants/pages_route.dart';
-import 'firebase_options.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -34,7 +33,9 @@ Future<void> main() async {
       addBalanceRoute: (context) => const AddBalance(),
       profileRoute: (context) => const ProfileView(),
       loginForEmailChangesRoute: (context) => const LoginForEmailChanges(),
-      loginForPasswordChangesRoute: (context) => const LoginForPasswordChanges()
+      loginForPasswordChangesRoute: (context) =>
+          const LoginForPasswordChanges(),
+      loginForDeleteRoute: (context) => const LoginForDelete()
     },
   ));
 }
@@ -45,8 +46,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: Firebase.initializeApp(
-          options: DefaultFirebaseOptions.currentPlatform),
+      future: AuthService.firebase().initialize(),
       builder: (context, snapshot) {
         switch (snapshot.connectionState) {
           case ConnectionState.done:

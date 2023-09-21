@@ -11,3 +11,4 @@ const addBalanceRoute = '/addbalanceView/';
 const profileRoute = '/profileView/';
 const loginForEmailChangesRoute = '/loginForEmailChangeView/';
 const loginForPasswordChangesRoute = '/loginForPasswordChangeView/';
+const loginForDeleteRoute = '/loginForDeleteView/';

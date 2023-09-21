@@ -2,6 +2,7 @@ import 'package:AirTours/constants/pages_route.dart';
 import 'package:AirTours/services/cloud/firebase_cloud_storage.dart';
 import 'package:AirTours/services_auth/auth_service.dart';
 import 'package:AirTours/utilities/show_balance.dart';
+import 'package:AirTours/utilities/show_error.dart';
 import 'package:flutter/material.dart';
 
 class ProfileView extends StatefulWidget {
@@ -24,10 +25,10 @@ class _ProfileViewState extends State<ProfileView> {
         child: Column(
           //mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            FutureBuilder<String>(
+            FutureBuilder<double>(
               future: showUserBalance(),
               builder: (context, snapshot) {
-                return Text(snapshot.data ?? '',
+                return Text("${snapshot.data}",
                     style: const TextStyle(fontSize: 24.0));
               },
             ),
@@ -136,8 +137,18 @@ class _ProfileViewState extends State<ProfileView> {
                 height: 60,
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: () {
-                    // Handle deletion
+                  onPressed: () async {
+                    final userId = AuthService.firebase().currentUser!.id;
+                    final isBooking =
+                        await c.isCurrentBooking(ownerUserId: userId);
+                    if (isBooking) {
+                      await showErrorDialog(context,
+                          "Account Can't Be Deleted, There Are Bookings In Progress!");
+                    } else {
+                      await AuthService.firebase().logOut();
+                      await Navigator.of(context).pushNamedAndRemoveUntil(
+                          loginForDeleteRoute, (route) => false);
+                    }
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.red,

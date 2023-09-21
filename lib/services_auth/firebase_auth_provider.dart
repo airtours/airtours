@@ -102,7 +102,7 @@ class FirebaseAuthProvider implements AuthProvider {
       if (user != null) {
         await user.updateEmail(email);
       } else {
-        throw UpdatingAuthException();
+        throw UserNotLoggedInAuthException();
       }
     } on FirebaseAuthException catch (e) {
       if (e.code == 'email-already-in-use') {
@@ -124,7 +124,7 @@ class FirebaseAuthProvider implements AuthProvider {
       if (user != null) {
         await user.updatePassword(password);
       } else {
-        throw UpdatingAuthException();
+        throw UserNotLoggedInAuthException();
       }
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
@@ -134,6 +134,16 @@ class FirebaseAuthProvider implements AuthProvider {
       }
     } catch (_) {
       throw GenericAuthException();
+    }
+  }
+
+  @override
+  Future<void> deleteAccount() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      await user.delete();
+    } else {
+      throw UserNotLoggedInAuthException();
     }
   }
 }

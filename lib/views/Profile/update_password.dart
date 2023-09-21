@@ -1,24 +1,22 @@
 import 'package:AirTours/constants/pages_route.dart';
+import 'package:AirTours/services_auth/auth_exceptions.dart';
+import 'package:AirTours/utilities/show_error.dart';
+import 'package:AirTours/utilities/show_feedback.dart';
 import 'package:flutter/material.dart';
-import '../../services_auth/auth_exceptions.dart';
 import '../../services_auth/auth_service.dart';
-import '../../utilities/show_error.dart';
 
-class LoginForPasswordChanges extends StatefulWidget {
-  const LoginForPasswordChanges({super.key});
+class UpdatePasswordView extends StatefulWidget {
+  const UpdatePasswordView({super.key});
 
   @override
-  State<LoginForPasswordChanges> createState() =>
-      _LoginForPasswordChangesState();
+  State<UpdatePasswordView> createState() => _UpdatePasswordViewState();
 }
 
-class _LoginForPasswordChangesState extends State<LoginForPasswordChanges> {
-  late final TextEditingController _email;
+class _UpdatePasswordViewState extends State<UpdatePasswordView> {
   late final TextEditingController _password;
 
   @override
   void initState() {
-    _email = TextEditingController();
     _password = TextEditingController();
     super.initState();
   }
@@ -27,41 +25,46 @@ class _LoginForPasswordChangesState extends State<LoginForPasswordChanges> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Login To Verify It Is You'),
+        title: const Text('Update Password'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
             TextField(
-              controller: _email,
-              decoration: const InputDecoration(
-                labelText: 'Your Email',
-              ),
-            ),
-            TextField(
               controller: _password,
               decoration: const InputDecoration(
-                labelText: 'Your Password',
+                labelText: 'New Password',
               ),
             ),
             const SizedBox(height: 16.0),
             TextButton(
                 onPressed: () async {
-                  try {
-                    await AuthService.firebase()
-                        .logIn(email: _email.text, password: _password.text);
-                    await Navigator.of(context).pushNamedAndRemoveUntil(
-                        updatePasswordRoute, (route) => false);
-                  } on UserNotFoundAuthException {
-                    await showErrorDialog(context, 'User not found');
-                  } on WrongPasswordAuthException {
-                    await showErrorDialog(context, 'Wrong credentials');
-                  } on GenericAuthException {
-                    await showErrorDialog(context, 'Authentication Error');
+                  String newPassword = _password.text;
+                  if (newPassword.isNotEmpty) {
+                    try {
+                      await AuthService.firebase()
+                          .updateUserPassword(password: newPassword);
+                      await showFeedback(context, 'Information Updated');
+                      await AuthService.firebase().logOut();
+                      await Navigator.of(context).pushNamed(loginRoute);
+                    } on WeakPasswordAuthException {
+                      await showErrorDialog(context, 'Weak Password');
+                    } on GenericAuthException {
+                      await showErrorDialog(context, 'Updating Error');
+                    }
+                  } else {
+                    await showErrorDialog(
+                        context, 'Please Write The New Password');
                   }
                 },
-                child: const Text('Login'))
+                child: const Text('Update!')),
+            TextButton(
+                onPressed: () async {
+                  await Navigator.of(context)
+                      .pushNamedAndRemoveUntil(bottomRoute, (route) => false);
+                },
+                child: const Text('Cancel'))
           ],
         ),
       ),

@@ -1,19 +1,16 @@
-import 'package:AirTours/main.dart';
 import 'package:AirTours/services_auth/auth_service.dart';
 import 'package:AirTours/utilities/show_balance.dart';
-import 'package:AirTours/utilities/show_error.dart';
 import 'package:AirTours/utilities/show_feedback.dart';
 import 'package:AirTours/views/Global/global_var.dart';
 import 'package:AirTours/views/Global/ticket.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
-import '../../constants/booking_constants.dart';
 import '../../constants/pages_route.dart';
 import '../../services/cloud/cloud_booking.dart';
 import '../../services/cloud/firestore_booking.dart';
 import '../../services/cloud/firestore_ticket.dart';
+import '../../utilities/show_error.dart';
 
 class Creditcard extends StatefulWidget {
   final String id1;
@@ -34,6 +31,7 @@ class Creditcard extends StatefulWidget {
 }
 
 class _CreditcardState extends State<Creditcard> {
+  final user = FirebaseFirestore.instance.collection('user');
   final formKey = GlobalKey<FormState>();
   TextEditingController cardNumber = TextEditingController();
   TextEditingController cardName = TextEditingController();
@@ -43,12 +41,14 @@ class _CreditcardState extends State<Creditcard> {
   late final BookingFirestore _bookingService;
   CloudBooking? booking;
   bool isSucess = false;
+  //late double price;
 
   @override
   void initState() {
     super.initState();
     _bookingService = BookingFirestore();
     _ticketService = TicketFirestore();
+    //price = retrieveTotBookingsPrice();
   }
 
   Future<String> createBooking(double totalPrice) async {
@@ -102,52 +102,72 @@ class _CreditcardState extends State<Creditcard> {
           flightReference: ticket.flightReference,
           ticketClass: widget.flightClass);
     });
-    showFeedback(context, 'Booking sucessfully created.');
+    //await showFeedback(context, 'Booking sucessfully created.'); causes error
   }
 
-  double showTotBookingsPrice() {
-    double totalBookingPrice = 0;
-    for (var x in widget.tickets) {
-      totalBookingPrice = totalBookingPrice + x.ticketPrice;
+  //  double retrieveTotBookingsPrice() {
+  //     double totBookingPrice = 0;
+  //     for (final x in widget.tickets) {
+  //       totBookingPrice = totBookingPrice + x.ticketPrice;
+  //     }
+  //     return totBookingPrice;
+  // }
+
+  bool isUnderage(DateTime dateOfBirth) {
+    final currentDate = DateTime.now();
+    int age = currentDate.year - dateOfBirth.year;
+
+    if (currentDate.month < dateOfBirth.month) {
+      age--;
+    } else if (currentDate.month == dateOfBirth.month) {
+      if (currentDate.day < dateOfBirth.day) {
+        age--;
+      }
     }
-    return totalBookingPrice;
+    return age < 18;
   }
 
-  Future<void> isBiggerOrSmaller() async {
-    final user = FirebaseFirestore.instance.collection('user');
-    //booking price
-    String priceInString = await showTotBookingsPrice();
-    double priceInDobule = double.parse(priceInString);
+  void discountChildren() {
+    double temp;
+    for (final x in widget.tickets) {
+      if (isUnderage(x.birthDate)) {
+        temp = 0;
+        temp = x.ticketPrice * 0.05;
+        price = price - temp;
+      }
+    }
+  }
+
+  double showTotBookingPrice() {
+    discountChildren();
+    return price;
+  }
+
+  Future<void> discountBookingPrice() async {
     //balance
-    String balanceInString = await showUserBalance();
-    double balanceInDouble = double.parse(balanceInString);
-    final bookings = FirebaseFirestore.instance.collection('bookings');
+    double balance = await showUserBalance();
+
     String userId = AuthService.firebase().currentUser!.id;
-    final bookingQuery =
-        await bookings.where(bookingUserIdField, isEqualTo: userId).get();
-    final documents = bookingQuery.docs;
-    final document = documents.first;
-    final docRef = document.reference;
+
     final docR = user.doc(userId); //user doc
-    if (priceInDobule <= balanceInDouble) {
-      if (priceInDobule == 0.0) {
+    if (price <= balance) {
+      if (price == 0.0) {
         await showErrorDialog(
             context, "Can't Discount More, Your Booking Price is already 0");
       } else {
-        final newBalance = balanceInDouble - priceInDobule;
+        final newBalance = balance - price;
+        price = 0.0;
         await docR.update({'balance': newBalance});
-        await docRef.update({bookingPriceField: 0.0});
       }
     } else {
-      if (balanceInDouble == 0.0) {
+      if (balance == 0.0) {
         await showErrorDialog(context, 'No Balance Available!');
       } else {
-        final newPrice = priceInDobule - balanceInDouble;
+        final newPrice = price - balance;
+        price = newPrice;
         await docR.update({'balance': 0.0});
-        await docRef.update({bookingPriceField: newPrice});
       }
     }
-    setState(() {});
   }
 
   @override
@@ -159,27 +179,14 @@ class _CreditcardState extends State<Creditcard> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  FutureBuilder<String>(
-                      future: showTotBookingsPrice(),
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return const CircularProgressIndicator();
-                        } else if (snapshot.hasError) {
-                          return Text('Error: ${snapshot.error}');
-                        } else if (snapshot.hasData) {
-                          return Text(
-                            "Booking Price: ${snapshot.data!}",
-                            style: const TextStyle(fontSize: 16),
-                          );
-                        } else {
-                          return const Text('no data available');
-                        }
-                      }),
+                  Text(
+                    'Booking Price: ${showTotBookingPrice()}',
+                    style: const TextStyle(fontSize: 16),
+                  ),
                   const SizedBox(
                     width: 10,
                   ),
-                  FutureBuilder(
+                  FutureBuilder<double>(
                     future: showUserBalance(),
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
@@ -192,7 +199,7 @@ class _CreditcardState extends State<Creditcard> {
                           style: const TextStyle(fontSize: 16),
                         );
                       } else {
-                        return const Text('no data available');
+                        return const Text('No Data Available');
                       }
                     },
                   )
@@ -437,7 +444,8 @@ class _CreditcardState extends State<Creditcard> {
                   ),
                   GestureDetector(
                     onTap: () async {
-                      await isBiggerOrSmaller();
+                      await discountBookingPrice();
+                      setState(() {});
                     },
                     child: Container(
                         margin: const EdgeInsets.all(5),

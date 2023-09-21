@@ -65,3 +65,5 @@ List<String> flightName = [
   'Yanbu Al Bahr'
 ];
 final From = TextEditingController();
+
+late double price; //will be initialized after calculating each ticket price

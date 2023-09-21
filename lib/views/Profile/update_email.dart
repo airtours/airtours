@@ -47,6 +47,7 @@ class _UpdateEmailViewState extends State<UpdateEmailView> {
                     try {
                       await AuthService.firebase()
                           .updateUserEmail(email: newEmail);
+
                       //DB
                       final String currentUser =
                           AuthService.firebase().currentUser!.id;
@@ -55,6 +56,7 @@ class _UpdateEmailViewState extends State<UpdateEmailView> {
                           email: newEmail,
                           phoneNum: "0580647715"
                           //DB end
+
                           );
                       await showFeedback(context, 'Information Updated');
                       await AuthService.firebase().logOut();
@@ -71,7 +73,7 @@ class _UpdateEmailViewState extends State<UpdateEmailView> {
                         context, 'Please Write The New Email');
                   }
                 },
-                child: const Text('update!')),
+                child: const Text('Update!')),
             TextButton(
                 onPressed: () async {
                   await Navigator.of(context)

@@ -123,33 +123,34 @@ class _RegisterViewState extends State<RegisterView> {
                     final pass = _password.text;
                     final pass2 = _password2.text;
                     if (pass != pass2) {
-                      showErrorDialog(context, "Password doesn't match!");
+                      showErrorDialog(context, "Password Doesn't Match!");
                     } else {
                       try {
                         await AuthService.firebase()
                             .createUser(email: email, password: pass);
+
                         //DB
-                        final String userid =
+                        final String userId =
                             AuthService.firebase().currentUser!.id;
                         final String currentEmail =
                             AuthService.firebase().currentUser!.email;
                         c.createNewUser(
-                            ownerUserId: userid,
+                            ownerUserId: userId,
                             email: currentEmail,
                             phoneNum: '',
-                            balance: 0);
+                            balance: 0.0);
                         //DB end
                         AuthService.firebase().sendEmailVerification();
-                        Navigator.of(context).pushNamed(verficationRoute);
+                        await Navigator.of(context).pushNamed(verficationRoute);
                       } on WeakPasswordAuthException {
                         await showErrorDialog(context, 'Weak Password');
                       } on EmailAlreadyInUseAuthException {
-                        await showErrorDialog(context, 'Email already in use');
+                        await showErrorDialog(context, 'Email Already In Use');
                       } on InvalidEmailAuthException {
                         await showErrorDialog(
-                            context, 'this is an invalid email');
+                            context, 'This Is An Invalid Email');
                       } on GenericAuthException {
-                        await showErrorDialog(context, 'failed to register');
+                        await showErrorDialog(context, 'Failed To Register');
                       }
                     }
                   }),
