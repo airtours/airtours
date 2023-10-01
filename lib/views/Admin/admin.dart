@@ -9,6 +9,7 @@ import '../../services/cloud/cloud_flight.dart';
 import '../../services/cloud/firestore_flight.dart';
 import '../../services_auth/firebase_auth_provider.dart';
 import '../../utilities/show_error.dart';
+import '../Global/show_city_name_search.dart';
 
 class CreateFlight extends StatefulWidget {
   const CreateFlight({super.key});
@@ -38,6 +39,8 @@ class _CreateFlightState extends State<CreateFlight> {
   CloudFlight? _flight;
   late final FlightFirestore _flightsService;
   final formKey = GlobalKey<FormState>();
+  String? selectedCity1;
+  String? selectedCity2;
 
   @override
   void initState() {
@@ -103,6 +106,24 @@ class _CreateFlightState extends State<CreateFlight> {
     return newFlight;
   }
 
+  void _navigateToCitySelectionPage(BuildContext context, int num) async {
+    final city = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const FromSearch(fromOrTo: 1)),
+    );
+
+    if (city != null) {
+      setState(() {
+        if (num == 1) {
+          selectedCity1 = city;
+        }
+        if (num == 2) {
+          selectedCity2 = city;
+        }
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -130,50 +151,74 @@ class _CreateFlightState extends State<CreateFlight> {
                           Row(
                             children: [
                               Expanded(
-                                  child: TextFormField(
-                                      validator: (value) {
-                                        if (value!.isEmpty) {
-                                          return "Required Field";
-                                        }
-
-                                        if (!RegExp(r'^[a-z A-Z]+$')
-                                            .hasMatch(value)) {
-                                          return 'Please Enter a city';
-                                        } else {
-                                          return null;
-                                        }
-                                      },
-                                      controller: from,
-                                      keyboardType: TextInputType.text,
-                                      textAlign: TextAlign.center,
-                                      decoration: const InputDecoration(
-                                        icon:
-                                            Icon(Icons.flight_takeoff_rounded),
-                                        hintText: "From",
-                                      ))),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    _navigateToCitySelectionPage(context, 1);
+                                  },
+                                  child: Container(
+                                    margin: const EdgeInsets.all(5),
+                                    padding: const EdgeInsets.all(15),
+                                    width: double.infinity,
+                                    height: 70,
+                                    // decoration: BoxDecoration(
+                                    //   boxShadow: const [
+                                    //     BoxShadow(
+                                    //         blurRadius: 2, offset: Offset(0, 0))
+                                    //   ],
+                                    //   borderRadius: BorderRadius.circular(20),
+                                    //   color: Colors.white,
+                                    // ),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [
+                                        const Icon(Icons.flight_takeoff),
+                                        const SizedBox(width: 20.0),
+                                        Text(
+                                          selectedCity1 != null
+                                              ? '${selectedCity1}'
+                                              : 'Select from',
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
                               const SizedBox(
                                 width: 10,
                               ),
                               Expanded(
-                                  child: TextFormField(
-                                      validator: (value) {
-                                        if (value!.isEmpty) {
-                                          return "Required Field";
-                                        }
-
-                                        if (!RegExp(r'^[a-z A-Z]+$')
-                                            .hasMatch(value)) {
-                                          return 'Please Enter a city';
-                                        } else {
-                                          return null;
-                                        }
-                                      },
-                                      controller: to,
-                                      textAlign: TextAlign.center,
-                                      decoration: const InputDecoration(
-                                        icon: Icon(Icons.flight_land),
-                                        hintText: "To",
-                                      )))
+                                  child: GestureDetector(
+                                onTap: () {
+                                  _navigateToCitySelectionPage(context, 2);
+                                },
+                                child: Container(
+                                  margin: const EdgeInsets.all(5),
+                                  padding: const EdgeInsets.all(15),
+                                  width: double.infinity,
+                                  height: 70,
+                                  // decoration: BoxDecoration(
+                                  //   boxShadow: const [
+                                  //     BoxShadow(
+                                  //         blurRadius: 2, offset: Offset(0, 0))
+                                  //   ],
+                                  //   borderRadius: BorderRadius.circular(20),
+                                  //   color: Colors.white,
+                                  // ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      const Icon(Icons.flight_land),
+                                      const SizedBox(width: 20.0),
+                                      Text(
+                                        selectedCity2 != null
+                                            ? '${selectedCity2}'
+                                            : 'Select to',
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ))
                             ],
                           ),
                           Row(
@@ -510,8 +555,8 @@ class _CreateFlightState extends State<CreateFlight> {
                                           selectedArrTime.minute);
 
                                       createFlight(
-                                          fromCity: from.text,
-                                          toCity: to.text,
+                                          fromCity: selectedCity1,
+                                          toCity: selectedCity2,
                                           fromAirport: fromAir.text,
                                           toAirport: toAir.text,
                                           numOfBusiness: numOfBusiness.text,

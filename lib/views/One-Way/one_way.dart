@@ -1,7 +1,7 @@
-import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:AirTours/views/Global/global_var.dart';
 
+import '../Global/show_city_name_search.dart';
 import 'available_flights_screen.dart';
 
 class OneWay extends StatefulWidget {
@@ -13,10 +13,11 @@ class OneWay extends StatefulWidget {
 
 class _OneWayState extends State<OneWay> {
   final _formKey = GlobalKey<FormState>();
-
+  String? selectedCity1;
+  String? selectedCity2;
   void toNext() {
     DateTime dateOnly = DateTime(dateTime.year, dateTime.month, dateTime.day);
-    print(dateOnly);
+
     Navigator.push(
         context,
         MaterialPageRoute(
@@ -24,8 +25,8 @@ class _OneWayState extends State<OneWay> {
             numOfPas: count,
             date: dateOnly,
             flightClass: currentPassenger,
-            from: fromName!,
-            to: toName!,
+            from: selectedCity1!,
+            to: selectedCity2!,
           ),
         ));
   }
@@ -44,6 +45,24 @@ class _OneWayState extends State<OneWay> {
     });
   }
 
+  void _navigateToCitySelectionPage(BuildContext context, int num) async {
+    final city = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => FromSearch(fromOrTo: 1)),
+    );
+
+    if (city != null) {
+      setState(() {
+        if (num == 1) {
+          selectedCity1 = city;
+        }
+        if (num == 2) {
+          selectedCity2 = city;
+        }
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -57,71 +76,66 @@ class _OneWayState extends State<OneWay> {
                     const SizedBox(
                       height: 5,
                     ),
-                    Container(
-                      margin: const EdgeInsets.all(5),
-                      decoration: BoxDecoration(
+                    GestureDetector(
+                      onTap: () {
+                        _navigateToCitySelectionPage(context, 1);
+                      },
+                      child: Container(
+                        margin: const EdgeInsets.all(5),
+                        padding: const EdgeInsets.all(15),
+                        width: double.infinity,
+                        height: 70,
+                        decoration: BoxDecoration(
                           boxShadow: const [
                             BoxShadow(blurRadius: 2, offset: Offset(0, 0))
                           ],
                           borderRadius: BorderRadius.circular(20),
-                          color: Colors.white),
-                      child: Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: DropdownSearch<String>(
-                          validator: (value) {
-                            if (value == null) {
-                              return 'Please select a city';
-                            }
-                            return null;
-                          },
-                          mode: Mode.MENU,
-                          showSelectedItems: true,
-                          items: flightName,
-                          onChanged: (value) => fromName = value,
-                          dropdownSearchDecoration: InputDecoration(
-                              suffixIcon:
-                                  const Icon(Icons.flight_takeoff_rounded),
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8.0),
-                                  borderSide: BorderSide.none),
-                              labelText: "from",
-                              hintText: "City"),
-                          showSearchBox: true,
+                          color: Colors.white,
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Icon(Icons.flight_takeoff),
+                            SizedBox(width: 8.0),
+                            Text(
+                              selectedCity1 != null
+                                  ? '${selectedCity1}'
+                                  : 'Select from',
+                            ),
+                          ],
                         ),
                       ),
                     ),
-                    Container(
+                    GestureDetector(
+                      onTap: () {
+                        _navigateToCitySelectionPage(context, 2);
+                      },
+                      child: Container(
                         margin: const EdgeInsets.all(5),
+                        padding: const EdgeInsets.all(15),
+                        width: double.infinity,
+                        height: 70,
                         decoration: BoxDecoration(
-                            boxShadow: const [
-                              BoxShadow(blurRadius: 2, offset: Offset(0, 0))
-                            ],
-                            borderRadius: BorderRadius.circular(20),
-                            color: Colors.white),
-                        child: Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: DropdownSearch<String>(
-                            validator: (value) {
-                              if (value == null) {
-                                return 'Please select a city';
-                              }
-                              return null;
-                            },
-                            mode: Mode.MENU,
-                            showSelectedItems: true,
-                            items: flightName,
-                            onChanged: (value) => toName = value,
-                            dropdownSearchDecoration: InputDecoration(
-                                suffixIcon:
-                                    const Icon(Icons.flight_takeoff_rounded),
-                                border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8.0),
-                                    borderSide: BorderSide.none),
-                                labelText: "To",
-                                hintText: "City"),
-                            showSearchBox: true,
-                          ),
-                        )),
+                          boxShadow: const [
+                            BoxShadow(blurRadius: 2, offset: Offset(0, 0))
+                          ],
+                          borderRadius: BorderRadius.circular(20),
+                          color: Colors.white,
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Icon(Icons.flight_land),
+                            SizedBox(width: 8.0),
+                            Text(
+                              selectedCity2 != null
+                                  ? '${selectedCity2}'
+                                  : 'Select to',
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                     const SizedBox(
                       height: 1,
                     ),
