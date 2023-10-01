@@ -4,7 +4,7 @@ import 'package:AirTours/utilities/show_error.dart';
 import 'package:AirTours/utilities/show_feedback.dart';
 import 'package:flutter/material.dart';
 import '../../services/cloud/firebase_cloud_storage.dart';
-import '../../services_auth/auth_service.dart';
+import '../../services_auth/firebase_auth_provider.dart';
 
 class UpdateEmailView extends StatefulWidget {
   const UpdateEmailView({super.key});
@@ -45,12 +45,12 @@ class _UpdateEmailViewState extends State<UpdateEmailView> {
                   String newEmail = _email.text;
                   if (newEmail.isNotEmpty) {
                     try {
-                      await AuthService.firebase()
+                      await FirebaseAuthProvider.authService()
                           .updateUserEmail(email: newEmail);
 
                       //DB
                       final String currentUser =
-                          AuthService.firebase().currentUser!.id;
+                          FirebaseAuthProvider.authService().currentUser!.id;
                       c.updateUser(
                           ownerUserId: currentUser,
                           email: newEmail,
@@ -59,7 +59,7 @@ class _UpdateEmailViewState extends State<UpdateEmailView> {
 
                           );
                       await showFeedback(context, 'Information Updated');
-                      await AuthService.firebase().logOut();
+                      await FirebaseAuthProvider.authService().logOut();
                       await Navigator.of(context).pushNamed(loginRoute);
                     } on EmailAlreadyInUseAuthException {
                       await showErrorDialog(context, 'Email Already Used');

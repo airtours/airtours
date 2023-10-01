@@ -9,13 +9,13 @@ List<DateTime> d = [];
 int? length1;
 
 List<String> monthNames = [
-  "jan",
+  "Jan",
   "Feb",
   "Mar",
   "Apr",
   "May",
   "Jun",
-  "jul",
+  "Jul",
   "Aug",
   "Sep",
   "Oct",
@@ -65,5 +65,3 @@ List<String> flightName = [
   'Yanbu Al Bahr'
 ];
 final From = TextEditingController();
-
-late double price; //will be initialized after calculating each ticket price

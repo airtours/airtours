@@ -1,8 +1,10 @@
 import 'package:AirTours/constants/booking_constants.dart';
 import 'package:AirTours/services/cloud/cloud_storage_exceptions.dart';
 import 'package:AirTours/services/cloud/firestore_flight.dart';
-import 'package:AirTours/services_auth/auth_service.dart';
+import 'package:AirTours/utilities/show_balance.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+
+import '../../services_auth/firebase_auth_provider.dart';
 
 class FirebaseCloudStorage {
   final user = FirebaseFirestore.instance.collection('user');
@@ -60,13 +62,13 @@ class FirebaseCloudStorage {
 
           if (!isCurrent) {
             await userDocRef.delete();
-            await AuthService.firebase().deleteAccount();
+            await FirebaseAuthProvider.authService().deleteAccount();
             break;
           }
         }
       } else {
         await userDocRef.delete();
-        await AuthService.firebase().deleteAccount();
+        await FirebaseAuthProvider.authService().deleteAccount();
       }
     } catch (_) {
       throw CouldNotDeleteUserException();
@@ -111,6 +113,29 @@ class FirebaseCloudStorage {
           .set({"email": email, "phoneNum": phoneNum, "balance": balance});
     } catch (_) {
       throw CouldNotCreateUserException();
+    }
+  }
+
+  Future<double> canceledBookingPrice(bookingId) async {
+    try {
+      final docRef = bookings.doc(bookingId);
+
+      final docSnap = await docRef.get();
+      final bookingPrice = docSnap.data()![bookingPriceField];
+      return bookingPrice + 0.0;
+    } catch (_) {
+      throw CouldNotRetrieveInformationException();
+    }
+  }
+
+  Future<void> retrievePreviousBalance(ownerUserId, bookingPrice) async {
+    try {
+      final userDocReference = user.doc(ownerUserId);
+      final currentBalance = await showUserBalance();
+      final previousBalance = bookingPrice + currentBalance;
+      userDocReference.update({'balance': previousBalance});
+    } catch (_) {
+      throw CouldNotUpdateInformationException();
     }
   }
 }

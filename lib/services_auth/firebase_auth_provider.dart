@@ -3,11 +3,14 @@ import "package:firebase_core/firebase_core.dart";
 
 import "../firebase_options.dart";
 import "auth_exceptions.dart";
-import "auth_provider.dart";
 import "auth_user.dart";
 
-class FirebaseAuthProvider implements AuthProvider {
-  @override
+class FirebaseAuthProvider {
+  const FirebaseAuthProvider();
+  factory FirebaseAuthProvider.authService() {
+    return const FirebaseAuthProvider();
+  }
+
   Future<AuthUser> createUser(
       {required String email, required String password}) async {
     try {
@@ -34,7 +37,6 @@ class FirebaseAuthProvider implements AuthProvider {
     }
   }
 
-  @override
   AuthUser? get currentUser {
     final user = FirebaseAuth.instance.currentUser;
     if (user != null) {
@@ -44,7 +46,6 @@ class FirebaseAuthProvider implements AuthProvider {
     }
   }
 
-  @override
   Future<AuthUser> logIn(
       {required String email, required String password}) async {
     try {
@@ -69,7 +70,6 @@ class FirebaseAuthProvider implements AuthProvider {
     }
   }
 
-  @override
   Future<void> logOut() async {
     final user = FirebaseAuth.instance.currentUser;
     if (user != null) {
@@ -79,7 +79,6 @@ class FirebaseAuthProvider implements AuthProvider {
     }
   }
 
-  @override
   Future<void> sendEmailVerification() async {
     final user = FirebaseAuth.instance.currentUser;
     if (user != null) {
@@ -89,13 +88,11 @@ class FirebaseAuthProvider implements AuthProvider {
     }
   }
 
-  @override
   Future<void> initialize() async {
     await Firebase.initializeApp(
         options: DefaultFirebaseOptions.currentPlatform);
   }
 
-  @override
   Future<void> updateUserEmail({required String email}) async {
     try {
       final user = FirebaseAuth.instance.currentUser;
@@ -117,7 +114,6 @@ class FirebaseAuthProvider implements AuthProvider {
     }
   }
 
-  @override
   Future<void> updateUserPassword({required String password}) async {
     try {
       final user = FirebaseAuth.instance.currentUser;
@@ -137,7 +133,6 @@ class FirebaseAuthProvider implements AuthProvider {
     }
   }
 
-  @override
   Future<void> deleteAccount() async {
     final user = FirebaseAuth.instance.currentUser;
     if (user != null) {

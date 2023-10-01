@@ -10,4 +10,6 @@ class CouldNotUpdateInformationException extends CloudStorageExceptions {}
 
 class CouldNotDeleteUserException extends CloudStorageExceptions {}
 
+class CouldNotRetrieveInformationException extends CloudStorageExceptions {}
+
 //other firestore exceptions for booking and flight and ticket

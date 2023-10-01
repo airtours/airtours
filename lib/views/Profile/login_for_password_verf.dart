@@ -1,7 +1,7 @@
 import 'package:AirTours/constants/pages_route.dart';
 import 'package:flutter/material.dart';
 import '../../services_auth/auth_exceptions.dart';
-import '../../services_auth/auth_service.dart';
+import '../../services_auth/firebase_auth_provider.dart';
 import '../../utilities/show_error.dart';
 
 class LoginForPasswordChanges extends StatefulWidget {
@@ -49,7 +49,7 @@ class _LoginForPasswordChangesState extends State<LoginForPasswordChanges> {
             TextButton(
                 onPressed: () async {
                   try {
-                    await AuthService.firebase()
+                    await FirebaseAuthProvider.authService()
                         .logIn(email: _email.text, password: _password.text);
                     await Navigator.of(context).pushNamedAndRemoveUntil(
                         updatePasswordRoute, (route) => false);

@@ -2,12 +2,14 @@
 
 import 'package:AirTours/services/cloud/cloud_booking.dart';
 import 'package:AirTours/services/cloud/cloud_flight.dart';
+import 'package:AirTours/services_auth/firebase_auth_provider.dart';
 import 'package:AirTours/utilities/show_error.dart';
 import 'package:AirTours/views/Global/paymentPage.dart';
 import 'package:AirTours/views/Manage_booking/tickets_view.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import '../../services/cloud/firebase_cloud_storage.dart';
 import '../../services/cloud/firestore_booking.dart';
 import '../../services/cloud/firestore_flight.dart';
 import '../../utilities/show_feedback.dart';
@@ -29,6 +31,7 @@ class OneWayDetails extends StatefulWidget {
 }
 
 class _OneWayDetailsState extends State<OneWayDetails> {
+  final FirebaseCloudStorage c = FirebaseCloudStorage();
   late final BookingFirestore _bookingService;
   late final CloudFlight departFlight;
   late final CloudBooking currentBooking;
@@ -292,14 +295,18 @@ class _OneWayDetailsState extends State<OneWayDetails> {
                   const SizedBox(height: 12.0),
                   ElevatedButton(
                     onPressed: () async {
+                      final canceledBookingPrice = await c
+                          .canceledBookingPrice(currentBooking.documentId);
                       bool result = await _bookingService.deleteBooking(
                           bookingId: currentBooking.documentId,
                           flightId1: departFlight.documentId,
                           flightId2: 'none',
                           flightClass: currentBooking.bookingClass,
                           numOfPas: currentBooking.numOfSeats);
-
                       if (result == true) {
+                        c.retrievePreviousBalance(
+                            FirebaseAuthProvider.authService().currentUser!.id,
+                            canceledBookingPrice);
                         showFeedback(context, 'Booking successfully deleted.');
                         Navigator.pop(context);
                       } else {

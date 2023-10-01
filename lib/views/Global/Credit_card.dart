@@ -1,6 +1,4 @@
-import 'package:AirTours/services_auth/auth_service.dart';
 import 'package:AirTours/utilities/show_balance.dart';
-import 'package:AirTours/utilities/show_feedback.dart';
 import 'package:AirTours/views/Global/global_var.dart';
 import 'package:AirTours/views/Global/ticket.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -10,6 +8,7 @@ import '../../constants/pages_route.dart';
 import '../../services/cloud/cloud_booking.dart';
 import '../../services/cloud/firestore_booking.dart';
 import '../../services/cloud/firestore_ticket.dart';
+import '../../services_auth/firebase_auth_provider.dart';
 import '../../utilities/show_error.dart';
 
 class Creditcard extends StatefulWidget {
@@ -41,18 +40,20 @@ class _CreditcardState extends State<Creditcard> {
   late final BookingFirestore _bookingService;
   CloudBooking? booking;
   bool isSucess = false;
-  //late double price;
+  late double price;
+  late double balance;
+  bool notInitialized = true;
 
   @override
   void initState() {
     super.initState();
     _bookingService = BookingFirestore();
     _ticketService = TicketFirestore();
-    //price = retrieveTotBookingsPrice();
+    price = retrieveTotBookingsPrice();
   }
 
   Future<String> createBooking(double totalPrice) async {
-    final bookingUserId = AuthService.firebase().currentUser!.id;
+    final bookingUserId = FirebaseAuthProvider.authService().currentUser!.id;
     DateTime timeNow = DateTime.now();
     if (widget.id2 == 'none') {
       booking = await _bookingService.createNewBooking(
@@ -80,12 +81,7 @@ class _CreditcardState extends State<Creditcard> {
   }
 
   void toNext(List<Ticket> alltickets) async {
-    double totalBookingPrice = 0;
-    for (var x in alltickets) {
-      totalBookingPrice = totalBookingPrice + x.ticketPrice;
-    }
-
-    final tmp = await createBooking(totalBookingPrice);
+    final tmp = await createBooking(retrieveTotBookingsPrice()); //modified
 
     alltickets.forEach((ticket) async {
       await _ticketService.createNewTicket(
@@ -105,67 +101,42 @@ class _CreditcardState extends State<Creditcard> {
     //await showFeedback(context, 'Booking sucessfully created.'); causes error
   }
 
-  //  double retrieveTotBookingsPrice() {
-  //     double totBookingPrice = 0;
-  //     for (final x in widget.tickets) {
-  //       totBookingPrice = totBookingPrice + x.ticketPrice;
-  //     }
-  //     return totBookingPrice;
-  // }
-
-  bool isUnderage(DateTime dateOfBirth) {
-    final currentDate = DateTime.now();
-    int age = currentDate.year - dateOfBirth.year;
-
-    if (currentDate.month < dateOfBirth.month) {
-      age--;
-    } else if (currentDate.month == dateOfBirth.month) {
-      if (currentDate.day < dateOfBirth.day) {
-        age--;
-      }
-    }
-    return age < 18;
-  }
-
-  void discountChildren() {
-    double temp;
+  double retrieveTotBookingsPrice() {
+    double totBookingPrice = 0;
     for (final x in widget.tickets) {
-      if (isUnderage(x.birthDate)) {
-        temp = 0;
-        temp = x.ticketPrice * 0.05;
-        price = price - temp;
-      }
+      totBookingPrice = totBookingPrice + x.ticketPrice;
     }
+    return totBookingPrice;
   }
 
   double showTotBookingPrice() {
-    discountChildren();
     return price;
   }
 
+  Future<double> showBalance() async {
+    //different from the balance in DB
+    if (notInitialized) {
+      balance = await showUserBalance();
+      notInitialized = false;
+    }
+    return balance;
+  }
+
   Future<void> discountBookingPrice() async {
-    //balance
-    double balance = await showUserBalance();
-
-    String userId = AuthService.firebase().currentUser!.id;
-
-    final docR = user.doc(userId); //user doc
     if (price <= balance) {
       if (price == 0.0) {
         await showErrorDialog(
             context, "Can't Discount More, Your Booking Price is already 0");
       } else {
-        final newBalance = balance - price;
+        balance = balance - price;
         price = 0.0;
-        await docR.update({'balance': newBalance});
       }
     } else {
       if (balance == 0.0) {
         await showErrorDialog(context, 'No Balance Available!');
       } else {
-        final newPrice = price - balance;
-        price = newPrice;
-        await docR.update({'balance': 0.0});
+        price = price - balance;
+        balance = 0.0;
       }
     }
   }
@@ -187,7 +158,7 @@ class _CreditcardState extends State<Creditcard> {
                     width: 10,
                   ),
                   FutureBuilder<double>(
-                    future: showUserBalance(),
+                    future: showBalance(),
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return const CircularProgressIndicator();
@@ -405,12 +376,11 @@ class _CreditcardState extends State<Creditcard> {
                       ),
                       Expanded(
                         child: GestureDetector(
-                          onTap: () {
+                          onTap: () async {
                             setState(() {
                               if (formKey.currentState!.validate()) {
                                 if (widget.paymentFor == 'booking') {
                                   toNext(widget.tickets);
-
                                   Navigator.of(context).pushNamedAndRemoveUntil(
                                       bottomRoute, (route) => false);
                                 } else if (widget.paymentFor == "upgrade") {
@@ -419,6 +389,11 @@ class _CreditcardState extends State<Creditcard> {
                                 }
                               }
                             });
+                            String userId = FirebaseAuthProvider.authService()
+                                .currentUser!
+                                .id;
+                            final docR = user.doc(userId); //user doc
+                            await docR.update({'balance': balance});
                           },
                           child: Container(
                               margin: const EdgeInsets.all(5),

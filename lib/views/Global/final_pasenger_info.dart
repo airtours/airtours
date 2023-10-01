@@ -535,6 +535,7 @@ class _EnterinfoState extends State<Enterinfo> {
                             tickets.add(temp2!);
                           }
 
+                          print('$pasCount ok?');
                           toNext(tickets);
                           pasCount++;
                         }
@@ -581,11 +582,6 @@ class _EnterinfoState extends State<Enterinfo> {
                         }
                       }
                     });
-                    double totPrice = 0;
-                    for (final x in tickets) {
-                      totPrice = totPrice + x.ticketPrice;
-                    }
-                    price = totPrice; //price in global var
                   },
                   child: Container(
                     margin: const EdgeInsets.all(5),

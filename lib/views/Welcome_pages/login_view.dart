@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import '../../constants/pages_route.dart';
 import '../../services/cloud/firebase_cloud_storage.dart';
 import '../../services_auth/auth_exceptions.dart';
-import '../../services_auth/auth_service.dart';
+import '../../services_auth/firebase_auth_provider.dart';
 import '../../utilities/button.dart';
 import '../../utilities/show_error.dart';
 
@@ -102,9 +102,10 @@ class _LoginViewState extends State<LoginView> {
                     final email = _email.text;
                     final pass = _password.text;
                     try {
-                      await AuthService.firebase()
+                      await FirebaseAuthProvider.authService()
                           .logIn(email: email, password: pass);
-                      final user = AuthService.firebase().currentUser;
+                      final user =
+                          FirebaseAuthProvider.authService().currentUser;
                       final isUserr = await c.isUser(ownerUserId: user!.id);
                       if (isUserr) {
                         if (user.isEmailVerified) {
@@ -115,10 +116,13 @@ class _LoginViewState extends State<LoginView> {
                               verficationRoute, (route) => false);
                         }
                       } else {
-                        await Navigator.of(context).pushNamedAndRemoveUntil(
-                            //needs to verify the admin
-                            createFlightRoute,
-                            (route) => false);
+                        if (user.isEmailVerified) {
+                          await Navigator.of(context).pushNamedAndRemoveUntil(
+                              createFlightRoute, (route) => false);
+                        } else {
+                          await Navigator.of(context).pushNamedAndRemoveUntil(
+                              verficationRoute, (route) => false);
+                        }
                       }
                     } on UserNotFoundAuthException {
                       await showErrorDialog(context, 'User Not Found');

@@ -2,6 +2,7 @@
 
 import 'package:AirTours/services/cloud/cloud_booking.dart';
 import 'package:AirTours/services/cloud/cloud_flight.dart';
+import 'package:AirTours/services/cloud/firebase_cloud_storage.dart';
 import 'package:AirTours/views/Manage_booking/tickets_view.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +10,7 @@ import 'package:intl/intl.dart';
 
 import '../../services/cloud/firestore_booking.dart';
 import '../../services/cloud/firestore_flight.dart';
+import '../../services_auth/firebase_auth_provider.dart';
 import '../../utilities/show_error.dart';
 import '../../utilities/show_feedback.dart';
 import '../Global/global_var.dart';
@@ -39,6 +41,7 @@ class _RoundTripDetailsState extends State<RoundTripDetails> {
   late final FlightFirestore _flightsService;
   late String bookingType;
   List<Ticket> tickets = [];
+  FirebaseCloudStorage c = FirebaseCloudStorage();
 
   @override
   void initState() {
@@ -456,15 +459,19 @@ class _RoundTripDetailsState extends State<RoundTripDetails> {
                   const SizedBox(height: 12.0),
                   ElevatedButton(
                     onPressed: () async {
+                      final canceledBookingPrice = await c
+                          .canceledBookingPrice(currentBooking.documentId);
                       bool result = await _bookingService.deleteBooking(
                           bookingId: currentBooking.documentId,
                           flightId1: departFlight.documentId,
                           flightId2: retuFlight.documentId,
                           flightClass: currentBooking.bookingClass,
                           numOfPas: currentBooking.numOfSeats);
-                      print(result);
 
                       if (result == true) {
+                        c.retrievePreviousBalance(
+                            FirebaseAuthProvider.authService().currentUser!.id,
+                            canceledBookingPrice);
                         showFeedback(context, 'Booking successfully deleted.');
                         Navigator.pop(context);
                       } else {

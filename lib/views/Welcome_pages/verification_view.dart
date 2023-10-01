@@ -1,6 +1,6 @@
-import 'package:AirTours/services_auth/auth_service.dart';
 import 'package:flutter/material.dart';
 import '../../constants/pages_route.dart';
+import '../../services_auth/firebase_auth_provider.dart';
 import '../../utilities/button.dart';
 
 class VerifyEmailView extends StatefulWidget {
@@ -44,7 +44,7 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
                 MyButton(
                     title: 'After Confirmation, Login here',
                     onPressed: () async {
-                      await AuthService.firebase().logOut();
+                      await FirebaseAuthProvider.authService().logOut();
                       Navigator.of(context).pushNamedAndRemoveUntil(
                           loginRoute, (route) => false);
                     }),
@@ -54,7 +54,8 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
                     const Text('Not Verified Yet? '),
                     TextButton(
                         onPressed: () async {
-                          await AuthService.firebase().sendEmailVerification();
+                          await FirebaseAuthProvider.authService()
+                              .sendEmailVerification();
                         },
                         child: const Text('Send Verfication Again')),
                   ],
