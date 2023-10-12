@@ -176,6 +176,34 @@ class _ProfileViewState extends State<ProfileView> {
                 ),
               ),
             ),
+
+            Padding(
+              padding: const EdgeInsets.all(5.0),
+              child: SizedBox(
+                height: 60,
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    FirebaseAuthProvider.authService().logOut();
+                    Navigator.of(context).pushNamed(loginRoute);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                  ),
+                  child: const Padding(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+                    child: Text(
+                      'Log Out',
+                      style: TextStyle(fontSize: 18.0, color: Colors.black),
+                    ),
+                  ),
+                ),
+              ),
+            ),
           ],
         ),
       ),
