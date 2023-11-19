@@ -19,6 +19,7 @@ import 'constants/pages_route.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(MaterialApp(
+    debugShowCheckedModeBanner: false,
     home: const HomePage(),
     routes: {
       loginRoute: (context) => const LoginView(),
@@ -54,7 +55,7 @@ class HomePage extends StatelessWidget {
             if (user != null) {
               if (user.isEmailVerified) {
                 print(user);
-                FirebaseAuthProvider.authService().logOut();
+
                 return const Bottom();
               } else {
                 return const VerifyEmailView();

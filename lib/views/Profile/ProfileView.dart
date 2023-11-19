@@ -20,6 +20,7 @@ class _ProfileViewState extends State<ProfileView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: const Color.fromARGB(255, 13, 213, 130),
         title: const Text('Profile'),
       ),
       body: SafeArea(

@@ -75,6 +75,7 @@ class _ViewBookingsState extends State<ViewBookings> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: const Color.fromARGB(255, 13, 213, 130),
         title: const Text('Current Bookings'),
       ),
       body: StreamBuilder<Iterable<CloudBooking>>(
