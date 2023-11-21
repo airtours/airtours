@@ -200,7 +200,7 @@ class _CreateFlightState extends State<CreateFlight> {
                                       children: [
                                         Text(
                                           selectedCity1 != null
-                                              ? '${selectedCity1}'
+                                              ? '$selectedCity1'
                                               : 'Select city',
                                         ),
                                         const Text(">")
@@ -247,7 +247,7 @@ class _CreateFlightState extends State<CreateFlight> {
                                         children: [
                                           Text(
                                             selectedCity2 != null
-                                                ? '${selectedCity2}'
+                                                ? '$selectedCity2'
                                                 : 'Select city',
                                           ),
                                           const Text(">")
@@ -771,9 +771,7 @@ class _CreateFlightState extends State<CreateFlight> {
                                       await showErrorDialog(context,
                                           'The arrival  must be after the departure ');
                                     }
-                                  } catch (e) {
-                                    print(e);
-                                  }
+                                  } catch (_) {}
                                 }
                               },
                               child: Container(

@@ -233,7 +233,7 @@ class _OneWayDetailsState extends State<OneWayDetails> {
                 children: [
                   const Spacer(),
                   Visibility(
-                    visible: bookingType != 'business',
+                    visible: bookingType != 'Business',
                     child: ElevatedButton(
                       onPressed: () async {
                         if (await _flightsService.didFly(
@@ -259,7 +259,7 @@ class _OneWayDetailsState extends State<OneWayDetails> {
                               setState(() {
                                 showFeedback(
                                     context, 'Booking successfully upgraded.');
-                                bookingType = 'business';
+                                bookingType = 'Business';
                               });
                             } else {
                               showFeedback(

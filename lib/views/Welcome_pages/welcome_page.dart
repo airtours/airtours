@@ -26,14 +26,14 @@ class _WelcomeViewState extends State<WelcomeView> {
             ),
             const SizedBox(height: 30), //delet text()
             MyButton(
-                title: 'Sign In',
-                onPressed: () async {
-                  Navigator.of(context).pushNamed(loginRoute);
-                }),
-            MyButton(
                 title: 'Sign Up',
                 onPressed: () async {
                   Navigator.of(context).pushNamed(registerRoute);
+                }),
+            MyButton(
+                title: 'Sign In',
+                onPressed: () async {
+                  Navigator.of(context).pushNamed(loginRoute);
                 }),
           ],
         ),

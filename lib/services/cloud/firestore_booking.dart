@@ -118,7 +118,7 @@ class BookingFirestore {
 
               bookings.doc(bookingId).update({
                 bookingPriceField: totalPrice,
-                bookingClassField: 'business'
+                bookingClassField: 'Business'
               });
 
               flag = true;

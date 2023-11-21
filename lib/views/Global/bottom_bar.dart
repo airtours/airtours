@@ -39,7 +39,7 @@ class _BottomState extends State<Bottom> {
       bottomNavigationBar: GNav(
           gap: 8,
           backgroundColor:
-              Color.fromARGB(255, 13, 213, 130), //change color to green
+              const Color.fromARGB(255, 13, 213, 130), //change color to green
           color: Colors.black,
           activeColor: Colors.white,
           //tabBackgroundColor: Colors.white,
@@ -99,7 +99,7 @@ class _SelectTravelTypeState extends State<SelectTravelType> {
                     height: 45,
                     decoration: BoxDecoration(
                         border: Border.all(
-                          color: Color.fromARGB(255, 13, 213,
+                          color: const Color.fromARGB(255, 13, 213,
                               130), //new line(border) and(color) Green color
                         ),
                         boxShadow: const [
@@ -111,7 +111,7 @@ class _SelectTravelTypeState extends State<SelectTravelType> {
                         borderRadius: BorderRadius.circular(25.0)),
                     child: TabBar(
                       indicator: BoxDecoration(
-                          color: Color.fromARGB(
+                          color: const Color.fromARGB(
                               255, 13, 213, 130), //change color to green
                           borderRadius: BorderRadius.circular(25)),
                       labelColor: Colors.white,

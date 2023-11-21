@@ -1,47 +1,116 @@
-import 'package:AirTours/constants/pages_route.dart';
-import 'package:AirTours/constants/user_constants.dart';
+import 'package:AirTours/services/cloud/firebase_cloud_storage.dart';
+import 'package:AirTours/utilities/show_balance.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../../services/cloud/cloud_storage_exceptions.dart';
+import '../../constants/pages_route.dart';
 import '../../services_auth/firebase_auth_provider.dart';
-import '../../utilities/show_feedback.dart';
+import '../../utilities/show_error.dart';
 
-class ChargeBalance extends StatefulWidget {
-  final String balance;
-
-  const ChargeBalance({super.key, required this.balance});
+class UpgradeCard extends StatefulWidget {
+  const UpgradeCard({super.key});
 
   @override
-  State<ChargeBalance> createState() => _ChargeBalanceState();
+  State<UpgradeCard> createState() => _UpgradeCardState();
 }
 
-class _ChargeBalanceState extends State<ChargeBalance> {
+class _UpgradeCardState extends State<UpgradeCard> {
+  final user = FirebaseFirestore.instance.collection('user');
   final formKey = GlobalKey<FormState>();
   TextEditingController cardNumber = TextEditingController();
   TextEditingController cardName = TextEditingController();
   TextEditingController cvv = TextEditingController();
   TextEditingController expiryDate = TextEditingController();
-  final user = FirebaseFirestore.instance.collection('user');
+  FirebaseCloudStorage f = FirebaseCloudStorage();
+  late double price;
+  late double balance;
+  bool notInitialized = true;
+  bool notInitialized2 = true;
 
-  Future<void> toNext() async {
-    try {
-      String userId = FirebaseAuthProvider.authService().currentUser!.id;
-      final docRef = user.doc(userId);
-      final docSnap = await docRef.get();
-      final currentBalance = docSnap.data()![balanceFieldName];
-      final toDouble = double.parse(widget.balance);
-      final newBalance = toDouble + currentBalance;
-      await docRef.update({"balance": newBalance});
-    } catch (_) {
-      throw CouldNotUpdateInformationException();
+  Future<double> showBalance() async {
+    if (notInitialized) {
+      balance = await showUserBalance();
+      notInitialized = false;
+    }
+    return balance;
+  }
+
+  Future<double> setPrice() async {
+    if (notInitialized2 == true) {
+      price = await f.upgradePrice();
+      notInitialized2 = false;
+    }
+    return price;
+  }
+
+  Future<void> discountUpgradePrice() async {
+    if (balance >= price) {
+      if (price == 0) {
+        await showErrorDialog(
+            context, "Can't Discount More, Your Upgrade Price is already 0");
+      } else {
+        balance = balance - price;
+        price = 0;
+      }
+    } else {
+      if (balance == 0) {
+        await showErrorDialog(context, 'No Balance Available!');
+      } else {
+        price = price - balance;
+        balance = 0;
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(),
+        appBar: AppBar(
+          actions: [
+            Expanded(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  FutureBuilder<double>(
+                    future: setPrice(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const CircularProgressIndicator();
+                      } else if (snapshot.hasError) {
+                        return Text('Error: ${snapshot.error}');
+                      } else if (snapshot.hasData) {
+                        return Text('Upgrade Price: ${snapshot.data!}',
+                            style: const TextStyle(fontSize: 16));
+                      } else {
+                        return const Text('No Data Available');
+                      }
+                    },
+                  ),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  FutureBuilder<double>(
+                    future: showBalance(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const CircularProgressIndicator();
+                      } else if (snapshot.hasError) {
+                        return Text('Error: ${snapshot.error}');
+                      } else if (snapshot.hasData) {
+                        return Text(
+                          "Your Balance: ${snapshot.data!}",
+                          style: const TextStyle(fontSize: 16),
+                        );
+                      } else {
+                        return const Text('No Data Available');
+                      }
+                    },
+                  )
+                ],
+              ),
+            ),
+          ],
+        ),
         body: SafeArea(
             child: Padding(
           padding: const EdgeInsets.all(7.0),
@@ -238,13 +307,15 @@ class _ChargeBalanceState extends State<ChargeBalance> {
                           onTap: () async {
                             setState(() {
                               if (formKey.currentState!.validate()) {
-                                toNext();
-                                showFeedback(
-                                    context, 'balance successefully added');
                                 Navigator.of(context).pushNamedAndRemoveUntil(
                                     bottomRoute, (route) => false);
                               }
                             });
+                            String userId = FirebaseAuthProvider.authService()
+                                .currentUser!
+                                .id;
+                            final docR = user.doc(userId);
+                            await docR.update({'balance': balance});
                           },
                           child: Container(
                               margin: const EdgeInsets.all(5),
@@ -267,6 +338,29 @@ class _ChargeBalanceState extends State<ChargeBalance> {
                         ),
                       )
                     ],
+                  ),
+                  GestureDetector(
+                    onTap: () async {
+                      await discountUpgradePrice();
+                      setState(() {});
+                    },
+                    child: Container(
+                        margin: const EdgeInsets.all(5),
+                        padding: const EdgeInsets.all(15),
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                            boxShadow: const [
+                              BoxShadow(blurRadius: 2, offset: Offset(0, 0))
+                            ],
+                            borderRadius: BorderRadius.circular(20),
+                            color: Colors.blue),
+                        child: const Center(
+                            child: Text(
+                          "Discount Using Balance",
+                          style: TextStyle(
+                            color: Colors.white,
+                          ),
+                        ))),
                   ),
                 ],
               ),

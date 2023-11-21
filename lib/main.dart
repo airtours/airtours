@@ -2,7 +2,8 @@ import 'package:AirTours/services_auth/firebase_auth_provider.dart';
 import 'package:AirTours/views/Admin/add_admin.dart';
 import 'package:AirTours/views/Admin/admin.dart';
 import 'package:AirTours/views/Global/bottom_bar.dart';
-import 'package:AirTours/views/Profile/ProfileView.dart';
+import 'package:AirTours/views/Manage_booking/upgrade_card.dart';
+import 'package:AirTours/views/Profile/profile_view.dart';
 import 'package:AirTours/views/Profile/add_balance.dart';
 import 'package:AirTours/views/Profile/login_for_delete_verf.dart';
 import 'package:AirTours/views/Profile/login_for_email_verf.dart';
@@ -19,7 +20,6 @@ import 'constants/pages_route.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(MaterialApp(
-    debugShowCheckedModeBanner: false,
     home: const HomePage(),
     routes: {
       loginRoute: (context) => const LoginView(),
@@ -36,7 +36,8 @@ Future<void> main() async {
       loginForEmailChangesRoute: (context) => const LoginForEmailChanges(),
       loginForPasswordChangesRoute: (context) =>
           const LoginForPasswordChanges(),
-      loginForDeleteRoute: (context) => const LoginForDelete()
+      loginForDeleteRoute: (context) => const LoginForDelete(),
+      upgradeCard: (context) => const UpgradeCard()
     },
   ));
 }

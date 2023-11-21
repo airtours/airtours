@@ -28,7 +28,7 @@ int count = 1;
 int baggageCount = 1;
 int baggagePrice = 0;
 
-List<String> passengerType = ['guest', 'business'];
+List<String> passengerType = ['Economy', 'Business'];
 String currentPassenger = passengerType[0];
 DateTimeRange dateRange = DateTimeRange(start: dateTime, end: dateTime);
 
@@ -126,3 +126,4 @@ List<flightInformation> flightNameTest = [
   flightInformation('Wedjh', "EJH"),
   flightInformation('Yanbu Al Bahr', "YNB"),
 ];
+String whichBooking = "";

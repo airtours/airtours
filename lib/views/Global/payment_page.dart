@@ -1,6 +1,6 @@
+import 'package:AirTours/constants/pages_route.dart';
 import 'package:AirTours/views/Global/ticket.dart';
 import 'package:flutter/material.dart';
-
 import 'credit_card.dart';
 
 class Payment extends StatefulWidget {
@@ -36,18 +36,18 @@ class _PaymentState extends State<Payment> {
             ),
             GestureDetector(
               onTap: () async {
-                bool? result = await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => Creditcard(
-                            paymentFor: widget.paymentFor,
-                            id1: widget.id1,
-                            id2: widget.id2,
-                            flightClass: widget.flightClass,
-                            tickets: widget.tickets))); //Creditcard
-
-                if (widget.paymentFor == 'upgrade') {
-                  Navigator.pop(context, result);
+                if (widget.paymentFor != 'upgrade') {
+                  await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => Creditcard(
+                              paymentFor: widget.paymentFor,
+                              id1: widget.id1,
+                              id2: widget.id2,
+                              flightClass: widget.flightClass,
+                              tickets: widget.tickets)));
+                } else {
+                  await Navigator.of(context).pushNamed(upgradeCard);
                 }
               },
               child: Container(
@@ -66,10 +66,7 @@ class _PaymentState extends State<Payment> {
                   )),
             ),
             GestureDetector(
-              onTap: () {
-                // Navigator.push(context,
-                //     MaterialPageRoute(builder: (context) => Criditcard()));
-              },
+              onTap: () {},
               child: Container(
                   width: double.infinity,
                   padding: const EdgeInsets.all(20),

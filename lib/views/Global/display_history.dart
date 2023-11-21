@@ -1,5 +1,3 @@
-import 'package:AirTours/views/Manage_booking/one_way_details.dart';
-import 'package:AirTours/views/Manage_booking/round_trip_details.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';

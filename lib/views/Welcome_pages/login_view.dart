@@ -139,22 +139,32 @@ class _LoginViewState extends State<LoginView> {
                         final user =
                             FirebaseAuthProvider.authService().currentUser;
                         final isUserr = await c.isUser(ownerUserId: user!.id);
+                        final isAdminn = await c.isAdmin(email: email);
                         if (isUserr) {
-                          if (user.isEmailVerified) {
-                            await Navigator.of(context).pushNamedAndRemoveUntil(
-                                bottomRoute, (route) => false);
+                          if (isAdminn) {
+                            if (user.isEmailVerified) {
+                              await Navigator.of(context)
+                                  .pushNamedAndRemoveUntil(
+                                      createFlightRoute, (route) => false);
+                            } else {
+                              await Navigator.of(context)
+                                  .pushNamedAndRemoveUntil(
+                                      verficationRoute, (route) => false);
+                            }
                           } else {
-                            await Navigator.of(context).pushNamedAndRemoveUntil(
-                                verficationRoute, (route) => false);
+                            if (user.isEmailVerified) {
+                              await Navigator.of(context)
+                                  .pushNamedAndRemoveUntil(
+                                      bottomRoute, (route) => false);
+                            } else {
+                              await Navigator.of(context)
+                                  .pushNamedAndRemoveUntil(
+                                      verficationRoute, (route) => false);
+                            }
                           }
                         } else {
-                          if (user.isEmailVerified) {
-                            await Navigator.of(context).pushNamedAndRemoveUntil(
-                                createFlightRoute, (route) => false);
-                          } else {
-                            await Navigator.of(context).pushNamedAndRemoveUntil(
-                                verficationRoute, (route) => false);
-                          }
+                          await showErrorDialog(context,
+                              'User is Not Registered in the database');
                         }
                       } on UserNotFoundAuthException {
                         await showErrorDialog(context, 'User Not Found');
@@ -173,7 +183,7 @@ class _LoginViewState extends State<LoginView> {
                     TextButton(
                         onPressed: () async {
                           Navigator.of(context).pushNamedAndRemoveUntil(
-                              '/register/', (route) => false);
+                              registerRoute, (route) => false);
                         },
                         child: const Text("Register Now"))
                   ],
