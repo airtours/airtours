@@ -271,8 +271,56 @@ class FlightFirestore {
         return flag;
       }
     } catch (e) {
-      print(e);
+      return false;
     }
     return false;
+  }
+
+  Future<void> decreaseNumberOfSeats(
+      String flightId, int numOfSeats, String flightClass) async {
+    try {
+      final tempFlight = flights.doc(flightId);
+      final fetchedFlight = await tempFlight.get();
+
+      if (flightClass == 'business') {
+        int currentSeats = fetchedFlight.data()![numOfAvabusField];
+        if (currentSeats > 0) {
+          int newSeats = currentSeats - numOfSeats;
+          tempFlight.update({numOfAvabusField: newSeats});
+        }
+      } else {
+        int currentSeats = fetchedFlight.data()![numOfAvaGueField];
+        if (currentSeats > 0) {
+          int newSeats = currentSeats - numOfSeats;
+          await tempFlight.update({numOfAvaGueField: newSeats});
+        }
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<void> increaseNumberOfSeats(
+      String flightId, int numOfSeats, String flightClass) async {
+    try {
+      final tempFlight = flights.doc(flightId);
+      final fetchedFlight = await tempFlight.get();
+
+      if (flightClass == 'business') {
+        int currentSeats = fetchedFlight.data()![numOfAvabusField];
+        if (currentSeats > 0) {
+          int newSeats = currentSeats + numOfSeats;
+          tempFlight.update({numOfAvabusField: newSeats});
+        }
+      } else {
+        int currentSeats = fetchedFlight.data()![numOfAvaGueField];
+        if (currentSeats > 0) {
+          int newSeats = currentSeats + numOfSeats;
+          await tempFlight.update({numOfAvaGueField: newSeats});
+        }
+      }
+    } catch (e) {
+      print(e);
+    }
   }
 }
