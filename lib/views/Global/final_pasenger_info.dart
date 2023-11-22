@@ -1,12 +1,9 @@
-import 'package:AirTours/views/Global/payment_page.dart';
 import 'package:AirTours/views/Global/ticket.dart';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 import 'package:AirTours/views/Global/global_var.dart';
-
 import '../../services/cloud/cloud_booking.dart';
+import 'credit_card.dart';
 
 class Enterinfo extends StatefulWidget {
   final String id1;

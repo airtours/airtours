@@ -118,6 +118,7 @@ class _ViewBookingsState extends State<ViewBookings> {
                               return GestureDetector(
                                 onTap: () {
                                   if (booking.returnFlight == 'none') {
+                                    whichBooking = booking.documentId;
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
@@ -127,6 +128,7 @@ class _ViewBookingsState extends State<ViewBookings> {
                                       ),
                                     );
                                   } else {
+                                    whichBooking = booking.documentId;
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(

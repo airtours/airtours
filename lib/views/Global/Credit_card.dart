@@ -39,7 +39,6 @@ class _CreditcardState extends State<Creditcard> {
   late final TicketFirestore _ticketService;
   late final BookingFirestore _bookingService;
   CloudBooking? booking;
-  bool isSucess = false;
   late double price;
   late double balance;
   bool notInitialized = true;
@@ -81,7 +80,7 @@ class _CreditcardState extends State<Creditcard> {
   }
 
   void toNext(List<Ticket> alltickets) async {
-    final tmp = await createBooking(retrieveTotBookingsPrice()); //modified
+    final tmp = await createBooking(retrieveTotBookingsPrice());
 
     alltickets.forEach((ticket) async {
       await _ticketService.createNewTicket(
@@ -98,7 +97,6 @@ class _CreditcardState extends State<Creditcard> {
           flightReference: ticket.flightReference,
           ticketClass: widget.flightClass);
     });
-    //await showFeedback(context, 'Booking sucessfully created.'); causes error
   }
 
   double retrieveTotBookingsPrice() {
@@ -109,12 +107,7 @@ class _CreditcardState extends State<Creditcard> {
     return totBookingPrice;
   }
 
-  double showTotBookingPrice() {
-    return price;
-  }
-
   Future<double> showBalance() async {
-    //different from the balance in DB
     if (notInitialized) {
       balance = await showUserBalance();
       notInitialized = false;
@@ -151,7 +144,7 @@ class _CreditcardState extends State<Creditcard> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    'Booking Price: ${showTotBookingPrice()}',
+                    'Booking Price: ${price}',
                     style: const TextStyle(fontSize: 16),
                   ),
                   const SizedBox(
@@ -186,7 +179,6 @@ class _CreditcardState extends State<Creditcard> {
             key: formKey,
             child: SingleChildScrollView(
               child: Column(
-                //mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Container(
                       margin: const EdgeInsets.all(5),
@@ -214,9 +206,6 @@ class _CreditcardState extends State<Creditcard> {
                             if (value!.isEmpty) {
                               return "Enter a card number";
                             }
-                            // if (!RegExp(r'^\d{19}$').hasMatch(value)) {
-                            //   return "Enter a valid card number aziz";
-                            // }
                             if (value.length != 22) {
                               return "Enter a valid card number";
                             }
@@ -383,16 +372,13 @@ class _CreditcardState extends State<Creditcard> {
                                   toNext(widget.tickets);
                                   Navigator.of(context).pushNamedAndRemoveUntil(
                                       bottomRoute, (route) => false);
-                                } else if (widget.paymentFor == "upgrade") {
-                                  isSucess = true;
-                                  Navigator.pop(context, isSucess);
                                 }
                               }
                             });
                             String userId = FirebaseAuthProvider.authService()
                                 .currentUser!
                                 .id;
-                            final docR = user.doc(userId); //user doc
+                            final docR = user.doc(userId);
                             await docR.update({'balance': balance});
                           },
                           child: Container(
