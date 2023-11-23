@@ -66,6 +66,7 @@ class _OneWayDetailsState extends State<OneWayDetails> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: const Color.fromARGB(255, 13, 213, 130),
         title: const Text('Booking Details'),
       ),
       body: Column(
@@ -235,47 +236,97 @@ class _OneWayDetailsState extends State<OneWayDetails> {
                   const Spacer(),
                   Visibility(
                     visible: bookingType != 'Business',
-                    child: ElevatedButton(
-                      onPressed: () async {
-                        if (await _flightsService.didFly(
-                            departureFlightId: departFlight.documentId)) {
-                          bool? nextPage = await Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => Payment(
-                                    paymentFor: 'upgrade',
-                                    id1: 'none',
-                                    id2: 'none',
-                                    flightClass: 'none',
-                                    tickets: tickets)),
-                          );
-                          if (nextPage == true) {
-                            bool result = await _bookingService.upgradeOneWay(
-                              bookingId: currentBooking.documentId,
-                              departureFlightId: departFlight.documentId,
-                              numOfPas: currentBooking.numOfSeats,
+                    child: Container(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () async {
+                          if (await _flightsService.didFly(
+                              departureFlightId: departFlight.documentId)) {
+                            bool? nextPage = await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => Payment(
+                                      paymentFor: 'upgrade',
+                                      id1: 'none',
+                                      id2: 'none',
+                                      flightClass: 'none',
+                                      tickets: tickets)),
                             );
+                            if (nextPage == true) {
+                              bool result = await _bookingService.upgradeOneWay(
+                                bookingId: currentBooking.documentId,
+                                departureFlightId: departFlight.documentId,
+                                numOfPas: currentBooking.numOfSeats,
+                              );
 
-                            if (result == true) {
-                              setState(() {
-                                showSuccessDialog(
-                                    context, 'Booking successfully upgraded.');
-                                bookingType = 'Business';
-                              });
+                              if (result == true) {
+                                setState(() {
+                                  showSuccessDialog(context,
+                                      'Booking successfully upgraded.');
+                                  bookingType = 'Business';
+                                });
+                              } else {
+                                showErrorDialog(
+                                    context, 'Failed to upgrade booking.');
+                              }
                             } else {
-                              showErrorDialog(
-                                  context, 'Failed to upgrade booking.');
+                              showErrorDialog(context, 'Payment Failed');
                             }
                           } else {
-                            showErrorDialog(context, 'Payment Failed');
+                            showErrorDialog(context,
+                                'Cannot Upgrade Booking, Upgradation Deadline Passed');
                           }
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor:
+                              const Color.fromARGB(255, 13, 213, 130),
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 16.0,
+                            horizontal: 24.0,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                        ),
+                        child: const Text(
+                          'Upgrade Booking',
+                          style: TextStyle(
+                            fontSize: 18.0,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 12.0),
+                  Container(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        final canceledBookingPrice = await c
+                            .canceledBookingPrice(currentBooking.documentId);
+                        bool result = await _bookingService.deleteBooking(
+                            bookingId: currentBooking.documentId,
+                            flightId1: departFlight.documentId,
+                            flightId2: 'none',
+                            flightClass: currentBooking.bookingClass,
+                            numOfPas: currentBooking.numOfSeats);
+                        if (result == true) {
+                          c.retrievePreviousBalance(
+                              FirebaseAuthProvider.authService()
+                                  .currentUser!
+                                  .id,
+                              canceledBookingPrice);
+                          showSuccessDialog(
+                              context, 'Booking successfully deleted.');
+                          Navigator.pop(context);
                         } else {
                           showErrorDialog(context,
-                              'Cannot Upgrade Booking, Upgradation Deadline Passed');
+                              "Cannot Cancel Booking, Cancellation Deadline Passed");
                         }
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.green,
+                        backgroundColor: Colors.red,
                         padding: const EdgeInsets.symmetric(
                           vertical: 16.0,
                           horizontal: 24.0,
@@ -285,52 +336,11 @@ class _OneWayDetailsState extends State<OneWayDetails> {
                         ),
                       ),
                       child: const Text(
-                        'Upgrade Booking',
+                        'Cancel Booking',
                         style: TextStyle(
                           fontSize: 18.0,
                           fontWeight: FontWeight.bold,
                         ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 12.0),
-                  ElevatedButton(
-                    onPressed: () async {
-                      final canceledBookingPrice = await c
-                          .canceledBookingPrice(currentBooking.documentId);
-                      bool result = await _bookingService.deleteBooking(
-                          bookingId: currentBooking.documentId,
-                          flightId1: departFlight.documentId,
-                          flightId2: 'none',
-                          flightClass: currentBooking.bookingClass,
-                          numOfPas: currentBooking.numOfSeats);
-                      if (result == true) {
-                        c.retrievePreviousBalance(
-                            FirebaseAuthProvider.authService().currentUser!.id,
-                            canceledBookingPrice);
-                        showSuccessDialog(
-                            context, 'Booking successfully deleted.');
-                        Navigator.pop(context);
-                      } else {
-                        showErrorDialog(context,
-                            "Cannot Cancel Booking, Cancellation Deadline Passed");
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.red,
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 16.0,
-                        horizontal: 24.0,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                    ),
-                    child: const Text(
-                      'Cancel Booking',
-                      style: TextStyle(
-                        fontSize: 18.0,
-                        fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),

@@ -64,7 +64,7 @@ class _TicketsViewState extends State<TicketsView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.blue,
+        backgroundColor: const Color.fromARGB(255, 13, 213, 130),
         centerTitle: true,
         title: const Text(
           'List of Tickets',
@@ -270,7 +270,7 @@ class _TicketsViewState extends State<TicketsView> {
                                   BoxShadow(blurRadius: 2, offset: Offset(0, 0))
                                 ],
                                 borderRadius: BorderRadius.circular(10),
-                                color: Colors.blue),
+                                color: const Color.fromARGB(255, 13, 213, 130)),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [

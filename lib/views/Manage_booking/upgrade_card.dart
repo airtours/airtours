@@ -66,6 +66,7 @@ class _UpgradeCardState extends State<UpgradeCard> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          backgroundColor: const Color.fromARGB(255, 13, 213, 130),
           actions: [
             Expanded(
               child: Row(
