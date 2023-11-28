@@ -4,10 +4,7 @@ import 'package:AirTours/services/cloud/cloud_booking.dart';
 import 'package:AirTours/services/cloud/cloud_flight.dart';
 import 'package:AirTours/services/cloud/firebase_cloud_storage.dart';
 import 'package:AirTours/views/Manage_booking/tickets_view.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-
 import '../../services/cloud/firestore_booking.dart';
 import '../../services/cloud/firestore_flight.dart';
 import '../../services_auth/firebase_auth_provider.dart';
@@ -54,22 +51,11 @@ class _RoundTripDetailsState extends State<RoundTripDetails> {
     bookingType = currentBooking.bookingClass;
   }
 
-  String date1(Timestamp date) {
-    DateTime departureDate = date.toDate();
-    DateFormat formatter = DateFormat('MM dd yyyy');
-    String formattedDate = formatter.format(departureDate);
-    List<String> parts = formattedDate.split(' ');
-    int month = int.parse(parts[0]);
-    String monthName = monthNames[month - 1];
-    String day = parts[1];
-    // String year = parts[2];
-    return '$day $monthName'; //$year';
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Color.fromARGB(255, 13, 213, 130),
         title: const Text('Booking Details'),
       ),
       body: Column(
@@ -117,7 +103,7 @@ class _RoundTripDetailsState extends State<RoundTripDetails> {
                           ),
                           Container(
                             height: 1.0,
-                            color: Colors.black,
+                            color: Colors.grey,
                             width: double.infinity,
                             //child: SizedBox.expand(),
                           ),
@@ -166,25 +152,39 @@ class _RoundTripDetailsState extends State<RoundTripDetails> {
                               height: 3,
                             ),
                             Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text(
-                                  widget.depFlight.fromCity,
-                                  style: const TextStyle(fontSize: 19),
+                                Row(
+                                  children: [
+                                    Text(
+                                      widget.depFlight.fromCity,
+                                      style: const TextStyle(fontSize: 19),
+                                    ),
+                                    const SizedBox(
+                                      width: 5,
+                                    ),
+                                    SizedBox(
+                                      height: 20,
+                                      child:
+                                          Image.asset('images/flight-Icon.png'),
+                                    ),
+                                    const SizedBox(
+                                      width: 5,
+                                    ),
+                                    Text(
+                                      widget.depFlight.toCity,
+                                      style: const TextStyle(fontSize: 19),
+                                    ),
+                                  ],
                                 ),
-                                const SizedBox(
-                                  width: 5,
-                                ),
-                                SizedBox(
-                                  height: 20,
-                                  child: Image.asset('images/flight-Icon.png'),
-                                ),
-                                const SizedBox(
-                                  width: 5,
-                                ),
-                                Text(
-                                  widget.depFlight.toCity,
-                                  style: const TextStyle(fontSize: 19),
-                                ),
+                                Row(
+                                  children: [
+                                    Text(
+                                        '${shortCutFlightName[widget.depFlight.fromCity]} - '),
+                                    Text(
+                                        '${shortCutFlightName[widget.depFlight.toCity]}')
+                                  ],
+                                )
                               ],
                             ),
                             Row(
@@ -213,16 +213,6 @@ class _RoundTripDetailsState extends State<RoundTripDetails> {
                                     ),
                                   ],
                                 ),
-                                Column(
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Text(
-                                            "Pasenger: ${widget.booking.numOfSeats}")
-                                      ],
-                                    )
-                                  ],
-                                )
                               ],
                             )
                           ]),
@@ -273,7 +263,7 @@ class _RoundTripDetailsState extends State<RoundTripDetails> {
                           ),
                           Container(
                             height: 1.0,
-                            color: Colors.black,
+                            color: Colors.grey,
                             width: double.infinity,
                             //child: SizedBox.expand(),
                           ),
@@ -322,25 +312,39 @@ class _RoundTripDetailsState extends State<RoundTripDetails> {
                               height: 3,
                             ),
                             Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text(
-                                  widget.retFlight.fromCity,
-                                  style: const TextStyle(fontSize: 19),
+                                Row(
+                                  children: [
+                                    Text(
+                                      widget.depFlight.fromCity,
+                                      style: const TextStyle(fontSize: 19),
+                                    ),
+                                    const SizedBox(
+                                      width: 5,
+                                    ),
+                                    SizedBox(
+                                      height: 20,
+                                      child:
+                                          Image.asset('images/flight-Icon.png'),
+                                    ),
+                                    const SizedBox(
+                                      width: 5,
+                                    ),
+                                    Text(
+                                      widget.depFlight.toCity,
+                                      style: const TextStyle(fontSize: 19),
+                                    ),
+                                  ],
                                 ),
-                                const SizedBox(
-                                  width: 5,
-                                ),
-                                SizedBox(
-                                  height: 20,
-                                  child: Image.asset('images/flight-Icon.png'),
-                                ),
-                                const SizedBox(
-                                  width: 5,
-                                ),
-                                Text(
-                                  widget.retFlight.toCity,
-                                  style: const TextStyle(fontSize: 19),
-                                ),
+                                Row(
+                                  children: [
+                                    Text(
+                                        '${shortCutFlightName[widget.depFlight.fromCity]} - '),
+                                    Text(
+                                        '${shortCutFlightName[widget.depFlight.toCity]}')
+                                  ],
+                                )
                               ],
                             ),
                             Row(
@@ -370,21 +374,12 @@ class _RoundTripDetailsState extends State<RoundTripDetails> {
                                     ),
                                   ],
                                 ),
-                                Column(
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Text(
-                                            "Passenger: ${widget.booking.numOfSeats}")
-                                      ],
-                                    )
-                                  ],
-                                )
                               ],
                             )
                           ]),
                         ],
                       )))),
+          const SizedBox(height: 16.0),
           Expanded(
             child: Container(
               width: double.infinity,
@@ -394,51 +389,101 @@ class _RoundTripDetailsState extends State<RoundTripDetails> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   const Spacer(),
-                  Visibility(
-                    visible: bookingType != 'Business',
-                    child: ElevatedButton(
-                      onPressed: () async {
-                        if (await _flightsService.didFly(
-                            departureFlightId: departFlight.documentId)) {
-                          bool? nextPage = await Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => Payment(
-                                    paymentFor: 'upgrade',
-                                    id1: 'none',
-                                    id2: 'none',
-                                    flightClass: 'none',
-                                    tickets: tickets)),
-                          );
-                          if (nextPage == true) {
-                            bool result =
-                                await _bookingService.upgradeRoundTrip(
-                              bookingId: currentBooking.documentId,
-                              departureFlightId: departFlight.documentId,
-                              returnFlightId: retuFlight.documentId,
-                              numOfPas: currentBooking.numOfSeats,
+                  Container(
+                    width: double.infinity,
+                    child: Visibility(
+                      visible: bookingType != 'Business',
+                      child: ElevatedButton(
+                        onPressed: () async {
+                          if (await _flightsService.didFly(
+                              departureFlightId: departFlight.documentId)) {
+                            bool? nextPage = await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => Payment(
+                                      paymentFor: 'upgrade',
+                                      id1: 'none',
+                                      id2: 'none',
+                                      flightClass: 'none',
+                                      tickets: tickets)),
                             );
+                            if (nextPage == true) {
+                              bool result =
+                                  await _bookingService.upgradeRoundTrip(
+                                bookingId: currentBooking.documentId,
+                                departureFlightId: departFlight.documentId,
+                                returnFlightId: retuFlight.documentId,
+                                numOfPas: currentBooking.numOfSeats,
+                              );
 
-                            if (result == true) {
-                              setState(() {
-                                showSuccessDialog(
-                                    context, 'Booking successfully upgraded.');
-                                bookingType = 'Business';
-                              });
+                              if (result == true) {
+                                setState(() {
+                                  showSuccessDialog(context,
+                                      'Booking successfully upgraded.');
+                                  bookingType = 'Business';
+                                });
+                              } else {
+                                showErrorDialog(
+                                    context, 'Failed to upgrade booking.');
+                              }
                             } else {
-                              showErrorDialog(
-                                  context, 'Failed to upgrade booking.');
+                              showErrorDialog(context, 'Payment Failed');
                             }
                           } else {
-                            showErrorDialog(context, 'Payment Failed');
+                            showErrorDialog(context,
+                                'Cannot Upgrade Booking, Upgradation Deadline Passed');
                           }
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Color.fromARGB(255, 13, 213, 130),
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 16.0,
+                            horizontal: 24.0,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                        ),
+                        child: const Text(
+                          'Upgrade Booking',
+                          style: TextStyle(
+                            fontSize: 18.0,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 8.0),
+                  Container(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        final canceledBookingPrice = await c
+                            .canceledBookingPrice(currentBooking.documentId);
+                        bool result = await _bookingService.deleteBooking(
+                            bookingId: currentBooking.documentId,
+                            flightId1: departFlight.documentId,
+                            flightId2: retuFlight.documentId,
+                            flightClass: currentBooking.bookingClass,
+                            numOfPas: currentBooking.numOfSeats);
+
+                        if (result == true) {
+                          c.retrievePreviousBalance(
+                              FirebaseAuthProvider.authService()
+                                  .currentUser!
+                                  .id,
+                              canceledBookingPrice);
+                          showSuccessDialog(
+                              context, 'Booking successfully deleted.');
+                          Navigator.pop(context);
                         } else {
                           showErrorDialog(context,
-                              'Cannot Upgrade Booking, Upgradation Deadline Passed');
+                              "Cannot Cancel Booking, Cancellation Deadline Passed");
                         }
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.green,
+                        backgroundColor: Colors.red,
                         padding: const EdgeInsets.symmetric(
                           vertical: 16.0,
                           horizontal: 24.0,
@@ -448,53 +493,11 @@ class _RoundTripDetailsState extends State<RoundTripDetails> {
                         ),
                       ),
                       child: const Text(
-                        'Upgrade Booking',
+                        'Cancel',
                         style: TextStyle(
                           fontSize: 18.0,
                           fontWeight: FontWeight.bold,
                         ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 12.0),
-                  ElevatedButton(
-                    onPressed: () async {
-                      final canceledBookingPrice = await c
-                          .canceledBookingPrice(currentBooking.documentId);
-                      bool result = await _bookingService.deleteBooking(
-                          bookingId: currentBooking.documentId,
-                          flightId1: departFlight.documentId,
-                          flightId2: retuFlight.documentId,
-                          flightClass: currentBooking.bookingClass,
-                          numOfPas: currentBooking.numOfSeats);
-
-                      if (result == true) {
-                        c.retrievePreviousBalance(
-                            FirebaseAuthProvider.authService().currentUser!.id,
-                            canceledBookingPrice);
-                        showSuccessDialog(
-                            context, 'Booking successfully deleted.');
-                        Navigator.pop(context);
-                      } else {
-                        showErrorDialog(context,
-                            "Cannot Cancel Booking, Cancellation Deadline Passed");
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.red,
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 16.0,
-                        horizontal: 24.0,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                    ),
-                    child: const Text(
-                      'Cancel',
-                      style: TextStyle(
-                        fontSize: 18.0,
-                        fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),

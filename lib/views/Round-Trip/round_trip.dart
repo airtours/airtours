@@ -2,6 +2,7 @@ import 'package:AirTours/utilities/search_flight.dart';
 import 'package:AirTours/views/Round-Trip/available_departure.dart';
 import 'package:flutter/material.dart';
 import 'package:AirTours/views/Global/global_var.dart';
+import '../Global/flight_class_for_search.dart';
 import '../Global/show_city_name_search.dart';
 
 class RoundTrip extends StatefulWidget {
@@ -56,16 +57,72 @@ class _RoundTripState extends State<RoundTrip> {
   void _navigateToCitySelectionPage(BuildContext context, int num) async {
     final city = await Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => const FromSearch(fromOrTo: 1)),
+      MaterialPageRoute(
+          builder: (context) => const FromSearch(
+                fromOrTo: 1,
+              )),
     );
 
     if (city != null) {
       setState(() {
         if (num == 1) {
-          selectedCity1 = city;
+          if (cityNameDel == null) {
+            selectedCity1 = city;
+            cityNameDel = city;
+            flightNameTest.removeWhere(
+                (flightInfo) => flightInfo.cityName == cityNameDel);
+          } else {
+            if (cityNameDel == null) {
+              selectedCity1 = city;
+              cityNameDel = city;
+              List<flightInformation> flightNameTestCopy = List.from(forSave);
+              flightNameTest = flightNameTestCopy;
+              flightNameTest.removeWhere(
+                  (flightInfo) => flightInfo.cityName == cityNameDel);
+              selectedCity1 = city;
+              cityNameDel = city;
+            } else {
+              selectedCity1 = city;
+              cityNameDel = city;
+              List<flightInformation> flightNameTestCopy = List.from(forSave);
+              flightNameTest = flightNameTestCopy;
+              flightNameTest.removeWhere(
+                  (flightInfo) => flightInfo.cityName == cityNameDel2);
+              flightNameTest.removeWhere(
+                  (flightInfo) => flightInfo.cityName == cityNameDel);
+            }
+          }
+
+          // flightNameTest = flightNameTest
+          //     .where((flightInfo) => flightInfo.cityName != cityNameDel)
+          //     .toList();
+          // print(cityNameDel);
         }
         if (num == 2) {
-          selectedCity2 = city;
+          if (cityNameDel2 == null) {
+            selectedCity2 = city;
+            cityNameDel2 = city;
+            flightNameTest.removeWhere(
+                (flightInfo) => flightInfo.cityName == cityNameDel2);
+          } else {
+            if (cityNameDel == null) {
+              selectedCity2 = city;
+              cityNameDel2 = city;
+              List<flightInformation> flightNameTestCopy = List.from(forSave);
+              flightNameTest = flightNameTestCopy;
+              flightNameTest.removeWhere(
+                  (flightInfo) => flightInfo.cityName == cityNameDel2);
+            } else {
+              selectedCity2 = city;
+              cityNameDel2 = city;
+              List<flightInformation> flightNameTestCopy = List.from(forSave);
+              flightNameTest = flightNameTestCopy;
+              flightNameTest.removeWhere(
+                  (flightInfo) => flightInfo.cityName == cityNameDel2);
+              flightNameTest.removeWhere(
+                  (flightInfo) => flightInfo.cityName == cityNameDel);
+            }
+          }
         }
       });
     }

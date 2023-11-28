@@ -1,13 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
-// Container(
-//               margin: const EdgeInsets.all(5),
-//               width: double.infinity,
-//               decoration: BoxDecoration(boxShadow: const [
-//                 BoxShadow(blurRadius: 2, offset: Offset(0, 0))
-//               ], borderRadius: BorderRadius.circular(20), color: Colors.white),
-//               child:
 import 'package:AirTours/constants/pages_route.dart';
 import 'package:AirTours/utilities/show_feedback.dart';
+import 'package:AirTours/views/Global/flight_class_for_search.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -116,16 +110,72 @@ class _CreateFlightState extends State<CreateFlight> {
   void _navigateToCitySelectionPage(BuildContext context, int num) async {
     final city = await Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => const FromSearch(fromOrTo: 1)),
+      MaterialPageRoute(
+          builder: (context) => const FromSearch(
+                fromOrTo: 1,
+              )),
     );
 
     if (city != null) {
       setState(() {
         if (num == 1) {
-          selectedCity1 = city;
+          if (cityNameDel == null) {
+            selectedCity1 = city;
+            cityNameDel = city;
+            flightNameTest.removeWhere(
+                (flightInfo) => flightInfo.cityName == cityNameDel);
+          } else {
+            if (cityNameDel == null) {
+              selectedCity1 = city;
+              cityNameDel = city;
+              List<flightInformation> flightNameTestCopy = List.from(forSave);
+              flightNameTest = flightNameTestCopy;
+              flightNameTest.removeWhere(
+                  (flightInfo) => flightInfo.cityName == cityNameDel);
+              selectedCity1 = city;
+              cityNameDel = city;
+            } else {
+              selectedCity1 = city;
+              cityNameDel = city;
+              List<flightInformation> flightNameTestCopy = List.from(forSave);
+              flightNameTest = flightNameTestCopy;
+              flightNameTest.removeWhere(
+                  (flightInfo) => flightInfo.cityName == cityNameDel2);
+              flightNameTest.removeWhere(
+                  (flightInfo) => flightInfo.cityName == cityNameDel);
+            }
+          }
+
+          // flightNameTest = flightNameTest
+          //     .where((flightInfo) => flightInfo.cityName != cityNameDel)
+          //     .toList();
+          // print(cityNameDel);
         }
         if (num == 2) {
-          selectedCity2 = city;
+          if (cityNameDel2 == null) {
+            selectedCity2 = city;
+            cityNameDel2 = city;
+            flightNameTest.removeWhere(
+                (flightInfo) => flightInfo.cityName == cityNameDel2);
+          } else {
+            if (cityNameDel == null) {
+              selectedCity2 = city;
+              cityNameDel2 = city;
+              List<flightInformation> flightNameTestCopy = List.from(forSave);
+              flightNameTest = flightNameTestCopy;
+              flightNameTest.removeWhere(
+                  (flightInfo) => flightInfo.cityName == cityNameDel2);
+            } else {
+              selectedCity2 = city;
+              cityNameDel2 = city;
+              List<flightInformation> flightNameTestCopy = List.from(forSave);
+              flightNameTest = flightNameTestCopy;
+              flightNameTest.removeWhere(
+                  (flightInfo) => flightInfo.cityName == cityNameDel2);
+              flightNameTest.removeWhere(
+                  (flightInfo) => flightInfo.cityName == cityNameDel);
+            }
+          }
         }
       });
     }
@@ -157,6 +207,12 @@ class _CreateFlightState extends State<CreateFlight> {
               color: Colors.red,
             ),
             onPressed: () {
+              List<flightInformation> flightNameTestCopy = List.from(forSave);
+              flightNameTest = flightNameTestCopy;
+              cityNameDel = null;
+              cityNameDel2 = null;
+              indexToUpdate = null;
+              indexToUpdate2 = null;
               FirebaseAuthProvider.authService().logOut();
               Navigator.of(context).pushNamed(loginRoute);
             },

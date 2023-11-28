@@ -138,13 +138,14 @@ class _CreditcardState extends State<Creditcard> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          backgroundColor: const Color.fromARGB(255, 13, 213, 130),
           actions: [
             Expanded(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    'Booking Price: ${price}',
+                    'Booking Price: $price',
                     style: const TextStyle(fontSize: 16),
                   ),
                   const SizedBox(

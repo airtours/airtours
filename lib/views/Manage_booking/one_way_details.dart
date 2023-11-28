@@ -6,9 +6,7 @@ import 'package:AirTours/services_auth/firebase_auth_provider.dart';
 import 'package:AirTours/utilities/show_error.dart';
 //import 'package:AirTours/views/Global/paymentPage.dart';
 import 'package:AirTours/views/Manage_booking/tickets_view.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import '../../services/cloud/firebase_cloud_storage.dart';
 import '../../services/cloud/firestore_booking.dart';
 import '../../services/cloud/firestore_flight.dart';
@@ -50,23 +48,11 @@ class _OneWayDetailsState extends State<OneWayDetails> {
     bookingType = currentBooking.bookingClass;
   }
 
-  String date1(Timestamp date) {
-    DateTime departureDate = date.toDate();
-    DateFormat formatter = DateFormat('MM dd yyyy');
-    String formattedDate = formatter.format(departureDate);
-    List<String> parts = formattedDate.split(' ');
-    int month = int.parse(parts[0]);
-    String monthName = monthNames[month - 1];
-    String day = parts[1];
-    // String year = parts[2];
-    return '$day $monthName'; //$year';
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 13, 213, 130),
+        backgroundColor: Color.fromARGB(255, 13, 213, 130),
         title: const Text('Booking Details'),
       ),
       body: Column(
@@ -113,7 +99,7 @@ class _OneWayDetailsState extends State<OneWayDetails> {
                           ),
                           Container(
                             height: 1.0,
-                            color: Colors.black,
+                            color: Colors.grey,
                             width: double.infinity,
                             //child: SizedBox.expand(),
                           ),
@@ -162,25 +148,39 @@ class _OneWayDetailsState extends State<OneWayDetails> {
                               height: 3,
                             ),
                             Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text(
-                                  widget.depFlight.fromCity,
-                                  style: const TextStyle(fontSize: 19),
+                                Row(
+                                  children: [
+                                    Text(
+                                      widget.depFlight.fromCity,
+                                      style: const TextStyle(fontSize: 19),
+                                    ),
+                                    const SizedBox(
+                                      width: 5,
+                                    ),
+                                    SizedBox(
+                                      height: 20,
+                                      child:
+                                          Image.asset('images/flight-Icon.png'),
+                                    ),
+                                    const SizedBox(
+                                      width: 5,
+                                    ),
+                                    Text(
+                                      widget.depFlight.toCity,
+                                      style: const TextStyle(fontSize: 19),
+                                    ),
+                                  ],
                                 ),
-                                const SizedBox(
-                                  width: 5,
-                                ),
-                                SizedBox(
-                                  height: 20,
-                                  child: Image.asset('images/flight-Icon.png'),
-                                ),
-                                const SizedBox(
-                                  width: 5,
-                                ),
-                                Text(
-                                  widget.depFlight.toCity,
-                                  style: const TextStyle(fontSize: 19),
-                                ),
+                                Row(
+                                  children: [
+                                    Text(
+                                        '${shortCutFlightName[widget.depFlight.fromCity]} - '),
+                                    Text(
+                                        '${shortCutFlightName[widget.depFlight.toCity]}')
+                                  ],
+                                )
                               ],
                             ),
                             Row(
@@ -209,19 +209,22 @@ class _OneWayDetailsState extends State<OneWayDetails> {
                                     ),
                                   ],
                                 ),
-                                Column(
+                                const Column(
                                   children: [
-                                    Row(
-                                      children: [
-                                        Text(
-                                            "Passenger: ${widget.booking.numOfSeats}")
-                                      ],
-                                    )
+                                    // Row(
+                                    //   children: [
+                                    //     Text(
+                                    //         "Passenger: ${widget.booking.numOfSeats}")
+                                    //   ],
+                                    // )
                                   ],
                                 )
                               ],
                             )
                           ]),
+                          const SizedBox(
+                            height: 15,
+                          ),
                         ],
                       )))),
           const SizedBox(height: 16.0),
@@ -298,7 +301,7 @@ class _OneWayDetailsState extends State<OneWayDetails> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 12.0),
+                  const SizedBox(height: 8.0),
                   Container(
                     width: double.infinity,
                     child: ElevatedButton(
