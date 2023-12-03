@@ -46,8 +46,14 @@ class _LoginViewState extends State<LoginView> {
         });
       },
       icon: _isSecurePassword
-          ? const Icon(Icons.visibility)
-          : const Icon(Icons.visibility_off),
+          ? const Icon(
+              Icons.visibility,
+              color: Colors.green,
+            )
+          : const Icon(
+              Icons.visibility_off,
+              color: Colors.green,
+            ),
       color: Colors.grey,
     );
   }
@@ -71,14 +77,6 @@ class _LoginViewState extends State<LoginView> {
                     height: 200,
                     child: Image.asset('images/AirTours-5.png'), //new image
                   ),
-                  // const Text(
-                  //   'AirTours',
-                  //   textAlign: TextAlign.center,
-                  //   style: TextStyle(
-                  //       color: Color.fromRGBO(21, 132, 71, 100),
-                  //       fontSize: 40,
-                  //       fontWeight: FontWeight.w900),
-                  // ),
                   const SizedBox(height: 30),
                   Container(
                     decoration: BoxDecoration(
@@ -86,40 +84,51 @@ class _LoginViewState extends State<LoginView> {
                         borderRadius: BorderRadius.circular(5)),
                     child: TextFormField(
                       validator: (value) {
-                        if (value == null || value.isEmpty) {
+                        if (value!.isEmpty) {
                           return "Enter email";
                         }
                         final emailRegex = RegExp(
                             r"^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$");
                         if (!emailRegex.hasMatch(value)) {
                           return "Enter a valid email";
+                        } else {
+                          return null;
                         }
                       },
-                      //textAlign: TextAlign.center, //this one remove
                       controller: _email,
                       keyboardType: TextInputType.emailAddress,
-                      decoration: const InputDecoration(
-                        prefixIcon: Icon(Icons.mail), //new line(prefixIcon)
+                      decoration: InputDecoration(
+                        prefixIcon: const Icon(
+                          Icons.mail,
+                          color: Colors.green,
+                        ), //new line(prefixIcon)
                         border: InputBorder.none, //new line(border)
-                        hintText: 'Email',
+                        labelText: 'Email',
+                        floatingLabelStyle:
+                            const TextStyle(color: Colors.green, fontSize: 18),
+                        contentPadding: const EdgeInsets.all(20),
                         enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
+                          borderRadius: BorderRadius.circular(10.0),
+                          borderSide: const BorderSide(
                             color: Color.fromARGB(255, 13, 213, 130),
                           ),
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
+                          borderRadius: BorderRadius.circular(10.0),
+                          borderSide: const BorderSide(
                             color: Color.fromARGB(255, 13, 213, 130),
                             width: 3,
                           ),
                         ),
                         errorBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
+                          borderRadius: BorderRadius.circular(10.0),
+                          borderSide: const BorderSide(
                             color: Colors.red,
                           ),
                         ),
                         focusedErrorBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
+                          borderRadius: BorderRadius.circular(10.0),
+                          borderSide: const BorderSide(
                             color: Color.fromARGB(255, 13, 213, 130),
                             width: 3,
                           ),
@@ -134,41 +143,47 @@ class _LoginViewState extends State<LoginView> {
                         color: Colors.white), //change color to white
                     child: TextFormField(
                       validator: (value) {
-                        if (value == null || value.isEmpty) {
+                        if (value!.isEmpty) {
                           return "Enter password";
-                        }
-                        // Add a check for the minimum length of the password
-                        if (value.length < 6) {
-                          return "Password must be at least 6 characters long";
+                        } else {
+                          return null;
                         }
                       },
-                      //textAlign: TextAlign.center, //this one remove
                       controller: _password,
                       obscureText: _isSecurePassword, //new line(obscureText)
                       decoration: InputDecoration(
                         border: InputBorder.none, //new line(border)
-                        prefixIcon:
-                            const Icon(Icons.lock), //new line(prefixIcon)
-                        hintText: 'Password',
+                        prefixIcon: const Icon(
+                          Icons.key,
+                          color: Colors.green,
+                        ), //new line(prefixIcon)
+                        labelText: 'Password',
                         suffixIcon: togglePassword(), //new line(suffixIcon)
-                        enabledBorder: const OutlineInputBorder(
-                          borderSide: BorderSide(
+                        floatingLabelStyle:
+                            const TextStyle(color: Colors.green, fontSize: 18),
+                        contentPadding: const EdgeInsets.all(20),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                          borderSide: const BorderSide(
                             color: Color.fromARGB(255, 13, 213, 130),
                           ),
                         ),
-                        focusedBorder: const OutlineInputBorder(
-                          borderSide: BorderSide(
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                          borderSide: const BorderSide(
                             color: Color.fromARGB(255, 13, 213, 130),
                             width: 3,
                           ),
                         ),
-                        errorBorder: const OutlineInputBorder(
-                          borderSide: BorderSide(
+                        errorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                          borderSide: const BorderSide(
                             color: Colors.red,
                           ),
                         ),
-                        focusedErrorBorder: const OutlineInputBorder(
-                          borderSide: BorderSide(
+                        focusedErrorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                          borderSide: const BorderSide(
                             color: Color.fromARGB(255, 13, 213, 130),
                             width: 3,
                           ),
@@ -180,7 +195,13 @@ class _LoginViewState extends State<LoginView> {
                   MyButton(
                       title: 'Login',
                       onPressed: () async {
-                        if (_formKey.currentState!.validate()) {
+                        bool isSuccessful = false;
+                        setState(() {
+                          if (_formKey.currentState!.validate()) {
+                            isSuccessful = true;
+                          }
+                        });
+                        if (isSuccessful) {
                           final email = _email.text;
                           final pass = _password.text;
                           try {
@@ -235,12 +256,17 @@ class _LoginViewState extends State<LoginView> {
                       ),
                       TextButton(
                           onPressed: () async {
-                            Navigator.of(context).pushNamedAndRemoveUntil(
+                            await Navigator.of(context).pushNamedAndRemoveUntil(
                                 registerRoute, (route) => false);
                           },
                           child: const Text("Register Now"))
                     ],
-                  )
+                  ),
+                  TextButton(
+                      onPressed: () async {
+                        await Navigator.of(context).pushNamed(resetView);
+                      },
+                      child: const Text("Forgot Password"))
                 ],
               ),
             ),

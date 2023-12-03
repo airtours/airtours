@@ -27,24 +27,10 @@ class _ProfileViewState extends State<ProfileView> {
         child: Column(
           //mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            FutureBuilder<double>(
-              future: showUserBalance(),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  return Text("${snapshot.data}",
-                      style: const TextStyle(fontSize: 24.0));
-                } else {
-                  return const Text(
-                    '0.0',
-                    style: TextStyle(fontSize: 24),
-                  );
-                }
-              },
-            ),
             Padding(
               padding: const EdgeInsets.all(5.0),
               child: SizedBox(
-                height: 60,
+                height: 70,
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {
@@ -56,16 +42,48 @@ class _ProfileViewState extends State<ProfileView> {
                       borderRadius: BorderRadius.circular(8.0),
                     ),
                   ),
-                  child: const Row(
+                  child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        'Add Balance',
-                        style: TextStyle(fontSize: 16.0, color: Colors.black),
+                      const Row(
+                        children: [
+                          Icon(
+                            Icons.wallet,
+                            color: Color.fromARGB(255, 13, 213, 130),
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Text(
+                            "Wallet Recharge",
+                            style:
+                                TextStyle(fontSize: 16.0, color: Colors.black),
+                          ),
+                        ],
                       ),
-                      Text(
-                        '>',
-                        style: TextStyle(fontSize: 14.0, color: Colors.black),
+                      Row(
+                        children: [
+                          FutureBuilder<double>(
+                            future: showUserBalance(),
+                            builder: (context, snapshot) {
+                              if (snapshot.hasData) {
+                                return Text("${snapshot.data} SAR  ",
+                                    style: const TextStyle(
+                                        fontSize: 15.0, color: Colors.black));
+                              } else {
+                                return const Text(
+                                  '0.0 SAR  ',
+                                  style: TextStyle(fontSize: 15),
+                                );
+                              }
+                            },
+                          ),
+                          const Text(
+                            '>',
+                            style:
+                                TextStyle(fontSize: 14.0, color: Colors.black),
+                          ),
+                        ],
                       ),
                     ],
                   ),
@@ -75,7 +93,7 @@ class _ProfileViewState extends State<ProfileView> {
             Padding(
               padding: const EdgeInsets.all(5.0),
               child: SizedBox(
-                height: 60,
+                height: 70,
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () async {
@@ -92,9 +110,21 @@ class _ProfileViewState extends State<ProfileView> {
                   child: const Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        'Change Email',
-                        style: TextStyle(fontSize: 16.0, color: Colors.black),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.email,
+                            color: Color.fromARGB(255, 13, 213, 130),
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Text(
+                            'Change Email',
+                            style:
+                                TextStyle(fontSize: 16.0, color: Colors.black),
+                          ),
+                        ],
                       ),
                       Text(
                         '>',
@@ -108,13 +138,13 @@ class _ProfileViewState extends State<ProfileView> {
             Padding(
               padding: const EdgeInsets.all(5.0),
               child: SizedBox(
-                height: 60,
+                height: 70,
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () async {
                     await FirebaseAuthProvider.authService().logOut();
                     await Navigator.of(context).pushNamedAndRemoveUntil(
-                        loginForEmailChangesRoute, (route) => false);
+                        loginForPasswordChangesRoute, (route) => false);
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.white,
@@ -125,9 +155,21 @@ class _ProfileViewState extends State<ProfileView> {
                   child: const Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        'Change Password',
-                        style: TextStyle(fontSize: 16.0, color: Colors.black),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.published_with_changes_sharp,
+                            color: Color.fromARGB(255, 13, 213, 130),
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Text(
+                            'Change Password',
+                            style:
+                                TextStyle(fontSize: 16.0, color: Colors.black),
+                          ),
+                        ],
                       ),
                       Text(
                         '>',
@@ -139,6 +181,46 @@ class _ProfileViewState extends State<ProfileView> {
               ),
             ),
             //const SizedBox(height: 16.0),
+            Padding(
+              padding: const EdgeInsets.all(5.0),
+              child: SizedBox(
+                height: 70,
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    FirebaseAuthProvider.authService().logOut();
+                    Navigator.of(context).pushNamed(loginRoute);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                  ),
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.output_rounded,
+                            color: Color.fromARGB(255, 13, 213, 130),
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Text(
+                            'Log Out',
+                            style:
+                                TextStyle(fontSize: 18.0, color: Colors.black),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
             const SizedBox(height: 16.0),
             Padding(
               padding: const EdgeInsets.all(5.0),
@@ -172,34 +254,6 @@ class _ProfileViewState extends State<ProfileView> {
                     child: Text(
                       'Delete Account',
                       style: TextStyle(fontSize: 18.0),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-
-            Padding(
-              padding: const EdgeInsets.all(5.0),
-              child: SizedBox(
-                height: 60,
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () {
-                    FirebaseAuthProvider.authService().logOut();
-                    Navigator.of(context).pushNamed(loginRoute);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                  ),
-                  child: const Padding(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
-                    child: Text(
-                      'Log Out',
-                      style: TextStyle(fontSize: 18.0, color: Colors.black),
                     ),
                   ),
                 ),

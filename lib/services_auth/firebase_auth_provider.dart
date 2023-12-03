@@ -5,8 +5,8 @@ import "../firebase_options.dart";
 import "auth_exceptions.dart";
 import "auth_user.dart";
 
-class FirebaseAuthProvider {
-  const FirebaseAuthProvider();
+class FirebaseAuthProvider  {
+const FirebaseAuthProvider();
   factory FirebaseAuthProvider.authService() {
     return const FirebaseAuthProvider();
   }
@@ -92,14 +92,14 @@ class FirebaseAuthProvider {
     await Firebase.initializeApp(
         options: DefaultFirebaseOptions.currentPlatform);
   }
-
+  
   Future<void> updateUserEmail({required String email}) async {
     try {
-      final user = FirebaseAuth.instance.currentUser;
+       final user = FirebaseAuth.instance.currentUser;
       if (user != null) {
         await user.updateEmail(email);
       } else {
-        throw UserNotLoggedInAuthException();
+          throw UserNotLoggedInAuthException();
       }
     } on FirebaseAuthException catch (e) {
       if (e.code == 'email-already-in-use') {
@@ -113,7 +113,7 @@ class FirebaseAuthProvider {
       throw GenericAuthException();
     }
   }
-
+  
   Future<void> updateUserPassword({required String password}) async {
     try {
       final user = FirebaseAuth.instance.currentUser;
@@ -121,7 +121,7 @@ class FirebaseAuthProvider {
         await user.updatePassword(password);
       } else {
         throw UserNotLoggedInAuthException();
-      }
+    }
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
         throw WeakPasswordAuthException();
@@ -131,14 +131,29 @@ class FirebaseAuthProvider {
     } catch (_) {
       throw GenericAuthException();
     }
-  }
-
-  Future<void> deleteAccount() async {
-    final user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      await user.delete();
-    } else {
-      throw UserNotLoggedInAuthException();
     }
-  }
-}
+    
+      Future<void> deleteAccount() async {
+        final user = FirebaseAuth.instance.currentUser;
+        if (user != null) {
+          await user.delete();
+        } else {
+          throw UserNotLoggedInAuthException();
+    }
+      }
+
+      Future<void> resetPassword(String email) async {
+        try {
+          await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+          } on FirebaseAuthException catch (e) {
+        if (e.code == 'user-not-found') {
+          throw UserNotFoundAuthException();
+        }}
+        catch (_) {
+          throw GenericAuthException();
+        }
+      }
+  } 
+
+
+

@@ -4,15 +4,14 @@ import 'package:AirTours/services/cloud/cloud_booking.dart';
 import 'package:AirTours/services/cloud/cloud_flight.dart';
 import 'package:AirTours/services_auth/firebase_auth_provider.dart';
 import 'package:AirTours/utilities/show_error.dart';
-//import 'package:AirTours/views/Global/paymentPage.dart';
 import 'package:AirTours/views/Manage_booking/tickets_view.dart';
+import 'package:AirTours/views/Manage_booking/upgrade_card.dart';
 import 'package:flutter/material.dart';
 import '../../services/cloud/firebase_cloud_storage.dart';
 import '../../services/cloud/firestore_booking.dart';
 import '../../services/cloud/firestore_flight.dart';
 import '../../utilities/show_feedback.dart';
 import '../Global/global_var.dart';
-import '../Global/payment_page.dart';
 import '../Global/ticket.dart';
 
 class OneWayDetails extends StatefulWidget {
@@ -245,15 +244,10 @@ class _OneWayDetailsState extends State<OneWayDetails> {
                         onPressed: () async {
                           if (await _flightsService.didFly(
                               departureFlightId: departFlight.documentId)) {
-                            bool? nextPage = await Navigator.push(
+                            bool? nextPage = await Navigator.push<bool>(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => Payment(
-                                      paymentFor: 'upgrade',
-                                      id1: 'none',
-                                      id2: 'none',
-                                      flightClass: 'none',
-                                      tickets: tickets)),
+                                  builder: (context) => const UpgradeCard()),
                             );
                             if (nextPage == true) {
                               bool result = await _bookingService.upgradeOneWay(
@@ -320,7 +314,7 @@ class _OneWayDetailsState extends State<OneWayDetails> {
                                   .currentUser!
                                   .id,
                               canceledBookingPrice);
-                          showSuccessDialog(
+                          await showSuccessDialog(
                               context, 'Booking successfully deleted.');
                           Navigator.pop(context);
                         } else {
@@ -347,6 +341,9 @@ class _OneWayDetailsState extends State<OneWayDetails> {
                       ),
                     ),
                   ),
+                  const SizedBox(
+                    height: 30,
+                  )
                 ],
               ),
             ),

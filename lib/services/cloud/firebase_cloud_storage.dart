@@ -1,6 +1,7 @@
 import 'package:AirTours/constants/booking_constants.dart';
 import 'package:AirTours/constants/flight_constants.dart';
 import 'package:AirTours/constants/ticket_constants.dart';
+import 'package:AirTours/constants/user_constants.dart';
 import 'package:AirTours/services/cloud/cloud_storage_exceptions.dart';
 import 'package:AirTours/services/cloud/firestore_flight.dart';
 import 'package:AirTours/utilities/show_balance.dart';
@@ -83,12 +84,10 @@ class FirebaseCloudStorage {
   }
 
   Future<void> updateUser(
-      {required String ownerUserId,
-      required String email,
-      required String phoneNum}) async {
+      {required String ownerUserId, required String email}) async {
     try {
       DocumentReference docRef = user.doc(ownerUserId);
-      await docRef.update({"email": email, "phoneNum": phoneNum});
+      await docRef.update({"email": email});
     } catch (_) {
       throw CouldNotUpdateInformationException();
     }
@@ -158,15 +157,62 @@ class FirebaseCloudStorage {
     }
   }
 
-  Future<bool> convertUserToAdmin(
+  Future<int> convertUserToAdmin(
       {required String email, required String phoneNum}) async {
     final users = await user.where('email', isEqualTo: email).get();
     final documents = users.docs;
     if (documents.isNotEmpty) {
-      await admins.add({"email": email, "phoneNum": phoneNum});
-      return true;
+      bool isExist = await isAdminExist(email);
+      if (!isExist) {
+        await admins.add({"email": email});
+        return 0;
+      } else {
+        return 1; //admin is there
+      }
     } else {
-      return false;
+      return 2; //user not found
+    }
+  }
+
+  Future<bool> isAdminExist(String email) async {
+    final admin = await admins.where(emailFieldName, isEqualTo: email).get();
+    final documents = admin.docs;
+    return documents.isNotEmpty;
+  }
+
+  Future<bool> isDuplicateFlight(String flightId) async {
+    final userId = FirebaseAuthProvider.authService().currentUser!.id;
+    final booking =
+        await bookings.where(bookingUserIdField, isEqualTo: userId).get();
+    final documents = booking.docs;
+    bool isDuplicate = false;
+    if (documents.isNotEmpty) {
+      for (final document in documents) {
+        if (document[departureFlightField] == flightId) {
+          isDuplicate = true;
+        }
+      }
+      return isDuplicate;
+    } else {
+      return isDuplicate;
+    }
+  }
+
+  Future<bool> isDuplicateFlight2(String flightId) async {
+    final userId = FirebaseAuthProvider.authService().currentUser!.id;
+    final booking =
+        await bookings.where(bookingUserIdField, isEqualTo: userId).get();
+    final documents = booking.docs;
+    bool isDuplicate = false;
+    if (documents.isNotEmpty) {
+      for (final document in documents) {
+        if (document[returnFlightField] == flightId) {
+          isDuplicate = true;
+        }
+      }
+      return isDuplicate;
+    } else {
+      return isDuplicate;
     }
   }
 }

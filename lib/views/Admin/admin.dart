@@ -1,7 +1,5 @@
-// ignore_for_file: use_build_context_synchronously
 import 'package:AirTours/constants/pages_route.dart';
 import 'package:AirTours/utilities/show_feedback.dart';
-import 'package:AirTours/views/Global/flight_class_for_search.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -11,6 +9,7 @@ import '../../services_auth/firebase_auth_provider.dart';
 import '../../utilities/show_error.dart';
 import '../Global/global_var.dart';
 import '../Global/show_city_name_search.dart';
+import 'package:AirTours/views/Global/flight_class_for_search.dart';
 
 class CreateFlight extends StatefulWidget {
   const CreateFlight({super.key});
@@ -836,10 +835,6 @@ class _CreateFlightState extends State<CreateFlight> {
                                   margin: const EdgeInsets.all(5),
                                   width: double.infinity,
                                   decoration: BoxDecoration(
-                                      boxShadow: const [
-                                        BoxShadow(
-                                            blurRadius: 2, offset: Offset(0, 0))
-                                      ],
                                       borderRadius: BorderRadius.circular(15),
                                       color: const Color.fromARGB(
                                           255, 13, 213, 130)),

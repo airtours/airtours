@@ -12,6 +12,7 @@ import 'package:AirTours/views/Profile/update_email.dart';
 import 'package:AirTours/views/Profile/update_password.dart';
 import 'package:AirTours/views/Welcome_pages/login_view.dart';
 import 'package:AirTours/views/Welcome_pages/register_view.dart';
+import 'package:AirTours/views/Welcome_pages/reset_view.dart';
 import 'package:AirTours/views/Welcome_pages/verification_view.dart';
 import 'package:AirTours/views/Welcome_pages/welcome_page.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +21,7 @@ import 'constants/pages_route.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(MaterialApp(
+    debugShowCheckedModeBanner: false,
     home: const HomePage(),
     routes: {
       loginRoute: (context) => const LoginView(),
@@ -37,7 +39,8 @@ Future<void> main() async {
       loginForPasswordChangesRoute: (context) =>
           const LoginForPasswordChanges(),
       loginForDeleteRoute: (context) => const LoginForDelete(),
-      upgradeCard: (context) => const UpgradeCard()
+      upgradeCard: (context) => const UpgradeCard(),
+      resetView: (context) => const ResetPassword()
     },
   ));
 }

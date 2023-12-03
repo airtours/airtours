@@ -4,6 +4,7 @@ import 'package:AirTours/services/cloud/cloud_booking.dart';
 import 'package:AirTours/services/cloud/cloud_flight.dart';
 import 'package:AirTours/services/cloud/firebase_cloud_storage.dart';
 import 'package:AirTours/views/Manage_booking/tickets_view.dart';
+import 'package:AirTours/views/Manage_booking/upgrade_card.dart';
 import 'package:flutter/material.dart';
 import '../../services/cloud/firestore_booking.dart';
 import '../../services/cloud/firestore_flight.dart';
@@ -11,7 +12,6 @@ import '../../services_auth/firebase_auth_provider.dart';
 import '../../utilities/show_error.dart';
 import '../../utilities/show_feedback.dart';
 import '../Global/global_var.dart';
-import '../Global/payment_page.dart';
 import '../Global/ticket.dart';
 
 class RoundTripDetails extends StatefulWidget {
@@ -400,12 +400,7 @@ class _RoundTripDetailsState extends State<RoundTripDetails> {
                             bool? nextPage = await Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => Payment(
-                                      paymentFor: 'upgrade',
-                                      id1: 'none',
-                                      id2: 'none',
-                                      flightClass: 'none',
-                                      tickets: tickets)),
+                                  builder: (context) => const UpgradeCard()),
                             );
                             if (nextPage == true) {
                               bool result =
@@ -469,16 +464,17 @@ class _RoundTripDetailsState extends State<RoundTripDetails> {
                             numOfPas: currentBooking.numOfSeats);
 
                         if (result == true) {
+                          print("hellow 55");
                           c.retrievePreviousBalance(
                               FirebaseAuthProvider.authService()
                                   .currentUser!
                                   .id,
                               canceledBookingPrice);
-                          showSuccessDialog(
+                          await showSuccessDialog(
                               context, 'Booking successfully deleted.');
                           Navigator.pop(context);
                         } else {
-                          showErrorDialog(context,
+                          await showErrorDialog(context,
                               "Cannot Cancel Booking, Cancellation Deadline Passed");
                         }
                       },
@@ -501,6 +497,9 @@ class _RoundTripDetailsState extends State<RoundTripDetails> {
                       ),
                     ),
                   ),
+                  const SizedBox(
+                    height: 30,
+                  )
                 ],
               ),
             ),

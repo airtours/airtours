@@ -164,6 +164,3 @@ String? cityNameDel2;
 
 int? indexToUpdate; //new line
 int? indexToUpdate2; //new line
-
-
-
