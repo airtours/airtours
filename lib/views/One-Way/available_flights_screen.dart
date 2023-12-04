@@ -116,6 +116,14 @@ class _OneWaySearchState extends State<OneWaySearch> {
                 if (snapshot.hasData) {
                   final Iterable<CloudFlight> allFlights =
                       snapshot.data as Iterable<CloudFlight>;
+                  if (allFlights.isEmpty) {
+                    return const Center(
+                      child: Text(
+                        "No flights available",
+                        style: TextStyle(fontSize: 16),
+                      ),
+                    );
+                  }
                   return ListView.builder(
                     itemCount: allFlights.length,
                     itemBuilder: (context, index) {
@@ -148,7 +156,6 @@ class _OneWaySearchState extends State<OneWaySearch> {
                                     widget.flightClass);
                               },
                               child: Container(
-                                  //width: double.infinity,
                                   margin: const EdgeInsets.all(5),
                                   decoration: BoxDecoration(
                                       boxShadow: const [

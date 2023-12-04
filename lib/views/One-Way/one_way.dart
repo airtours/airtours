@@ -1,4 +1,3 @@
-//the new
 import 'package:AirTours/utilities/search_flight.dart';
 import 'package:flutter/material.dart';
 import 'package:AirTours/views/Global/global_var.dart';

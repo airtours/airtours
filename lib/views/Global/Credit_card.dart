@@ -44,6 +44,7 @@ class _CreditcardState extends State<Creditcard> {
   late double price;
   late double balance;
   bool notInitialized = true;
+  late double reward;
 
   @override
   void initState() {
@@ -51,6 +52,7 @@ class _CreditcardState extends State<Creditcard> {
     _bookingService = BookingFirestore();
     _ticketService = TicketFirestore();
     price = retrieveTotBookingsPrice();
+    reward = retrieveTotBookingsPrice();
   }
 
   Future<String> createBooking(double totalPrice) async {
@@ -104,6 +106,14 @@ class _CreditcardState extends State<Creditcard> {
   double retrieveTotBookingsPrice() {
     double totBookingPrice = 0;
     for (final x in widget.tickets) {
+      final DateTime now = DateTime.now();
+      final Duration difference = now.difference(x.birthDate);
+      final int age = (difference.inDays / 365).floor();
+      if (age < 12) {
+        totBookingPrice =
+            totBookingPrice + x.ticketPrice / 2; //50% disc for a child
+        continue;
+      }
       totBookingPrice = totBookingPrice + x.ticketPrice;
     }
     return totBookingPrice;
@@ -462,12 +472,13 @@ class _CreditcardState extends State<Creditcard> {
                                   .currentUser!
                                   .id;
                               final docR = user.doc(userId);
+                              reward = reward * 0.07;
+                              balance = balance + reward;
                               await docR.update({'balance': balance});
                               Navigator.of(context).pushNamedAndRemoveUntil(
                                   bottomRoute, (route) => false);
                               await showSuccessDialog(
                                   context, "Flight is booked");
-
                               List<flightInformation> flightNameTestCopy =
                                   List.from(forSave);
                               flightNameTest = flightNameTestCopy;

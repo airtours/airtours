@@ -118,6 +118,14 @@ class _RoundTripSearch1State extends State<RoundTripSearch1> {
                 if (snapshot.hasData) {
                   final Iterable<CloudFlight> allFlights =
                       snapshot.data as Iterable<CloudFlight>;
+                  if (allFlights.isEmpty) {
+                    return const Center(
+                      child: Text(
+                        "No flights available",
+                        style: TextStyle(fontSize: 16),
+                      ),
+                    );
+                  }
                   return ListView.builder(
                     itemCount: allFlights.length,
                     itemBuilder: (context, index) {
